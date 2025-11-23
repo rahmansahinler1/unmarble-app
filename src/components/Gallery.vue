@@ -40,6 +40,16 @@
               <button
                 class="btn btn-sm me-2"
                 :class="
+                  this.selectedFilter === 'design' ? 'btn-secondary' : 'btn-outline-secondary'
+                "
+                @click="selectFilter('design')"
+              >
+                Design
+                <span class="badge bg-light text-dark ms-1">{{ imageCounts.design }}</span>
+              </button>
+              <button
+                class="btn btn-sm me-2"
+                :class="
                   this.selectedFilter === 'favorites' ? 'btn-secondary' : 'btn-outline-secondary'
                 "
                 @click="selectFilter('favorites')"
@@ -52,10 +62,10 @@
             <!-- Gallery Grid -->
             <div class="gallery-grid">
               <!-- Gallery items will go here -->
-              <div class="gallery-item" v-for="image in getPreviewImages" :key="image.id">
+              <div class="gallery-item" v-for="image in getPreviews" :key="image.id">
                 <div
                   class="gallery-image-wrapper"
-                  @click="openImageModal(image.id)"
+                  @click="openImageModal(image.id, image.category)"
                   style="cursor: pointer"
                 >
                   <!-- Like Button Badge -->
@@ -172,7 +182,14 @@
 <script>
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
-import { deleteImage, updateImageFav, getFullImage } from '@/api/api'
+import {
+  deleteImage,
+  updateImageFav,
+  getImage,
+  deleteDesign,
+  updateDesignFav,
+  getDesign,
+} from '@/api/api'
 
 export default {
   name: 'Gallery',
@@ -183,6 +200,7 @@ export default {
       showImageModal: false,
       fullImage: null,
       loadingFullImage: false,
+      currentImageCategory: null,
       escapeKeyHandler: null,
     }
   },
@@ -191,25 +209,30 @@ export default {
     userCred() {
       return this.userStore?.userCred || null
     },
-    getPreviewImages() {
+    getPreviews() {
       const yourself = this.userStore?.previewImages?.yourself || []
       const clothing = this.userStore?.previewImages?.clothing || []
+      const design = this.userStore?.previewImages?.design || []
 
       let images = []
 
       if (this.selectedFilter === 'yourself') {
-        images = yourself.map((img) => ({ ...img, category: 'Yourself' }))
+        images = yourself.map((img) => ({ ...img, category: 'yourself' }))
       } else if (this.selectedFilter === 'clothing') {
-        images = clothing.map((img) => ({ ...img, category: 'Clothing' }))
+        images = clothing.map((img) => ({ ...img, category: 'clothing' }))
+      } else if (this.selectedFilter === 'design') {
+        images = design.map((img) => ({ ...img, category: 'design' }))
       } else if (this.selectedFilter === 'favorites') {
         images = [
-          ...yourself.filter((img) => img.faved).map((img) => ({ ...img, category: 'Yourself' })),
-          ...clothing.filter((img) => img.faved).map((img) => ({ ...img, category: 'Clothing' })),
+          ...yourself.filter((img) => img.faved).map((img) => ({ ...img, category: 'yourself' })),
+          ...clothing.filter((img) => img.faved).map((img) => ({ ...img, category: 'clothing' })),
+          ...design.filter((img) => img.faved).map((img) => ({ ...img, category: 'design' })),
         ]
       } else {
         images = [
-          ...yourself.map((img) => ({ ...img, category: 'Yourself' })),
-          ...clothing.map((img) => ({ ...img, category: 'Clothing' })),
+          ...yourself.map((img) => ({ ...img, category: 'yourself' })),
+          ...clothing.map((img) => ({ ...img, category: 'clothing' })),
+          ...design.map((img) => ({ ...img, category: 'design' })),
         ]
       }
 
@@ -220,13 +243,17 @@ export default {
     imageCounts() {
       const yourself = this.userStore?.previewImages?.yourself || []
       const clothing = this.userStore?.previewImages?.clothing || []
+      const design = this.userStore?.previewImages?.design || []
 
       return {
         yourself: yourself.length,
         clothing: clothing.length,
-        all: yourself.length + clothing.length,
+        design: design.length,
+        all: yourself.length + clothing.length + design.length,
         favorites:
-          yourself.filter((img) => img.faved).length + clothing.filter((img) => img.faved).length,
+          yourself.filter((img) => img.faved).length +
+          clothing.filter((img) => img.faved).length +
+          design.filter((img) => img.faved).length,
       }
     },
   },
@@ -242,11 +269,24 @@ export default {
     },
     async deleteImage(imageId, category) {
       try {
-        const result = await deleteImage(imageId)
+        let result
+
+        // Use appropriate API based on category
+        if (category === 'design') {
+          result = await deleteDesign(imageId)
+          if (result.success) {
+            this.userStore.removePreviewImage('design', imageId)
+            // Designed images don't refund credits
+          }
+        } else {
+          result = await deleteImage(imageId)
+          if (result.success) {
+            this.userStore.removePreviewImage(category, imageId)
+            this.userStore.updateUploadsLeft(result.data.uploads_left)
+          }
+        }
 
         if (result.success) {
-          this.userStore.removePreviewImage(category.toLowerCase(), imageId)
-          this.userStore.updateUploadsLeft(result.data.uploads_left)
           this.deleteConfirmId = null
         } else {
           alert('Failed to delete image')
@@ -257,7 +297,7 @@ export default {
       }
     },
     async toggleImageFav(image) {
-      const category = image.category.toLowerCase()
+      const category = image.category
       const imageInStore = this.userStore.previewImages[category].find((img) => img.id === image.id)
       if (!imageInStore) return
 
@@ -265,7 +305,14 @@ export default {
       imageInStore.faved = !imageInStore.faved
 
       try {
-        const result = await updateImageFav(image.id)
+        let result
+
+        // Use appropriate API based on category
+        if (category === 'design') {
+          result = await updateDesignFav(image.id)
+        } else {
+          result = await updateImageFav(image.id)
+        }
 
         if (!result.success) {
           imageInStore.faved = previousState
@@ -277,10 +324,11 @@ export default {
         alert('Error updating favorite')
       }
     },
-    async openImageModal(imageId) {
+    async openImageModal(imageId, category) {
       this.showImageModal = true
       this.loadingFullImage = true
       this.fullImage = null
+      this.currentImageCategory = category
 
       this.escapeKeyHandler = (event) => {
         if (event.key === 'Escape') {
@@ -290,7 +338,14 @@ export default {
       document.addEventListener('keydown', this.escapeKeyHandler)
 
       try {
-        const result = await getFullImage(imageId)
+        let result
+
+        // Use appropriate API based on category
+        if (category === 'design') {
+          result = await getDesign(imageId)
+        } else {
+          result = await getImage(imageId)
+        }
 
         if (result.success) {
           this.fullImage = `data:image/jpeg;base64,${result.data.image_base64}`

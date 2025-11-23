@@ -1,5 +1,5 @@
 import { defineStore } from 'pinia'
-import { getUser, getPreviewImages } from '@/api/api'
+import { getUser, getPreviews } from '@/api/api'
 
 export default defineStore('user', {
   state: () => ({
@@ -14,15 +14,18 @@ export default defineStore('user', {
       nextRenewalDate: null,
     },
     userLimits: { uploadsLeft: null, generationsLeft: null, recentsLeft: null },
-    previewImages: { yourself: [], clothing: [] },
-    previewGenerations: [],
+    previewImages: { yourself: [], clothing: [], design: [] },
   }),
   getters: {
     imageCounts(state) {
       return {
         yourself: state.previewImages.yourself.length,
         clothing: state.previewImages.clothing.length,
-        all: state.previewImages.yourself.length + state.previewImages.clothing.length,
+        design: state.previewImages.design.length,
+        all:
+          state.previewImages.yourself.length +
+          state.previewImages.clothing.length +
+          state.previewImages.design.length,
       }
     },
   },
@@ -45,9 +48,9 @@ export default defineStore('user', {
           this.userLimits.recentsLeft = user_fetch.data.user_info['recents_left']
         }
 
-        const preview_fetch = await getPreviewImages()
+        const preview_fetch = await getPreviews()
         if (preview_fetch.success) {
-          // Map and add data for images
+          // Map and add data for all image categories (yourself, clothing, design)
           const image_previews = preview_fetch.data.image_previews
 
           this.previewImages.yourself = (image_previews.yourself || []).map((img) => ({
@@ -64,10 +67,7 @@ export default defineStore('user', {
             created_at: img.created_at,
           }))
 
-          // Map and add data for generations
-          const generation_previews = preview_fetch.data.generation_previews
-
-          this.previewGenerations = (generation_previews || []).map((img) => ({
+          this.previewImages.design = (image_previews.design || []).map((img) => ({
             id: img.id,
             base64: `data:image/jpeg;base64,${img.base64}`,
             faved: img.faved,
@@ -82,6 +82,7 @@ export default defineStore('user', {
       this.previewImages[category].push({
         id: imageData.image_id,
         base64: `data:image/jpeg;base64,${imageData.preview_base64}`,
+        faved: imageData.faved || false,
         created_at: imageData.created_at,
       })
     },
@@ -89,16 +90,6 @@ export default defineStore('user', {
       this.previewImages[category] = this.previewImages[category].filter(
         (img) => img.id !== imageId,
       )
-    },
-    addPreviewGeneration(imageData) {
-      this.previewGenerations.push({
-        id: imageData.image_id,
-        base64: `data:image/jpeg;base64,${imageData.preview_base64}`,
-        created_at: imageData.created_at,
-      })
-    },
-    removePreviewGeneration(imageId) {
-      this.previewGenerations = this.previewGenerations.filter((img) => img.id !== imageId)
     },
     updateUploadsLeft(newValue) {
       this.userLimits.uploadsLeft = newValue

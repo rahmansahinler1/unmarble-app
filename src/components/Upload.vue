@@ -268,8 +268,8 @@ export default {
       this.isUploading = true
       // Upload
       try {
-        const fileBytes = await this.convertFile(this.selectedFile)
-        const result = await uploadImage(this.selectedCategory, fileBytes)
+        const fileBase64 = await this.convertFile(this.selectedFile)
+        const result = await uploadImage(this.selectedCategory, fileBase64)
 
         if (result.success) {
           this.uploadStatus = 'success'

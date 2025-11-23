@@ -22,11 +22,6 @@
           <span class="nav-text">Design</span>
         </router-link>
 
-        <router-link to="/recents" class="nav-item">
-          <i class="bi bi-clock-history nav-icon"></i>
-          <span class="nav-text">Recents</span>
-        </router-link>
-
         <router-link to="/upload" class="nav-item">
           <i class="bi bi-person-plus nav-icon"></i>
           <span class="nav-text">Upload</span>

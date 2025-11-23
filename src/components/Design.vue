@@ -180,7 +180,7 @@
           class="generate-btn"
           :class="{ 'generate-btn-active': canGenerate }"
           :disabled="!canGenerate"
-          @click="generateImage"
+          @click="designImage"
         >
           <span>Generate</span>
           <span><i class="bi bi-magic"></i> {{ userStore.userLimits.generationsLeft || 0 }}</span>
@@ -342,7 +342,7 @@
 <script>
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
-import { getFullImage, generateImage } from '@/api/api'
+import { getImage, designImage } from '@/api/api'
 
 export default {
   name: 'Design',
@@ -433,7 +433,7 @@ export default {
       this.loadingCards[category] = true
 
       try {
-        const result = await getFullImage(selectedId)
+        const result = await getImage(selectedId)
 
         // Check if this is still the latest request (race condition protection)
         if (this.pendingRequests[category] !== requestId) {
@@ -489,7 +489,7 @@ export default {
         this.closeModal()
       }
     },
-    async generateImage() {
+    async designImage() {
       if (!this.selections.yourself || !this.selections.clothing) return
 
       if (this.userStore.userLimits.generationsLeft <= 0) {
@@ -498,24 +498,23 @@ export default {
         return
       }
 
-      if (this.userStore.userLimits.recentsLeft <= 0) {
-        this.showErrorPopup = true
-        this.errorMessage =
-          'No recents storage left. You can delete some generations to get storage.'
-        return
-      }
-
       this.isGenerating = true
       this.generationError = null
 
       try {
-        const result = await generateImage(this.selections.yourself.id, this.selections.clothing.id)
+        const result = await designImage(this.selections.yourself.id, this.selections.clothing.id)
 
         if (result.success) {
           this.generatedImage = `data:image/jpeg;base64,${result.data.image_base64}`
-          this.userStore.addPreviewGeneration(result.data)
+          // Add to Gallery as 'design' category
+          this.userStore.addPreviewImage('design', {
+            image_id: result.data.image_id,
+            preview_base64: result.data.preview_base64,
+            faved: false,
+            created_at: result.data.created_at,
+          })
           this.userStore.updateGenerationsLeft(result.data.generations_left)
-          this.userStore.updateRecentsLeft(result.data.recents_left)
+          // recentsLeft update removed - handled in future update
         } else {
           this.generationError = result.error || 'Generation failed. Please try again.'
         }

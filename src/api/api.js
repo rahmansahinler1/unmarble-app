@@ -72,7 +72,7 @@ export const getUser = async function () {
   }
 }
 
-export const getPreviewImages = async function () {
+export const getPreviews = async function () {
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/get_previews`, {
       method: 'POST',
@@ -88,7 +88,7 @@ export const getPreviewImages = async function () {
       data: data,
     }
   } catch (error) {
-    console.error('Failed to get preview images:', error)
+    console.error('Failed to get previews:', error)
     return {
       success: false,
       error: error.message,
@@ -96,9 +96,9 @@ export const getPreviewImages = async function () {
   }
 }
 
-export const getFullImage = async function (imageId) {
+export const getImage = async function (imageId) {
   try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/get_full_image`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/get_image`, {
       method: 'POST',
       body: JSON.stringify({ image_id: imageId }),
     })
@@ -113,7 +113,7 @@ export const getFullImage = async function (imageId) {
       data: data,
     }
   } catch (error) {
-    console.error('Failed to fetch full image:', error)
+    console.error('Failed to fetch image:', error)
     return {
       success: false,
       error: error.message,
@@ -121,9 +121,9 @@ export const getFullImage = async function (imageId) {
   }
 }
 
-export const getFullGeneratedImage = async function (imageId) {
+export const getDesign = async function (imageId) {
   try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/get_full_generated_image`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/get_design`, {
       method: 'POST',
       body: JSON.stringify({ image_id: imageId }),
     })
@@ -138,7 +138,7 @@ export const getFullGeneratedImage = async function (imageId) {
       data: data,
     }
   } catch (error) {
-    console.error('Failed to fetch full generated image:', error)
+    console.error('Failed to fetch design:', error)
     return {
       success: false,
       error: error.message,
@@ -146,13 +146,13 @@ export const getFullGeneratedImage = async function (imageId) {
   }
 }
 
-export const uploadImage = async function (category, imageBytes) {
+export const uploadImage = async function (category, imageBase64) {
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/upload_image`, {
       method: 'POST',
       body: JSON.stringify({
         category: category,
-        imageBytes: imageBytes,
+        imageBase64: imageBase64,
       }),
     })
 
@@ -176,9 +176,9 @@ export const uploadImage = async function (category, imageBytes) {
   }
 }
 
-export const updateFav = async function (imageId) {
+export const updateDesignFav = async function (imageId) {
   try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/update_fav`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/update_design_fav`, {
       method: 'POST',
       body: JSON.stringify({ image_id: imageId }),
     })
@@ -249,9 +249,9 @@ export const deleteImage = async function (imageId) {
   }
 }
 
-export const deleteGeneration = async function (imageId) {
+export const deleteDesign = async function (imageId) {
   try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/delete_generated_image`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/delete_design`, {
       method: 'POST',
       body: JSON.stringify({ image_id: imageId }),
     })
@@ -266,7 +266,7 @@ export const deleteGeneration = async function (imageId) {
       data: data,
     }
   } catch (error) {
-    console.error('Failed to delete generation:', error)
+    console.error('Failed to delete design:', error)
     return {
       success: false,
       error: error.message,
@@ -274,9 +274,9 @@ export const deleteGeneration = async function (imageId) {
   }
 }
 
-export const generateImage = async function (yourselfImageId, clothingImageId) {
+export const designImage = async function (yourselfImageId, clothingImageId) {
   try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/generate_image`, {
+    const response = await fetchWithAuth(`${API_BASE_URL}/design_image`, {
       method: 'POST',
       body: JSON.stringify({
         yourself_image_id: yourselfImageId,
@@ -296,7 +296,7 @@ export const generateImage = async function (yourselfImageId, clothingImageId) {
       data: data,
     }
   } catch (error) {
-    console.error('Failed to generate image:', error)
+    console.error('Failed to design image:', error)
     return {
       success: false,
       error: error.message,
