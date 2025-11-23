@@ -276,13 +276,13 @@ export default {
           result = await deleteDesign(imageId)
           if (result.success) {
             this.userStore.removePreviewImage('design', imageId)
-            // Designed images don't refund credits
+            this.userStore.updateStorageLeft(result.data.storage_left)
           }
         } else {
           result = await deleteImage(imageId)
           if (result.success) {
             this.userStore.removePreviewImage(category, imageId)
-            this.userStore.updateUploadsLeft(result.data.uploads_left)
+            this.userStore.updateStorageLeft(result.data.storage_left)
           }
         }
 

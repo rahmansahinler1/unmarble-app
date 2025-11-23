@@ -256,10 +256,10 @@ export default {
         return
       }
 
-      // Check uploads
-      if (this.userStore.userLimits.uploadsLeft <= 0) {
+      // Check storage
+      if (this.userStore.userLimits.storageLeft <= 0) {
         this.uploadStatus = 'error'
-        this.uploadMessage = 'No upload credits left'
+        this.uploadMessage = 'No storage space left'
         return
       }
 
@@ -275,15 +275,15 @@ export default {
           this.uploadStatus = 'success'
           this.uploadMessage = 'Upload Successful'
           this.userStore.addPreviewImage(this.selectedCategory, result.data)
-          this.userStore.updateUploadsLeft(result.data.uploads_left)
+          this.userStore.updateStorageLeft(result.data.storage_left)
           setTimeout(() => {
             this.removeFile()
           }, 2000)
         } else {
           this.uploadStatus = 'error'
-          // Check if it's a credit error
-          if (result.error.includes('Insufficient') || result.error.includes('credits')) {
-            this.uploadMessage = 'No upload credits remaining. Please upgrade to premium.'
+          // Check if it's a storage error
+          if (result.error.includes('Insufficient') || result.error.includes('storage')) {
+            this.uploadMessage = 'No storage space remaining. Please upgrade to premium.'
           } else {
             this.uploadMessage = `Upload Failed: ${result.error}`
           }

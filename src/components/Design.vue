@@ -514,7 +514,7 @@ export default {
             created_at: result.data.created_at,
           })
           this.userStore.updateDesignsLeft(result.data.designs_left)
-          // recentsLeft update removed - handled in future update
+          this.userStore.updateStorageLeft(result.data.storage_left)
         } else {
           this.designError = result.error || 'Design failed. Please try again.'
         }
