@@ -1,6 +1,6 @@
 <template>
   <div class="container-fluid h-100 d-flex flex-column">
-    <h1 class="dashboard-title mb-3 text-center">Create Your Outfit</h1>
+    <h1 class="dashboard-title mb-3 text-center">Design Your Outfit</h1>
 
     <div class="row h-100 align-items-center justify-content-center gx-3">
       <!-- Yourself Card -->
