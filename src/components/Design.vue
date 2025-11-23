@@ -8,9 +8,9 @@
         <h3 class="card-title mb-3 text-center"><i class="bi bi-person-fill me-2"></i>Yourself</h3>
         <div
           class="selection-card"
-          :class="{ disabled: loadingCards.yourself || errorCards.yourself || isGenerating }"
+          :class="{ disabled: loadingCards.yourself || errorCards.yourself || isDesigning }"
           @click="
-            !loadingCards.yourself && !errorCards.yourself && !isGenerating && openModal('yourself')
+            !loadingCards.yourself && !errorCards.yourself && !isDesigning && openModal('yourself')
           "
         >
           <!-- Error State -->
@@ -44,7 +44,7 @@
         <div class="d-flex justify-content-center mt-3">
           <button
             class="btn btn-outline-secondary btn-sm"
-            :disabled="!selections.yourself || isGenerating"
+            :disabled="!selections.yourself || isDesigning"
             @click="openModal('yourself')"
           >
             <i class="bi bi-arrow-clockwise me-1"></i> Replace
@@ -62,9 +62,9 @@
         <h3 class="card-title mb-3 text-center"><i class="bi bi-tencent-qq me-2"></i>Clothing</h3>
         <div
           class="selection-card"
-          :class="{ disabled: loadingCards.clothing || errorCards.clothing || isGenerating }"
+          :class="{ disabled: loadingCards.clothing || errorCards.clothing || isDesigning }"
           @click="
-            !loadingCards.clothing && !errorCards.clothing && !isGenerating && openModal('clothing')
+            !loadingCards.clothing && !errorCards.clothing && !isDesigning && openModal('clothing')
           "
         >
           <!-- Error State -->
@@ -98,7 +98,7 @@
         <div class="d-flex justify-content-center mt-3">
           <button
             class="btn btn-outline-secondary btn-sm"
-            :disabled="!selections.clothing || isGenerating"
+            :disabled="!selections.clothing || isDesigning"
             @click="openModal('clothing')"
           >
             <i class="bi bi-arrow-clockwise me-1"></i> Replace
@@ -111,19 +111,19 @@
         <img src="/assets/img/ic_swap_result.svg" alt="result" class="separator-icon" />
       </div>
 
-      <!-- Generated Result Card -->
+      <!-- Designed Result Card -->
       <div class="col-auto">
         <h3 class="card-title mb-3 text-center"><i class="bi bi-camera-fill me-1"></i>Result</h3>
         <div
           class="selection-card"
-          :class="{ clickable: generatedImage }"
-          @click="generatedImage && openGeneratedImageModal()"
+          :class="{ clickable: designedImage }"
+          @click="designedImage && opendesignedImageModal()"
         >
           <!-- Error State -->
-          <div v-if="generationError" class="card-error-overlay">
+          <div v-if="designError" class="card-error-overlay">
             <i class="bi bi-emoji-frown" style="font-size: 3rem; color: #333"></i>
             <p class="mb-0 fw-bold" style="color: #333; font-family: var(--font-family-base)">
-              {{ generationError }}
+              {{ designError }}
             </p>
             <div class="d-flex gap-2 mt-2">
               <button
@@ -136,36 +136,36 @@
               <button
                 class="btn btn-sm btn-outline-danger"
                 style="font-family: var(--font-family-base)"
-                @click="generationError = null"
+                @click="designError = null"
               >
                 Dismiss
               </button>
             </div>
           </div>
 
-          <!-- Generating State -->
-          <div v-else-if="isGenerating" class="card-loading-overlay">
+          <!-- Designing State -->
+          <div v-else-if="isDesigning" class="card-loading-overlay">
             <div class="spinner-border text-primary mb-2" role="status"></div>
           </div>
 
-          <!-- Generated Image -->
-          <img v-else-if="generatedImage" :src="generatedImage" alt="Generated result" />
+          <!-- Designed Image -->
+          <img v-else-if="designedImage" :src="designedImage" alt="Designed result" />
 
           <!-- Select Pictures condition -->
-          <p v-else-if="!canGenerate" class="nav-text">
+          <p v-else-if="!canDesign" class="nav-text">
             <i class="bi bi-arrow-left-circle-fill me-1"></i>Select Pictures
           </p>
 
-          <!-- Can generate trigger -->
-          <p v-else class="nav-text"><i class="bi bi-magic me-1"></i>Click Generate Button</p>
+          <!-- Can design trigger -->
+          <p v-else class="nav-text"><i class="bi bi-magic me-1"></i>Click Design Button</p>
         </div>
 
         <!-- Download button -->
         <div class="d-flex justify-content-center mt-3">
           <button
             class="btn btn-outline-secondary btn-sm"
-            :disabled="!generatedImage"
-            @click="downloadGeneratedImage"
+            :disabled="!designedImage"
+            @click="downloaddesignedImage"
           >
             <i class="bi bi-download me-2"></i> Download
           </button>
@@ -173,17 +173,17 @@
       </div>
     </div>
 
-    <!-- Generate Button -->
+    <!-- Design Button -->
     <div class="row">
       <div class="col-12 text-center mb-4">
         <button
-          class="generate-btn"
-          :class="{ 'generate-btn-active': canGenerate }"
-          :disabled="!canGenerate"
+          class="design-btn"
+          :class="{ 'design-btn-active': canDesign }"
+          :disabled="!canDesign"
           @click="designImage"
         >
-          <span>Generate</span>
-          <span><i class="bi bi-magic"></i> {{ userStore.userLimits.generationsLeft || 0 }}</span>
+          <span>Design</span>
+          <span><i class="bi bi-magic"></i> {{ userStore.userLimits.designsLeft || 0 }}</span>
         </button>
       </div>
     </div>
@@ -256,28 +256,28 @@
     <!-- Modal Backdrop -->
     <div v-if="showModal" class="modal-backdrop fade show"></div>
 
-    <!-- Generated Image Modal -->
+    <!-- Designed Image Modal -->
     <div
       class="modal fade"
-      :class="{ show: showGeneratedModal, 'd-block': showGeneratedModal }"
+      :class="{ show: showDesignedModal, 'd-block': showDesignedModal }"
       tabindex="-1"
-      v-if="showGeneratedModal"
-      @click.self="closeGeneratedModal"
+      v-if="showDesignedModal"
+      @click.self="closeDesignedModal"
     >
       <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
           <!-- Modal Header -->
           <div class="modal-header">
-            <h5 class="modal-title">Generated Image</h5>
-            <button type="button" class="btn-close" @click="closeGeneratedModal"></button>
+            <h5 class="modal-title">Designed Image</h5>
+            <button type="button" class="btn-close" @click="closeDesignedModal"></button>
           </div>
 
           <!-- Modal Body -->
           <div class="modal-body text-center">
             <img
-              v-if="generatedImage"
-              :src="generatedImage"
-              alt="Generated outfit"
+              v-if="designedImage"
+              :src="designedImage"
+              alt="Designed outfit"
               class="img-fluid"
               style="max-height: 70vh"
             />
@@ -285,18 +285,18 @@
 
           <!-- Modal Footer -->
           <div class="modal-footer justify-content-between">
-            <button type="button" class="btn btn-outline-secondary" @click="closeGeneratedModal">
+            <button type="button" class="btn btn-outline-secondary" @click="closeDesignedModal">
               Close
             </button>
-            <button type="button" class="btn btn-primary" @click="downloadGeneratedImage">
+            <button type="button" class="btn btn-primary" @click="downloaddesignedImage">
               <i class="bi bi-download me-2"></i>Download
             </button>
           </div>
         </div>
       </div>
     </div>
-    <!-- Generated Modal Backdrop -->
-    <div v-if="showGeneratedModal" class="modal-backdrop fade show"></div>
+    <!-- Designed Modal Backdrop -->
+    <div v-if="showDesignedModal" class="modal-backdrop fade show"></div>
 
     <!-- Error Popup Modal -->
     <div
@@ -371,18 +371,18 @@ export default {
         yourself: null,
         clothing: null,
       },
-      showGeneratedModal: false,
-      generatedImage: null,
-      isGenerating: false,
-      generationError: null,
+      showDesignedModal: false,
+      designedImage: null,
+      isDesigning: false,
+      designError: null,
       showErrorPopup: false,
       errorMessage: '',
     }
   },
   computed: {
     ...mapStores(useUserStore),
-    canGenerate() {
-      return this.selections.yourself && this.selections.clothing && !this.isGenerating
+    canDesign() {
+      return this.selections.yourself && this.selections.clothing && !this.isDesigning
     },
     filteredImages() {
       if (!this.modalCategory) return []
@@ -492,20 +492,20 @@ export default {
     async designImage() {
       if (!this.selections.yourself || !this.selections.clothing) return
 
-      if (this.userStore.userLimits.generationsLeft <= 0) {
+      if (this.userStore.userLimits.designsLeft <= 0) {
         this.showErrorPopup = true
-        this.errorMessage = 'No generation credits left'
+        this.errorMessage = 'No design credits left'
         return
       }
 
-      this.isGenerating = true
-      this.generationError = null
+      this.isDesigning = true
+      this.designError = null
 
       try {
         const result = await designImage(this.selections.yourself.id, this.selections.clothing.id)
 
         if (result.success) {
-          this.generatedImage = `data:image/jpeg;base64,${result.data.image_base64}`
+          this.designedImage = `data:image/jpeg;base64,${result.data.image_base64}`
           // Add to Gallery as 'design' category
           this.userStore.addPreviewImage('design', {
             image_id: result.data.image_id,
@@ -513,31 +513,31 @@ export default {
             faved: false,
             created_at: result.data.created_at,
           })
-          this.userStore.updateGenerationsLeft(result.data.generations_left)
+          this.userStore.updateDesignsLeft(result.data.designs_left)
           // recentsLeft update removed - handled in future update
         } else {
-          this.generationError = result.error || 'Generation failed. Please try again.'
+          this.designError = result.error || 'Design failed. Please try again.'
         }
       } catch (error) {
-        this.generationError = error.message || 'Generation error. Please try again.'
+        this.designError = error.message || 'Design error. Please try again.'
       } finally {
-        this.isGenerating = false
+        this.isDesigning = false
       }
     },
-    openGeneratedImageModal() {
-      if (this.generatedImage) {
-        this.showGeneratedModal = true
+    opendesignedImageModal() {
+      if (this.designedImage) {
+        this.showDesignedModal = true
       }
     },
-    closeGeneratedModal() {
-      this.showGeneratedModal = false
+    closeDesignedModal() {
+      this.showDesignedModal = false
     },
-    downloadGeneratedImage() {
-      if (!this.generatedImage) return
+    downloaddesignedImage() {
+      if (!this.designedImage) return
 
       const link = document.createElement('a')
-      link.href = this.generatedImage
-      link.download = `generated-outfit-${Date.now()}.jpg`
+      link.href = this.designedImage
+      link.download = `designed-outfit-${Date.now()}.jpg`
 
       document.body.appendChild(link)
       link.click()
@@ -546,7 +546,7 @@ export default {
     },
     goToProfile() {
       this.showErrorPopup = false
-      this.generationError = null
+      this.designError = null
       this.$router.push('/profile')
     },
   },

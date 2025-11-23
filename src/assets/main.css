@@ -610,7 +610,7 @@
   object-fit: cover;
 }
 
-.generate-btn {
+.design-btn {
   font-family: var(--font-family-base);
   font-size: 14px;
   font-weight: 400;
@@ -628,11 +628,11 @@
   height: 40px;
 }
 
-.generate-btn:hover:not(:disabled) {
+.design-btn:hover:not(:disabled) {
   background-color: #0095c7;
 }
 
-.generate-btn:disabled {
+.design-btn:disabled {
   background-color: #6c757d;
   cursor: not-allowed;
   opacity: 0.6;
@@ -659,13 +659,13 @@
   }
 }
 
-.generate-btn-active {
+.design-btn-active {
   animation:
     hop 1s ease-in-out infinite,
     pulse-glow 1.5s ease-in-out infinite;
 }
 
-.generate-btn span:last-child {
+.design-btn span:last-child {
   font-family: var(--font-family-base);
   font-size: 14px;
   font-weight: 400;
