@@ -122,7 +122,7 @@
           <!-- Error State -->
           <div v-if="designError" class="card-error-overlay">
             <i class="bi bi-emoji-frown" style="font-size: 3rem; color: #333"></i>
-            <p class="mb-0 fw-bold" style="color: #333; font-family: var(--font-family-base)">
+            <p class="mb-0 fw-bold" style="color: #333; font-family: var(--font-family-base); white-space: pre-line; max-width: 90%; text-align: center">
               {{ designError }}
             </p>
             <div class="d-flex gap-2 mt-2">
@@ -516,10 +516,21 @@ export default {
           this.userStore.updateDesignsLeft(result.data.designs_left)
           this.userStore.updateStorageLeft(result.data.storage_left)
         } else {
-          this.designError = result.error || 'Design failed. Please try again.'
+          // Check for content safety violations
+          const errorMsg = result.error || 'Design failed. Please try again.'
+          if (errorMsg.includes('Content Safety Violation')) {
+            this.designError = '⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You\'re not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension.'
+          } else {
+            this.designError = errorMsg
+          }
         }
       } catch (error) {
-        this.designError = error.message || 'Design error. Please try again.'
+        const errorMsg = error.message || 'Design error. Please try again.'
+        if (errorMsg.includes('Content Safety Violation')) {
+          this.designError = '⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You\'re not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension.'
+        } else {
+          this.designError = errorMsg
+        }
       } finally {
         this.isDesigning = false
       }
