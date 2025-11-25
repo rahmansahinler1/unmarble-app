@@ -10,21 +10,29 @@
     <div class="modal-dialog modal-xl modal-dialog-scrollable">
       <div class="modal-content">
         <!-- Modal Header -->
-        <div class="modal-header">
-          <div class="d-flex align-items-center">
-            <button
-              v-if="currentView === 'upload'"
-              type="button"
-              class="btn btn-link p-0 me-2"
-              @click="switchToSelection"
-            >
-              <i class="bi bi-arrow-left" style="font-size: 1.25rem; color: #5d5d5d"></i>
-            </button>
-            <h5 class="modal-title mb-0">
-              {{ modalTitle }}
-            </h5>
-          </div>
-          <button type="button" class="btn-close" @click="closeModal"></button>
+        <div class="modal-header justify-content-center position-relative">
+          <!-- Back button (upload view only) -->
+          <button
+            v-if="currentView === 'upload'"
+            type="button"
+            class="btn btn-link p-0 position-absolute start-0 ms-3 d-flex align-items-center text-decoration-none"
+            @click="switchToSelection"
+          >
+            <i class="bi bi-arrow-left" style="font-size: 1.25rem; color: #5d5d5d"></i>
+            <span class="nav-text-small text-muted ms-2">Back to Selection</span>
+          </button>
+
+          <!-- Centered title -->
+          <h5 class="modal-title mb-0">
+            {{ currentView === 'upload' ? 'Upload' : 'Selection' }}
+          </h5>
+
+          <!-- Close button -->
+          <button
+            type="button"
+            class="btn-close position-absolute end-0 me-3"
+            @click="closeModal"
+          ></button>
         </div>
 
         <!-- Modal Body with Transition -->
@@ -33,6 +41,18 @@
             <!-- Selection View -->
             <div v-if="currentView === 'selection'" key="selection">
               <div class="gallery-grid">
+                <!-- Upload button FIRST -->
+                <div class="gallery-item">
+                  <div class="gallery-image-wrapper">
+                    <div class="gallery-upload-content">
+                      <i
+                        class="bi bi-plus-circle-fill gallery-upload-icon"
+                        @click="switchToUpload"
+                      ></i>
+                    </div>
+                  </div>
+                </div>
+                <!-- Then existing images -->
                 <div
                   v-for="image in images"
                   :key="image.id"
@@ -43,17 +63,6 @@
                 >
                   <div class="gallery-image-wrapper">
                     <img :src="image.base64" :alt="category" />
-                  </div>
-                </div>
-                <!-- Upload button -->
-                <div class="gallery-item">
-                  <div class="gallery-image-wrapper">
-                    <div class="gallery-upload-content">
-                      <i
-                        class="bi bi-plus-circle-fill gallery-upload-icon"
-                        @click="switchToUpload"
-                      ></i>
-                    </div>
                   </div>
                 </div>
               </div>
@@ -70,7 +79,7 @@
                 @change="handleFileSelect"
               />
 
-              <!-- Dropzone -->
+              <!-- Empty Dropzone (no file selected) -->
               <div
                 v-if="!hasSelection"
                 class="upload-dropzone-modal"
@@ -81,28 +90,27 @@
                 <i class="bi bi-cloud-upload-fill" style="font-size: 3rem; color: #5d5d5d"></i>
                 <h5>Drag and drop your picture in here</h5>
                 <p class="nav-text text-muted">or click to browse files</p>
-                <button class="btn btn-outline-primary">Browse Files</button>
               </div>
 
-              <!-- Preview with upload states -->
-              <div v-else class="upload-dropzone-modal position-relative">
+              <!-- Preview (file selected) - clickable for re-selection -->
+              <div
+                v-else
+                class="upload-dropzone-modal position-relative"
+                @click="!isUploading && triggerFileSelection()"
+                :style="{ cursor: isUploading ? 'not-allowed' : 'pointer' }"
+              >
                 <img :src="previewUrl" alt="Selected image" class="preview-image" />
-                <!-- Upload Overlay -->
-                <div v-if="uploadStatus" class="upload-overlay">
-                  <!-- Uploading State -->
-                  <div v-if="uploadStatus === 'uploading'" class="upload-feedback">
+                <!-- Uploading State -->
+                <div v-if="uploadStatus === 'uploading'" class="upload-overlay">
+                  <div class="upload-feedback">
                     <div class="spinner-border text-primary mb-2" role="status"></div>
                     <p class="mb-0">Uploading...</p>
                   </div>
+                </div>
 
-                  <!-- Success State -->
-                  <div v-if="uploadStatus === 'success'" class="upload-feedback text-success">
-                    <i class="bi bi-check-circle" style="font-size: 3rem"></i>
-                    <p class="mb-0 fw-bold">{{ uploadMessage }}</p>
-                  </div>
-
-                  <!-- Error State -->
-                  <div v-if="uploadStatus === 'error'" class="upload-feedback">
+                <!-- Error State -->
+                <div v-if="uploadStatus === 'error'" class="upload-overlay">
+                  <div class="upload-feedback">
                     <i class="bi bi-emoji-frown" style="font-size: 3rem; color: #333"></i>
                     <p
                       class="mb-0 fw-bold"
@@ -113,15 +121,19 @@
                     <div class="d-flex gap-2 mt-2">
                       <button
                         class="btn btn-sm btn-outline-primary profile-go-btn"
-                        style="font-family: var(--font-family-base); border-color: #00b7ed; color: #00b7ed"
-                        @click="goToProfile"
+                        style="
+                          font-family: var(--font-family-base);
+                          border-color: #00b7ed;
+                          color: #00b7ed;
+                        "
+                        @click.stop="goToProfile"
                       >
                         <i class="bi bi-person-circle me-1"></i>Go to Profile
                       </button>
                       <button
                         class="btn btn-sm btn-outline-danger"
                         style="font-family: var(--font-family-base)"
-                        @click="uploadStatus = null"
+                        @click.stop="uploadStatus = null"
                       >
                         Dismiss
                       </button>
@@ -130,44 +142,35 @@
                 </div>
               </div>
 
-              <!-- Category and Action buttons -->
-              <div class="d-flex flex-row mt-4 justify-content-between align-items-start">
+              <!-- Category display and Upload button -->
+              <div class="d-flex flex-row mt-4 justify-content-between align-items-center">
+                <!-- Category display (read-only) -->
                 <div>
-                  <h6 class="section-title">Category</h6>
                   <button
-                    class="btn btn-sm me-2 mb-2"
-                    :class="selectedCategory === 'yourself' ? 'btn-secondary' : 'btn-outline-secondary'"
-                    :disabled="!selectedFile || isUploading"
-                    @click="selectCategory('yourself')"
+                    class="btn btn-sm me-2"
+                    :class="category === 'yourself' ? 'btn-secondary' : 'btn-outline-secondary'"
+                    disabled
                   >
                     <i class="bi bi-person-fill"></i> Yourself
                   </button>
                   <button
-                    class="btn btn-sm me-2 mb-2"
-                    :class="selectedCategory === 'clothing' ? 'btn-secondary' : 'btn-outline-secondary'"
-                    :disabled="!selectedFile || isUploading"
-                    @click="selectCategory('clothing')"
+                    class="btn btn-sm"
+                    :class="category === 'clothing' ? 'btn-secondary' : 'btn-outline-secondary'"
+                    disabled
                   >
                     <i class="bi bi-tencent-qq"></i> Clothing
                   </button>
                 </div>
-                <div class="preview-actions">
-                  <h6 class="section-title">Action</h6>
-                  <button
-                    class="btn btn-outline-danger btn-sm me-2 mb-2"
-                    @click="removeFile"
-                    :disabled="!selectedFile || isUploading"
-                  >
-                    <i class="bi bi-trash"></i> Remove
-                  </button>
-                  <button
-                    class="btn btn-outline-success btn-sm me-2 mb-2"
-                    @click="uploadFile"
-                    :disabled="!selectedFile || !selectedCategory || isUploading"
-                  >
-                    <i class="bi bi-upload"></i> Upload
-                  </button>
-                </div>
+
+                <!-- Single upload button -->
+                <button
+                  class="upload-btn"
+                  :class="{ 'upload-btn-active': selectedFile && !isUploading }"
+                  :disabled="!selectedFile || isUploading"
+                  @click="uploadFile"
+                >
+                  <span><i class="bi bi-upload me-2"></i>Upload</span>
+                </button>
               </div>
             </div>
           </Transition>
@@ -232,12 +235,6 @@ export default {
   },
   computed: {
     ...mapStores(useUserStore),
-    modalTitle() {
-      if (this.currentView === 'upload') {
-        return 'Upload Picture'
-      }
-      return this.category === 'yourself' ? 'Select Your Picture' : 'Select Clothing Picture'
-    },
     hasSelection() {
       return this.selectedFile !== null
     },
@@ -304,9 +301,6 @@ export default {
     // Upload methods
     triggerFileSelection() {
       this.$refs.fileInput.click()
-    },
-    selectCategory(category) {
-      this.selectedCategory = category
     },
     handleFileSelect(event) {
       const file = event.target.files[0]

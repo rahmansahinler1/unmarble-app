@@ -399,14 +399,13 @@
 
 .gallery-upload-icon {
   font-size: 5rem;
-  color: #28a745;
+  color: #00b7ed;
   cursor: pointer;
   transition: all 0.3s ease;
 }
 
 .gallery-upload-icon:hover {
   transform: scale(1.15);
-  color: #218838;
 }
 
 .gallery-category-badge {
@@ -790,7 +789,6 @@
   opacity: 0;
 }
 
-/* Upload Dropzone for Modal (smaller than full page) */
 .upload-dropzone-modal {
   border: 3px dashed rgba(93, 93, 93, 0.3);
   border-radius: 1rem;
@@ -799,7 +797,6 @@
   background-color: rgba(93, 93, 93, 0.02);
   transition: all 0.3s ease;
   cursor: pointer;
-  min-height: 400px;
   width: 100%;
   display: flex;
   flex-direction: column;
@@ -813,8 +810,43 @@
 }
 
 .upload-dropzone-modal .preview-image {
-  max-height: 400px;
+  max-height: 100%;
   width: auto;
   max-width: 100%;
   object-fit: contain;
+}
+
+/* Upload Button - matches Design button style */
+.upload-btn {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  font-weight: 400;
+  background-color: #6c757d;
+  color: white;
+  border: none;
+  border-radius: 0.25rem;
+  padding: 0.5rem 0.75rem;
+  cursor: not-allowed;
+  transition: all 0.3s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 40px;
+  min-width: 120px;
+}
+
+.upload-btn:disabled {
+  opacity: 0.6;
+}
+
+.upload-btn-active {
+  background-color: #00b7ed;
+  cursor: pointer;
+  animation:
+    hop 1s ease-in-out infinite,
+    pulse-glow 1.5s ease-in-out infinite;
+}
+
+.upload-btn-active:hover {
+  background-color: #0095c7;
 }
