@@ -776,3 +776,45 @@
   color: white !important;
   border-color: #00b7ed !important;
 }
+
+/* ================================
+   View Transition for Modal
+================================ */
+.view-fade-enter-active,
+.view-fade-leave-active {
+  transition: opacity 0.15s ease;
+}
+
+.view-fade-enter-from,
+.view-fade-leave-to {
+  opacity: 0;
+}
+
+/* Upload Dropzone for Modal (smaller than full page) */
+.upload-dropzone-modal {
+  border: 3px dashed rgba(93, 93, 93, 0.3);
+  border-radius: 1rem;
+  padding: 2rem;
+  text-align: center;
+  background-color: rgba(93, 93, 93, 0.02);
+  transition: all 0.3s ease;
+  cursor: pointer;
+  min-height: 400px;
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+.upload-dropzone-modal:hover {
+  border-color: #00b7ed;
+  background-color: rgba(13, 110, 253, 0.05);
+}
+
+.upload-dropzone-modal .preview-image {
+  max-height: 400px;
+  width: auto;
+  max-width: 100%;
+  object-fit: contain;
+}

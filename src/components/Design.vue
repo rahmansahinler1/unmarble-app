@@ -189,72 +189,13 @@
     </div>
 
     <!-- Selection Modal -->
-    <div
-      class="modal fade"
-      :class="{ show: showModal, 'd-block': showModal }"
-      tabindex="-1"
-      v-if="showModal"
-      @click.self="closeModal"
-    >
-      <div class="modal-dialog modal-xl modal-dialog-scrollable">
-        <div class="modal-content">
-          <!-- Modal Header -->
-          <div class="modal-header">
-            <h5 class="modal-title">
-              {{ modalCategory === 'yourself' ? 'Select Your Picture' : 'Select Clothing Picture' }}
-            </h5>
-            <button type="button" class="btn-close" @click="closeModal"></button>
-          </div>
-
-          <!-- Modal Body -->
-          <div class="modal-body">
-            <!-- Gallery Grid -->
-            <div class="gallery-grid">
-              <div
-                v-for="image in filteredImages"
-                :key="image.id"
-                class="gallery-item"
-                :class="{ selected: selectedImageId === image.id }"
-                @click="selectImage(image.id)"
-                @dblclick="handleDoubleClick(image.id)"
-              >
-                <div class="gallery-image-wrapper">
-                  <img :src="image.base64" :alt="modalCategory" />
-                </div>
-              </div>
-              <!-- Upload button -->
-              <div class="gallery-item">
-                <div class="gallery-image-wrapper">
-                  <div class="gallery-upload-content">
-                    <i
-                      class="bi bi-plus-circle-fill gallery-upload-icon"
-                      @click="this.$router.push('/upload')"
-                    ></i>
-                  </div>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <!-- Modal Footer -->
-          <div class="modal-footer">
-            <button type="button" class="btn btn-outline-secondary" @click="closeModal">
-              Cancel
-            </button>
-            <button
-              type="button"
-              class="btn btn-primary"
-              :disabled="!selectedImageId"
-              @click="confirmSelection"
-            >
-              Select
-            </button>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Modal Backdrop -->
-    <div v-if="showModal" class="modal-backdrop fade show"></div>
+    <ImageUploadModal
+      :show="showModal"
+      :category="modalCategory || 'yourself'"
+      :images="filteredImages"
+      @close="closeModal"
+      @select="handleImageSelected"
+    />
 
     <!-- Designed Image Modal -->
     <div
@@ -343,14 +284,17 @@
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
 import { getImage, designImage } from '@/api/api'
+import ImageUploadModal from '@/components/ImageUploadModal.vue'
 
 export default {
   name: 'Design',
+  components: {
+    ImageUploadModal,
+  },
   data() {
     return {
       showModal: false,
       modalCategory: null,
-      selectedImageId: null,
       selections: {
         yourself: null,
         clothing: null,
@@ -402,40 +346,25 @@ export default {
     openModal(category) {
       this.modalCategory = category
       this.showModal = true
-      this.selectedImageId = null
     },
     closeModal() {
       this.showModal = false
-      this.selectedImageId = null
       this.modalCategory = null
     },
-    selectImage(imageId) {
-      this.selectedImageId = imageId
+    handleImageSelected(imageId) {
+      // Called when an image is selected from the modal (either existing or newly uploaded)
+      if (!imageId || !this.modalCategory) return
+      this.loadFullImage(imageId, this.modalCategory)
     },
-    handleDoubleClick(imageId) {
-      this.selectedImageId = imageId
-      this.confirmSelection()
-    },
-    async confirmSelection() {
-      if (!this.selectedImageId || !this.modalCategory) return
-
-      // Store values before clearing state
-      const selectedId = this.selectedImageId
-      const category = this.modalCategory
-
+    async loadFullImage(imageId, category) {
       // Create unique request ID to handle race conditions
       const requestId = Date.now()
       this.pendingRequests[category] = requestId
 
-      // Close modal and reset state
-      this.showModal = false
-      this.selectedImageId = null
-      this.modalCategory = null
-
       this.loadingCards[category] = true
 
       try {
-        const result = await getImage(selectedId)
+        const result = await getImage(imageId)
 
         // Check if this is still the latest request (race condition protection)
         if (this.pendingRequests[category] !== requestId) {
@@ -444,7 +373,7 @@ export default {
 
         if (result.success) {
           this.selections[category] = {
-            id: selectedId,
+            id: imageId,
             base64: `data:image/jpeg;base64,${result.data.image_base64}`,
           }
           this.loadingCards[category] = false
@@ -485,11 +414,6 @@ export default {
         this.errorTimeouts[category] = null
       }
       this.errorCards[category] = null
-    },
-    handleEscape(event) {
-      if (event.key === 'Escape' && this.showModal) {
-        this.closeModal()
-      }
     },
     async designImage() {
       if (!this.selections.yourself || !this.selections.clothing) return
@@ -563,16 +487,11 @@ export default {
       this.$router.push('/profile')
     },
   },
-  mounted() {
-    window.addEventListener('keydown', this.handleEscape)
-  },
   beforeUnmount() {
     // Clear all timeouts on component destroy
     Object.values(this.errorTimeouts).forEach((timeout) => {
       if (timeout) clearTimeout(timeout)
     })
-    // Remove event listener
-    window.removeEventListener('keydown', this.handleEscape)
   },
 }
 </script>
