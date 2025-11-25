@@ -122,7 +122,16 @@
           <!-- Error State -->
           <div v-if="designError" class="card-error-overlay">
             <i class="bi bi-emoji-frown" style="font-size: 3rem; color: #333"></i>
-            <p class="mb-0 fw-bold" style="color: #333; font-family: var(--font-family-base); white-space: pre-line; max-width: 90%; text-align: center">
+            <p
+              class="mb-0 fw-bold"
+              style="
+                color: #333;
+                font-family: var(--font-family-base);
+                white-space: pre-line;
+                max-width: 90%;
+                text-align: center;
+              "
+            >
               {{ designError }}
             </p>
             <div class="d-flex gap-2 mt-2">
@@ -283,7 +292,7 @@
 <script>
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
-import { getImage, designImage } from '@/api/api'
+import { getImage, getDesign, designImage } from '@/api/api'
 import ImageUploadModal from '@/components/ImageUploadModal.vue'
 
 export default {
@@ -331,12 +340,17 @@ export default {
     filteredImages() {
       if (!this.modalCategory) return []
 
+      const yourself = this.userStore?.previewImages?.yourself || []
+      const clothing = this.userStore?.previewImages?.clothing || []
+      const design = this.userStore?.previewImages?.design || []
+
       if (this.modalCategory === 'yourself') {
-        const yourself = this.userStore?.previewImages?.yourself || []
-        const designs = this.userStore?.previewImages?.design || []
-        return [...yourself, ...designs]
+        return [
+          ...yourself.map((img) => ({ ...img, category: 'yourself' })),
+          ...design.map((img) => ({ ...img, category: 'design' })),
+        ]
       } else if (this.modalCategory === 'clothing') {
-        return this.userStore?.previewImages?.clothing || []
+        return [...clothing.map((img) => ({ ...img, category: 'clothing' }))]
       }
 
       return []
@@ -351,45 +365,51 @@ export default {
       this.showModal = false
       this.modalCategory = null
     },
-    handleImageSelected(imageId) {
+    handleImageSelected(imageId, imageCategory) {
       // Called when an image is selected from the modal (either existing or newly uploaded)
-      if (!imageId || !this.modalCategory) return
-      this.loadFullImage(imageId, this.modalCategory)
+      if (!imageId || !imageCategory || !this.modalCategory) return
+      this.loadSelection(imageId, imageCategory, this.modalCategory)
     },
-    async loadFullImage(imageId, category) {
+    async loadSelection(imageId, imageCategory, modalCategory) {
       // Create unique request ID to handle race conditions
       const requestId = Date.now()
-      this.pendingRequests[category] = requestId
-
-      this.loadingCards[category] = true
+      this.pendingRequests[modalCategory] = requestId
+      this.loadingCards[modalCategory] = true
 
       try {
-        const result = await getImage(imageId)
+        let result
+
+        // Use appropriate API based on category
+        if (imageCategory === 'design') {
+          result = await getDesign(imageId)
+        } else {
+          result = await getImage(imageId)
+        }
 
         // Check if this is still the latest request (race condition protection)
-        if (this.pendingRequests[category] !== requestId) {
+        if (this.pendingRequests[modalCategory] !== requestId) {
           return // Ignore outdated response
         }
 
         if (result.success) {
-          this.selections[category] = {
+          this.selections[imageCategory] = {
             id: imageId,
             base64: `data:image/jpeg;base64,${result.data.image_base64}`,
           }
-          this.loadingCards[category] = false
-          this.pendingRequests[category] = null
+          this.loadingCards[modalCategory] = false
+          this.pendingRequests[modalCategory] = null
         } else {
           // API returned success: false
-          this.loadingCards[category] = false
-          this.pendingRequests[category] = null
-          this.showError(category, result.error || 'Failed to load image')
+          this.loadingCards[modalCategory] = false
+          this.pendingRequests[modalCategory] = null
+          this.showError(modalCategory, result.error || 'Failed to load image')
         }
       } catch (error) {
         // Only show error if still latest request
-        if (this.pendingRequests[category] === requestId) {
-          this.loadingCards[category] = false
-          this.pendingRequests[category] = null
-          this.showError(category, 'Network error. Please try again.')
+        if (this.pendingRequests[modalCategory] === requestId) {
+          this.loadingCards[modalCategory] = false
+          this.pendingRequests[modalCategory] = null
+          this.showError(modalCategory, 'Network error. Please try again.')
         }
       }
     },
@@ -445,7 +465,8 @@ export default {
           // Check for content safety violations
           const errorMsg = result.error || 'Design failed. Please try again.'
           if (errorMsg.includes('Content Safety Violation')) {
-            this.designError = '⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You\'re not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension.'
+            this.designError =
+              "⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You're not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension."
           } else {
             this.designError = errorMsg
           }
@@ -453,7 +474,8 @@ export default {
       } catch (error) {
         const errorMsg = error.message || 'Design error. Please try again.'
         if (errorMsg.includes('Content Safety Violation')) {
-          this.designError = '⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You\'re not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension.'
+          this.designError =
+            "⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You're not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension."
         } else {
           this.designError = errorMsg
         }

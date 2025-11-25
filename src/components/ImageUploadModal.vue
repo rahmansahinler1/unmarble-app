@@ -58,8 +58,8 @@
                   :key="image.id"
                   class="gallery-item"
                   :class="{ selected: selectedImageId === image.id }"
-                  @click="selectImage(image.id)"
-                  @dblclick="handleDoubleClick(image.id)"
+                  @click="selectImage(image.id, image.category)"
+                  @dblclick="handleDoubleClick(image.id, image.category)"
                 >
                   <div class="gallery-image-wrapper">
                     <img :src="image.base64" :alt="category" />
@@ -224,6 +224,7 @@ export default {
     return {
       currentView: 'selection',
       selectedImageId: null,
+      selectedImageCategory: null,
       // Upload state
       selectedFile: null,
       previewUrl: null,
@@ -284,16 +285,18 @@ export default {
     },
 
     // Selection methods
-    selectImage(imageId) {
+    selectImage(imageId, imageCategory) {
       this.selectedImageId = imageId
+      this.selectedImageCategory = imageCategory
     },
-    handleDoubleClick(imageId) {
+    handleDoubleClick(imageId, imageCategory) {
       this.selectedImageId = imageId
+      this.selectedImageCategory = imageCategory
       this.confirmSelection()
     },
     confirmSelection() {
-      if (this.selectedImageId) {
-        this.$emit('select', this.selectedImageId)
+      if ((this.selectedImageId, this.selectedImageCategory)) {
+        this.$emit('select', this.selectedImageId, this.selectedImageCategory)
         this.closeModal()
       }
     },
@@ -390,7 +393,7 @@ export default {
 
           // Auto-select the newly uploaded image and close modal
           setTimeout(() => {
-            this.$emit('select', result.data.image_id)
+            this.$emit('select', result.data.image_id, this.selectedCategory)
             this.closeModal()
           }, 1000)
         } else {
