@@ -388,7 +388,9 @@ export default {
       if (!this.modalCategory) return []
 
       if (this.modalCategory === 'yourself') {
-        return this.userStore?.previewImages?.yourself || []
+        const yourself = this.userStore?.previewImages?.yourself || []
+        const designs = this.userStore?.previewImages?.design || []
+        return [...yourself, ...designs]
       } else if (this.modalCategory === 'clothing') {
         return this.userStore?.previewImages?.clothing || []
       }
