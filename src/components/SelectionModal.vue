@@ -207,7 +207,7 @@ import useUserStore from '@/stores/user'
 import heic2any from 'heic2any'
 
 export default {
-  name: 'ImageSelectionModal',
+  name: 'SelectionModal',
   props: {
     show: {
       type: Boolean,

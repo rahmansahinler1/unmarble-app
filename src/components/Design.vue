@@ -198,7 +198,7 @@
     </div>
 
     <!-- Selection Modal -->
-    <ImageSelectionModal
+    <SelectionModal
       :show="showModal"
       :category="modalCategory || 'yourself'"
       :images="filteredImages"
@@ -293,12 +293,12 @@
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
 import { getImage, getDesign, designImage } from '@/api/api'
-import ImageSelectionModal from '@/components/ImageSelectionModal.vue'
+import SelectionModal from '@/components/SelectionModal.vue'
 
 export default {
   name: 'Design',
   components: {
-    ImageSelectionModal,
+    SelectionModal,
   },
   data() {
     return {
