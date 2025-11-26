@@ -298,7 +298,7 @@ export default {
       this.confirmSelection()
     },
     confirmSelection() {
-      if ((this.selectedImageId, this.selectedImageCategory)) {
+      if (this.selectedImageId && this.selectedImageCategory) {
         this.$emit('select', this.selectedImageId, this.selectedImageCategory)
         this.closeModal()
       }
@@ -396,7 +396,7 @@ export default {
 
           // Auto-select the newly uploaded image and close modal
           setTimeout(() => {
-            this.$emit('select', result.data.image_id, this.selectedImageCategory)
+            this.$emit('select', result.data.image_id, this.category)
             this.closeModal()
           }, 1000)
         } else {
