@@ -87,7 +87,10 @@
                 @dragover.prevent
                 @drop.prevent="handleDrop"
               >
-                <i class="bi bi-cloud-upload-fill" style="font-size: 3rem; color: #5d5d5d"></i>
+                <i
+                  class="bi bi-cloud-upload-fill"
+                  style="font-size: 3rem; color: #00b7ed; opacity: 0.75"
+                ></i>
                 <h5>Drag and drop your picture in here</h5>
                 <p class="nav-text text-muted">or click to browse files</p>
               </div>

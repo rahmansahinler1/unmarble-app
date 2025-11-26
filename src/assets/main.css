@@ -798,10 +798,15 @@
   transition: all 0.3s ease;
   cursor: pointer;
   width: 100%;
+  height: 75vh;
+  max-height: 1200px;
+  min-height: 400px;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  overflow: hidden;
+  position: relative;
 }
 
 .upload-dropzone-modal:hover {
@@ -811,9 +816,11 @@
 
 .upload-dropzone-modal .preview-image {
   max-height: 100%;
-  width: auto;
   max-width: 100%;
+  width: auto;
+  height: auto;
   object-fit: contain;
+  object-position: center;
 }
 
 /* Upload Button - matches Design button style */
