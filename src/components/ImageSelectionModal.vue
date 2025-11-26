@@ -204,7 +204,7 @@ import useUserStore from '@/stores/user'
 import heic2any from 'heic2any'
 
 export default {
-  name: 'ImageUploadModal',
+  name: 'ImageSelectionModal',
   props: {
     show: {
       type: Boolean,
@@ -393,7 +393,7 @@ export default {
 
           // Auto-select the newly uploaded image and close modal
           setTimeout(() => {
-            this.$emit('select', result.data.image_id, this.selectedCategory)
+            this.$emit('select', result.data.image_id, this.selectedImageCategory)
             this.closeModal()
           }, 1000)
         } else {

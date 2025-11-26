@@ -198,7 +198,7 @@
     </div>
 
     <!-- Selection Modal -->
-    <ImageUploadModal
+    <ImageSelectionModal
       :show="showModal"
       :category="modalCategory || 'yourself'"
       :images="filteredImages"
@@ -293,12 +293,12 @@
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
 import { getImage, getDesign, designImage } from '@/api/api'
-import ImageUploadModal from '@/components/ImageUploadModal.vue'
+import ImageSelectionModal from '@/components/ImageSelectionModal.vue'
 
 export default {
   name: 'Design',
   components: {
-    ImageUploadModal,
+    ImageSelectionModal,
   },
   data() {
     return {
@@ -392,7 +392,7 @@ export default {
         }
 
         if (result.success) {
-          this.selections[imageCategory] = {
+          this.selections[modalCategory] = {
             id: imageId,
             base64: `data:image/jpeg;base64,${result.data.image_base64}`,
           }
