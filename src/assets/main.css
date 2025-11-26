@@ -857,3 +857,10 @@
 .upload-btn-active:hover {
   background-color: #0095c7;
 }
+
+/* Category Button Active Animation */
+.category-btn-active {
+  animation:
+    hop 1s ease-in-out infinite,
+    pulse-glow 1.5s ease-in-out infinite;
+}

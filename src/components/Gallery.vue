@@ -61,7 +61,18 @@
 
             <!-- Gallery Grid -->
             <div class="gallery-grid">
-              <!-- Gallery items will go here -->
+              <!-- Upload button FIRST -->
+              <div class="gallery-item">
+                <div class="gallery-image-wrapper">
+                  <div class="gallery-upload-content">
+                    <i
+                      class="bi bi-plus-circle-fill gallery-upload-icon"
+                      @click="showUploadModal = true"
+                    ></i>
+                  </div>
+                </div>
+              </div>
+              <!-- Gallery items -->
               <div class="gallery-item" v-for="image in getPreviews" :key="image.id">
                 <div
                   class="gallery-image-wrapper"
@@ -112,17 +123,6 @@
                       <i class="bi bi-trash"></i>
                     </button>
                   </template>
-                </div>
-              </div>
-              <!-- Upload button -->
-              <div class="gallery-item">
-                <div class="gallery-image-wrapper">
-                  <div class="gallery-upload-content">
-                    <i
-                      class="bi bi-plus-circle-fill gallery-upload-icon"
-                      @click="this.$router.push('/upload')"
-                    ></i>
-                  </div>
                 </div>
               </div>
             </div>
@@ -176,6 +176,9 @@
       </div>
     </div>
     <div v-if="showImageModal" class="modal-backdrop fade show"></div>
+
+    <!-- Upload Modal -->
+    <UploadModal :show="showUploadModal" @close="showUploadModal = false" />
   </div>
 </template>
 
@@ -190,14 +193,19 @@ import {
   updateDesignFav,
   getDesign,
 } from '@/api/api'
+import UploadModal from '@/components/UploadModal.vue'
 
 export default {
   name: 'Gallery',
+  components: {
+    UploadModal,
+  },
   data() {
     return {
       selectedFilter: 'all',
       deleteConfirmId: null,
       showImageModal: false,
+      showUploadModal: false,
       fullImage: null,
       loadingFullImage: false,
       currentImageCategory: null,
