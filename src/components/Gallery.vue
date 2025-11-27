@@ -1,7 +1,7 @@
 <template>
   <!-- Gallery Page -->
   <div class="container-fluid">
-    <h1 class="dashboard-title mb-3 text-center">Gallery</h1>
+    <h1 class="dashboard-title mb-3 mt-3 text-center">Gallery</h1>
 
     <div class="row">
       <div class="col-12 mb-4">

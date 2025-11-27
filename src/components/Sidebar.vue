@@ -1,16 +1,18 @@
 <template>
   <!-- Sidebar -->
   <div class="app-sidebar d-flex flex-column">
-    <div class="sidebar-header">
-      <button type="button" class="logo-button">
-        <img src="/assets/img/logo.svg" alt="Unmarble" class="logo-image" />
-      </button>
-    </div>
     <!-- Navigation Sections -->
     <div class="flex-grow-1">
-      <!-- Image Section -->
-      <div class="nav-section">
-        <h6 class="section-title text mb-2">Unmarble</h6>
+      <div class="nav-section mt-3">
+        <!-- Logo -->
+        <button type="button" class="logo-button mb-5 mt-3">
+          <img src="/assets/img/logo.svg" alt="Unmarble" class="logo-image" />
+        </button>
+
+        <!-- Image Section -->
+        <div class="nav-section">
+          <h6 class="section-title text mb-1">Sections</h6>
+        </div>
 
         <router-link to="/gallery" class="nav-item">
           <i class="bi bi-images nav-icon"></i>
