@@ -9,10 +9,8 @@
           <img src="/assets/img/logo.svg" alt="Unmarble" class="logo-image" />
         </button>
 
-        <!-- Image Section -->
-        <div class="nav-section">
-          <h6 class="section-title text mb-1">Sections</h6>
-        </div>
+        <!-- Section Title -->
+        <h6 class="section-title text mb-2">Sections</h6>
 
         <router-link to="/gallery" class="nav-item">
           <i class="bi bi-images nav-icon"></i>
