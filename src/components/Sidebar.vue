@@ -5,8 +5,13 @@
     <div class="flex-grow-1">
       <div class="nav-section mt-3">
         <!-- Logo -->
-        <button type="button" class="logo-button mb-5 mt-3">
-          <img src="/assets/img/logo.svg" alt="Unmarble" class="logo-image" />
+        <button type="button" class="logo-button mb-5 mt-3" @click="spinLogo">
+          <img
+            src="/assets/img/logo.svg"
+            alt="Unmarble"
+            class="logo-image"
+            :class="{ spinning: isLogoSpinning }"
+          />
         </button>
 
         <!-- Section Title -->
@@ -109,6 +114,7 @@ export default {
   data() {
     return {
       isDropdownOpen: false,
+      isLogoSpinning: false,
     }
   },
   computed: {
@@ -126,6 +132,13 @@ export default {
     },
   },
   methods: {
+    spinLogo() {
+      if (this.isLogoSpinning) return
+      this.isLogoSpinning = true
+      setTimeout(() => {
+        this.isLogoSpinning = false
+      }, 800)
+    },
     toggleDropdown() {
       this.isDropdownOpen = !this.isDropdownOpen
     },
