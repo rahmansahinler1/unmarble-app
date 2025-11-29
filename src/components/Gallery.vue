@@ -95,15 +95,15 @@
                 <div class="gallery-actions">
                   <!-- Show confirmation if this image is being deleted -->
                   <template v-if="deleteConfirmId === image.id">
-                    <div class="gallery-actions-left">
+                    <div class="gallery-actions-right">
                       <button
-                        class="btn btn-sm gallery-action-btn gallery-action-btn-confirm"
+                        class="gallery-action-btn gallery-action-btn-confirm"
                         @click="deleteImage(image.id, image.category)"
                       >
                         <i class="bi bi-check-lg"></i>
                       </button>
                       <button
-                        class="btn btn-sm gallery-action-btn gallery-action-btn-cancel"
+                        class="gallery-action-btn gallery-action-btn-cancel"
                         @click="cancelDelete"
                       >
                         <i class="bi bi-x-lg"></i>
@@ -115,7 +115,7 @@
                   <template v-else>
                     <div class="gallery-actions-left">
                       <button
-                        class="btn btn-sm gallery-action-btn"
+                        class="gallery-action-btn"
                         @click.stop="toggleImageFav(image)"
                       >
                         <i
@@ -124,14 +124,14 @@
                         ></i>
                       </button>
                       <button
-                        class="btn btn-sm gallery-action-btn"
+                        class="gallery-action-btn"
                         @click.stop="openImageModal(image.id, image.category)"
                       >
                         <i class="bi bi-search"></i>
                       </button>
                     </div>
                     <button
-                      class="btn btn-sm gallery-action-btn"
+                      class="gallery-action-btn gallery-action-btn-trash"
                       @click.stop="showDeleteConfirm(image.id)"
                     >
                       <i class="bi bi-trash"></i>
