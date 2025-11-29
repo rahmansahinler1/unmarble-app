@@ -73,10 +73,15 @@
                 </div>
               </div>
               <!-- Gallery items -->
-              <div class="gallery-item" v-for="image in getPreviews" :key="image.id">
+              <div
+                class="gallery-item"
+                :class="{ 'gallery-item-selected': isImageSelected(image.id) }"
+                v-for="image in getPreviews"
+                :key="image.id"
+              >
                 <div
                   class="gallery-image-wrapper"
-                  @click="openImageModal(image.id, image.category)"
+                  @click="handleImageClick(image)"
                   style="cursor: pointer"
                 >
                   <!-- Like Button Badge -->
@@ -210,6 +215,7 @@ export default {
       loadingFullImage: false,
       currentImageCategory: null,
       escapeKeyHandler: null,
+      localSelections: { yourself: null, clothing: null },
     }
   },
   computed: {
@@ -264,6 +270,9 @@ export default {
           design.filter((img) => img.faved).length,
       }
     },
+    hasAnySelection() {
+      return this.localSelections.yourself || this.localSelections.clothing
+    },
   },
   methods: {
     selectFilter(filter) {
@@ -296,6 +305,13 @@ export default {
 
         if (result.success) {
           this.deleteConfirmId = null
+          // Clear selection if deleted image was selected
+          if (this.localSelections.yourself?.id === imageId) {
+            this.localSelections.yourself = null
+          }
+          if (this.localSelections.clothing?.id === imageId) {
+            this.localSelections.clothing = null
+          }
         } else {
           alert('Failed to delete image')
         }
@@ -386,6 +402,34 @@ export default {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+    },
+    handleImageClick(image) {
+      const slot = image.category === 'clothing' ? 'clothing' : 'yourself'
+
+      // Toggle if already selected
+      if (this.localSelections[slot]?.id === image.id) {
+        this.localSelections[slot] = null
+        return
+      }
+
+      // Select (replaces previous)
+      this.localSelections[slot] = { id: image.id, category: image.category }
+
+      // Auto-navigate when both filled
+      if (this.localSelections.yourself && this.localSelections.clothing) {
+        this.navigateToDesign()
+      }
+    },
+    isImageSelected(imageId) {
+      return (
+        this.localSelections.yourself?.id === imageId ||
+        this.localSelections.clothing?.id === imageId
+      )
+    },
+    navigateToDesign() {
+      this.userStore.setGallerySelection('yourself', this.localSelections.yourself)
+      this.userStore.setGallerySelection('clothing', this.localSelections.clothing)
+      this.$router.push('/design')
     },
   },
   beforeUnmount() {

@@ -15,6 +15,7 @@ export default defineStore('user', {
     },
     userLimits: { storageLeft: null, designsLeft: null },
     previewImages: { yourself: [], clothing: [], design: [] },
+    gallerySelections: { yourself: null, clothing: null },
   }),
   getters: {
     imageCounts(state) {
@@ -95,6 +96,12 @@ export default defineStore('user', {
     },
     updateDesignsLeft(newValue) {
       this.userLimits.designsLeft = newValue
+    },
+    setGallerySelection(slot, selection) {
+      this.gallerySelections[slot] = selection
+    },
+    clearGallerySelections() {
+      this.gallerySelections = { yourself: null, clothing: null }
     },
   },
 })

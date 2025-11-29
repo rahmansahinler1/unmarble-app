@@ -546,6 +546,26 @@ export default {
       this.designError = null
       this.$router.push('/profile')
     },
+    async checkForGallerySelections() {
+      const { yourself, clothing } = this.userStore.gallerySelections
+
+      if (!yourself && !clothing) return
+
+      // Load both selections in parallel
+      const promises = []
+      if (yourself) {
+        promises.push(this.loadSelection(yourself.id, yourself.category, 'yourself'))
+      }
+      if (clothing) {
+        promises.push(this.loadSelection(clothing.id, clothing.category, 'clothing'))
+      }
+
+      await Promise.all(promises)
+      this.userStore.clearGallerySelections()
+    },
+  },
+  mounted() {
+    this.checkForGallerySelections()
   },
   beforeUnmount() {
     Object.values(this.errorTimeouts).forEach((timeout) => {
