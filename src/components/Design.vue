@@ -363,16 +363,17 @@ export default {
       const clothing = this.userStore?.previewImages?.clothing || []
       const design = this.userStore?.previewImages?.design || []
 
+      let images = []
       if (this.modalCategory === 'yourself') {
-        return [
+        images = [
           ...yourself.map((img) => ({ ...img, category: 'yourself' })),
           ...design.map((img) => ({ ...img, category: 'design' })),
         ]
       } else if (this.modalCategory === 'clothing') {
-        return [...clothing.map((img) => ({ ...img, category: 'clothing' }))]
+        images = [...clothing.map((img) => ({ ...img, category: 'clothing' }))]
       }
 
-      return []
+      return images.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
     },
   },
   methods: {

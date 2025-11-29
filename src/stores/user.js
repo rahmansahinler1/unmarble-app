@@ -78,7 +78,7 @@ export default defineStore('user', {
       }
     },
     addPreviewImage(category, imageData) {
-      this.previewImages[category].push({
+      this.previewImages[category].unshift({
         id: imageData.image_id,
         base64: `data:image/jpeg;base64,${imageData.preview_base64}`,
         faved: imageData.faved || false,
