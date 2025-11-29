@@ -394,6 +394,7 @@ export default {
         if (result.success) {
           this.selections[modalCategory] = {
             id: imageId,
+            category: imageCategory,
             base64: `data:image/jpeg;base64,${result.data.image_base64}`,
           }
           this.loadingCards[modalCategory] = false
@@ -448,7 +449,11 @@ export default {
       this.designError = null
 
       try {
-        const result = await designImage(this.selections.yourself.id, this.selections.clothing.id)
+        const result = await designImage(
+          this.selections.yourself.id,
+          this.selections.clothing.id,
+          this.selections.yourself.category,
+        )
 
         if (result.success) {
           this.designedImage = `data:image/jpeg;base64,${result.data.image_base64}`

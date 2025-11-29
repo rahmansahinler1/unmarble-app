@@ -274,13 +274,14 @@ export const deleteDesign = async function (imageId) {
   }
 }
 
-export const designImage = async function (yourselfImageId, clothingImageId) {
+export const designImage = async function (yourselfImageId, clothingImageId, category) {
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/design_image`, {
       method: 'POST',
       body: JSON.stringify({
         yourself_image_id: yourselfImageId,
         clothing_image_id: clothingImageId,
+        category: category,
       }),
     })
 
