@@ -5,7 +5,7 @@
     <div class="flex-grow-1">
       <div class="nav-section mt-3">
         <!-- Logo -->
-        <button type="button" class="logo-button mb-3 mt-3">
+        <button type="button" class="logo-button mb-5 mt-3">
           <img src="/assets/img/logo_wide.svg" alt="Unmarble" class="logo-image" />
         </button>
 
