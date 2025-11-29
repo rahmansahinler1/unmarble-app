@@ -62,14 +62,9 @@
             <!-- Gallery Grid -->
             <div class="gallery-grid">
               <!-- Upload button FIRST -->
-              <div class="gallery-item">
-                <div class="gallery-image-wrapper">
-                  <div class="gallery-upload-content">
-                    <i
-                      class="bi bi-plus-circle-fill gallery-upload-icon"
-                      @click="showUploadModal = true"
-                    ></i>
-                  </div>
+              <div class="gallery-item gallery-item-upload" @click="showUploadModal = true">
+                <div class="gallery-upload-content">
+                  <i class="bi bi-plus-circle-fill gallery-upload-icon"></i>
                 </div>
               </div>
               <!-- Gallery items -->
