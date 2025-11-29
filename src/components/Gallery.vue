@@ -84,12 +84,12 @@
                   @click="handleImageClick(image)"
                   style="cursor: pointer"
                 >
-                  <!-- Like Button Badge -->
-                  <button class="gallery-like-badge" @click.stop="toggleImageFav(image)">
-                    <i
-                      :class="image.faved ? 'bi bi-heart-fill' : 'bi bi-heart'"
-                      :style="{ color: image.faved ? '#dc3545' : 'white' }"
-                    ></i>
+                  <!-- View Full Image Button -->
+                  <button
+                    class="gallery-view-badge"
+                    @click.stop="openImageModal(image.id, image.category)"
+                  >
+                    <i class="bi bi-search"></i>
                   </button>
                   <!-- Category Badge -->
                   <span class="gallery-category-badge">{{ image.category }}</span>

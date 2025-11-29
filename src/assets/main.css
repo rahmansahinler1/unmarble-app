@@ -454,6 +454,29 @@
   transform: scale(1.15);
 }
 
+.gallery-view-badge {
+  position: absolute;
+  top: 0.5rem;
+  right: 0.5rem;
+  background-color: rgba(255, 255, 255, 0.9);
+  border: none;
+  padding: 0.35rem 0.5rem;
+  border-radius: 0.25rem;
+  font-size: 1rem;
+  color: #5d5d5d;
+  z-index: 10;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-view-badge:hover {
+  transform: scale(1.1);
+  background-color: rgba(255, 255, 255, 1);
+}
+
 .gallery-actions {
   position: absolute;
   bottom: 0;
