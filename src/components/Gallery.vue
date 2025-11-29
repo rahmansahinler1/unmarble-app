@@ -115,7 +115,7 @@
                   <template v-else>
                     <div class="gallery-actions-left">
                       <button
-                        class="gallery-action-btn"
+                        class="gallery-action-btn gallery-action-btn-like"
                         @click.stop="toggleImageFav(image)"
                       >
                         <i
@@ -124,7 +124,7 @@
                         ></i>
                       </button>
                       <button
-                        class="gallery-action-btn"
+                        class="gallery-action-btn gallery-action-btn-search"
                         @click.stop="openImageModal(image.id, image.category)"
                       >
                         <i class="bi bi-search"></i>

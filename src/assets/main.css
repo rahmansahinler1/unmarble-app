@@ -494,28 +494,24 @@
   box-shadow: none !important;
 }
 
-.gallery-action-btn-trash:hover {
-  background-color: rgba(220, 53, 69, 0.1) !important;
+.gallery-action-btn-search:hover i {
+  color: #00b7ed !important;
+}
+
+.gallery-action-btn-like:hover i {
+  color: #dc3545 !important;
 }
 
 .gallery-action-btn-trash:hover i {
   color: #dc3545 !important;
 }
 
-.gallery-action-btn-confirm {
+.gallery-action-btn-confirm:hover i {
   color: #28a745 !important;
 }
 
-.gallery-action-btn-confirm:hover {
-  background-color: rgba(40, 167, 69, 0.1) !important;
-}
-
-.gallery-action-btn-cancel {
+.gallery-action-btn-cancel:hover i {
   color: #dc3545 !important;
-}
-
-.gallery-action-btn-cancel:hover {
-  background-color: rgba(220, 53, 69, 0.1) !important;
 }
 
 /* Responsive Grid */
