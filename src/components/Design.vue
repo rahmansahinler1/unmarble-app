@@ -302,6 +302,17 @@ import { mapStores } from 'pinia'
 import { getImage, getDesign, designImage } from '@/api/api'
 import SelectionModal from '@/components/SelectionModal.vue'
 
+const CONTENT_SAFETY_MESSAGE = `⚠️ Content Safety Violation
+
+The uploaded images or generated content violate our safety policies.
+
+Please ensure:
+• All uploaded images are appropriate
+• You're not attempting to generate NSFW content
+• Clothing items are suitable for public settings
+
+Repeated violations may result in account suspension.`
+
 export default {
   name: 'Design',
   components: {
@@ -387,16 +398,14 @@ export default {
       try {
         let result
 
-        // Use appropriate API based on category
         if (imageCategory === 'design') {
           result = await getDesign(imageId)
         } else {
           result = await getImage(imageId)
         }
 
-        // Check if this is still the latest request (race condition protection)
         if (this.pendingRequests[modalCategory] !== requestId) {
-          return // Ignore outdated response
+          return
         }
 
         if (result.success) {
@@ -408,13 +417,11 @@ export default {
           this.loadingCards[modalCategory] = false
           this.pendingRequests[modalCategory] = null
         } else {
-          // API returned success: false
           this.loadingCards[modalCategory] = false
           this.pendingRequests[modalCategory] = null
           this.showError(modalCategory, result.error || 'Failed to load image')
         }
       } catch (error) {
-        // Only show error if still latest request
         if (this.pendingRequests[modalCategory] === requestId) {
           this.loadingCards[modalCategory] = false
           this.pendingRequests[modalCategory] = null
@@ -423,14 +430,12 @@ export default {
       }
     },
     showError(category, message) {
-      // Clear existing timeout if any
       if (this.errorTimeouts[category]) {
         clearTimeout(this.errorTimeouts[category])
       }
 
       this.errorCards[category] = message
 
-      // Store timeout ID for cleanup
       this.errorTimeouts[category] = setTimeout(() => {
         this.errorCards[category] = null
         this.errorTimeouts[category] = null
@@ -479,8 +484,7 @@ export default {
           // Check for content safety violations
           const errorMsg = result.error || 'Design failed. Please try again.'
           if (errorMsg.includes('Content Safety Violation')) {
-            this.designError =
-              "⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You're not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension."
+            this.designError = CONTENT_SAFETY_MESSAGE
           } else {
             this.designError = errorMsg
           }
@@ -488,8 +492,7 @@ export default {
       } catch (error) {
         const errorMsg = error.message || 'Design error. Please try again.'
         if (errorMsg.includes('Content Safety Violation')) {
-          this.designError =
-            "⚠️ Content Safety Violation\n\nThe uploaded images or generated content violate our safety policies.\n\nPlease ensure:\n• All uploaded images are appropriate\n• You're not attempting to generate NSFW content\n• Clothing items are suitable for public settings\n\nRepeated violations may result in account suspension."
+          this.designError = CONTENT_SAFETY_MESSAGE
         } else {
           this.designError = errorMsg
         }
@@ -500,10 +503,17 @@ export default {
     opendesignedImageModal() {
       if (this.designedImage) {
         this.showDesignedModal = true
+        window.addEventListener('keydown', this.handleDesignedModalEscape)
       }
     },
     closeDesignedModal() {
       this.showDesignedModal = false
+      window.removeEventListener('keydown', this.handleDesignedModalEscape)
+    },
+    handleDesignedModalEscape(event) {
+      if (event.key === 'Escape') {
+        this.closeDesignedModal()
+      }
     },
     downloaddesignedImage() {
       if (!this.designedImage) return
@@ -540,6 +550,7 @@ export default {
     Object.values(this.errorTimeouts).forEach((timeout) => {
       if (timeout) clearTimeout(timeout)
     })
+    window.removeEventListener('keydown', this.handleDesignedModalEscape)
   },
 }
 </script>
