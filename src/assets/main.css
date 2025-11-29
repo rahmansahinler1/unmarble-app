@@ -373,10 +373,6 @@
   transform: translateY(-2px);
 }
 
-.gallery-item:hover .gallery-actions {
-  opacity: 1;
-}
-
 .gallery-item.selected {
   border: 3px solid #00b7ed;
   box-shadow: 0 4px 16px rgba(13, 110, 253, 0.3);
@@ -454,48 +450,27 @@
   transform: scale(1.15);
 }
 
-.gallery-view-badge {
-  position: absolute;
-  top: 0.5rem;
-  right: 0.5rem;
-  background-color: rgba(255, 255, 255, 0.9);
-  border: none;
-  padding: 0.35rem 0.5rem;
-  border-radius: 0.25rem;
-  font-size: 1rem;
-  color: #5d5d5d;
-  z-index: 10;
-  cursor: pointer;
-  transition: all 0.2s ease;
+.gallery-actions {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 0.5rem 0.75rem;
+  background-color: #fff;
+}
+
+.gallery-actions-left {
   display: flex;
   align-items: center;
-  justify-content: center;
-}
-
-.gallery-view-badge:hover {
-  transform: scale(1.1);
-  background-color: rgba(255, 255, 255, 1);
-}
-
-.gallery-actions {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  display: flex;
-  opacity: 0;
-  transition: opacity 0.3s ease;
-  background: linear-gradient(to top, rgba(0, 0, 0, 0.5), transparent);
+  gap: 0.25rem;
 }
 
 .gallery-action-btn {
-  flex: 1;
-  background-color: rgba(93, 93, 93, 0.7);
-  color: white;
-  border: none;
-  border-radius: 0;
-  padding: 0.75rem;
-  font-size: 1rem;
+  background-color: transparent;
+  color: #5d5d5d;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+  border-radius: 0.35rem;
+  padding: 0.6rem 0.7rem;
+  font-size: 1.5rem;
   transition: background-color 0.2s ease;
   display: flex;
   align-items: center;
@@ -503,22 +478,38 @@
 }
 
 .gallery-action-btn:hover {
-  background-color: rgba(200, 200, 200, 0.3);
-}
-
-.gallery-action-btn:first-child:hover {
-  background-color: rgba(200, 200, 200, 0.3);
-}
-
-.gallery-action-btn:first-child:hover i {
-  color: #00b7ed;
+  background-color: transparent;
 }
 
 .gallery-action-btn:last-child:hover {
-  background-color: rgba(200, 200, 200, 0.3);
+  background-color: rgba(220, 53, 69, 0.1);
 }
 
 .gallery-action-btn:last-child:hover i {
+  color: #dc3545;
+}
+
+.gallery-action-btn-confirm {
+  color: #28a745;
+}
+
+.gallery-action-btn-confirm:hover {
+  background-color: rgba(40, 167, 69, 0.1);
+}
+
+.gallery-action-btn-confirm:hover i {
+  color: #28a745;
+}
+
+.gallery-action-btn-cancel {
+  color: #dc3545;
+}
+
+.gallery-action-btn-cancel:hover {
+  background-color: rgba(220, 53, 69, 0.1);
+}
+
+.gallery-action-btn-cancel:hover i {
   color: #dc3545;
 }
 

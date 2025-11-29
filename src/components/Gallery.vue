@@ -84,13 +84,6 @@
                   @click="handleImageClick(image)"
                   style="cursor: pointer"
                 >
-                  <!-- View Full Image Button -->
-                  <button
-                    class="gallery-view-badge"
-                    @click.stop="openImageModal(image.id, image.category)"
-                  >
-                    <i class="bi bi-search"></i>
-                  </button>
                   <!-- Category Badge -->
                   <span class="gallery-category-badge">{{ image.category }}</span>
                   <!-- Image -->
@@ -102,28 +95,44 @@
                 <div class="gallery-actions">
                   <!-- Show confirmation if this image is being deleted -->
                   <template v-if="deleteConfirmId === image.id">
-                    <button
-                      class="btn btn-sm gallery-action-btn"
-                      @click="deleteImage(image.id, image.category)"
-                    >
-                      <i class="bi bi-check-lg"></i>
-                    </button>
-                    <button class="btn btn-sm gallery-action-btn" @click="cancelDelete">
-                      <i class="bi bi-x-lg"></i>
-                    </button>
+                    <div class="gallery-actions-left">
+                      <button
+                        class="btn btn-sm gallery-action-btn gallery-action-btn-confirm"
+                        @click="deleteImage(image.id, image.category)"
+                      >
+                        <i class="bi bi-check-lg"></i>
+                      </button>
+                      <button
+                        class="btn btn-sm gallery-action-btn gallery-action-btn-cancel"
+                        @click="cancelDelete"
+                      >
+                        <i class="bi bi-x-lg"></i>
+                      </button>
+                    </div>
                   </template>
 
                   <!-- Normal buttons -->
                   <template v-else>
-                    <button class="btn btn-sm gallery-action-btn" @click="toggleImageFav(image)">
-                      <i
-                        :class="image.faved ? 'bi bi-heart-fill' : 'bi bi-heart'"
-                        :style="{ color: image.faved ? '#dc3545' : 'inherit' }"
-                      ></i>
-                    </button>
+                    <div class="gallery-actions-left">
+                      <button
+                        class="btn btn-sm gallery-action-btn"
+                        @click.stop="toggleImageFav(image)"
+                      >
+                        <i
+                          :class="image.faved ? 'bi bi-heart-fill' : 'bi bi-heart'"
+                          :style="{ color: image.faved ? '#dc3545' : '#5d5d5d' }"
+                        ></i>
+                      </button>
+                      <button
+                        class="btn btn-sm gallery-action-btn"
+                        @click.stop="openImageModal(image.id, image.category)"
+                      >
+                        <i class="bi bi-search"></i>
+                      </button>
+                    </div>
                     <button
                       class="btn btn-sm gallery-action-btn"
-                      @click="showDeleteConfirm(image.id)"
+                      @click.stop="showDeleteConfirm(image.id)"
                     >
                       <i class="bi bi-trash"></i>
                     </button>
