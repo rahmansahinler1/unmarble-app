@@ -169,8 +169,15 @@
           <p v-else class="nav-text"><i class="bi bi-magic me-1"></i>Click Design Button</p>
         </div>
 
-        <!-- Download button -->
-        <div class="d-flex justify-content-center mt-3">
+        <!-- Redesign and Download buttons -->
+        <div class="d-flex justify-content-center mt-3 gap-2">
+          <button
+            class="btn btn-outline-secondary btn-sm"
+            :disabled="!designedImage"
+            @click="redesignImage"
+          >
+            <i class="bi bi-arrow-90deg-left me-2"></i> Redesign
+          </button>
           <button
             class="btn btn-outline-secondary btn-sm"
             :disabled="!designedImage"
@@ -326,6 +333,7 @@ export default {
       },
       showDesignedModal: false,
       designedImage: null,
+      designedImageId: null,
       isDesigning: false,
       designError: null,
       showErrorPopup: false,
@@ -366,13 +374,13 @@ export default {
       this.modalCategory = null
     },
     handleImageSelected(imageId, imageCategory) {
-      // Called when an image is selected from the modal (either existing or newly uploaded)
       if (!imageId || !imageCategory || !this.modalCategory) return
+
       this.loadSelection(imageId, imageCategory, this.modalCategory)
     },
     async loadSelection(imageId, imageCategory, modalCategory) {
-      // Create unique request ID to handle race conditions
       const requestId = Date.now()
+
       this.pendingRequests[modalCategory] = requestId
       this.loadingCards[modalCategory] = true
 
@@ -429,7 +437,6 @@ export default {
       }, 5000)
     },
     dismissError(category) {
-      // Clear timeout if exists
       if (this.errorTimeouts[category]) {
         clearTimeout(this.errorTimeouts[category])
         this.errorTimeouts[category] = null
@@ -457,13 +464,15 @@ export default {
 
         if (result.success) {
           this.designedImage = `data:image/jpeg;base64,${result.data.image_base64}`
-          // Add to Gallery as 'design' category
+          this.designedImageId = result.data.image_id
+
           this.userStore.addPreviewImage('design', {
             image_id: result.data.image_id,
             preview_base64: result.data.preview_base64,
             faved: false,
             created_at: result.data.created_at,
           })
+
           this.userStore.updateDesignsLeft(result.data.designs_left)
           this.userStore.updateStorageLeft(result.data.storage_left)
         } else {
@@ -508,6 +517,19 @@ export default {
 
       document.body.removeChild(link)
     },
+    redesignImage() {
+      if (!this.designedImage || !this.designedImageId) return
+
+      this.selections.yourself = {
+        id: this.designedImageId,
+        category: 'design',
+        base64: this.designedImage,
+      }
+
+      this.selections.clothing = null
+      this.designedImage = null
+      this.designedImageId = null
+    },
     goToProfile() {
       this.showErrorPopup = false
       this.designError = null
@@ -515,7 +537,6 @@ export default {
     },
   },
   beforeUnmount() {
-    // Clear all timeouts on component destroy
     Object.values(this.errorTimeouts).forEach((timeout) => {
       if (timeout) clearTimeout(timeout)
     })
