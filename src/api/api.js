@@ -342,3 +342,40 @@ export const getCheckoutUrl = function (userEmail) {
   const checkoutUrl = `${baseUrl}&checkout[email]=${encodeURIComponent(userEmail)}`
   return checkoutUrl
 }
+
+export const cancelSubscription = async function (reason) {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/cancel_subscription`, {
+      method: 'POST',
+      body: JSON.stringify({ reason: reason }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to cancel subscription:', error)
+    return { success: false, error: error.message }
+  }
+}
+
+export const resumeSubscription = async function () {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/resume_subscription`, {
+      method: 'POST',
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to resume subscription:', error)
+    return { success: false, error: error.message }
+  }
+}

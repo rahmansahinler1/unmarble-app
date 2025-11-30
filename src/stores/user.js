@@ -12,6 +12,9 @@ export default defineStore('user', {
       type: 'trial',
       pictureUrl: '',
       nextRenewalDate: null,
+      subscriptionStatus: 'none',
+      subscriptionEndsAt: null,
+      daysUntilExpiry: null,
     },
     userLimits: { storageLeft: null, designsLeft: null },
     previewImages: { yourself: [], clothing: [], design: [] },
@@ -44,6 +47,10 @@ export default defineStore('user', {
           this.userCred.type = user_fetch.data.user_info['type']
           this.userCred.pictureUrl = user_fetch.data.user_info['picture_url']
           this.userCred.nextRenewalDate = user_fetch.data.user_info['next_renewal_date']
+          this.userCred.subscriptionStatus =
+            user_fetch.data.user_info['subscription_status'] || 'none'
+          this.userCred.subscriptionEndsAt = user_fetch.data.user_info['subscription_ends_at']
+          this.userCred.daysUntilExpiry = user_fetch.data.user_info['days_until_expiry']
           this.userLimits.storageLeft = user_fetch.data.user_info['storage_left']
           this.userLimits.designsLeft = user_fetch.data.user_info['designs_left']
         }

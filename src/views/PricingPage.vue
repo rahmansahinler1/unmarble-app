@@ -21,7 +21,7 @@
             <span class="pricing-amount">0</span>
             <span class="pricing-period">USD / month</span>
           </div>
-          <p class="pricing-subtitle">See the Unmarble capabilities</p>
+          <p class="pricing-subtitle">See the capabilities</p>
         </div>
 
         <button class="pricing-btn pricing-btn-disabled" disabled>Your current plan</button>

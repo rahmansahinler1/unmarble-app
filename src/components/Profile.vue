@@ -33,16 +33,85 @@
                 <h6 class="profile-header mb-0">Premium</h6>
               </div>
               <p class="profile-text-small text-muted mb-1">Monthly</p>
-              <p v-if="userCred.nextRenewalDate" class="profile-text-small text-muted mb-0">
+              <!-- Show renewal date for active subscriptions -->
+              <p
+                v-if="subscriptionStatus === 'active' && userCred.nextRenewalDate"
+                class="profile-text-small text-muted mb-0"
+              >
                 Auto renews {{ userCred.nextRenewalDate }}
+              </p>
+              <!-- Show end date for cancelled subscriptions -->
+              <p
+                v-else-if="subscriptionStatus === 'cancelled'"
+                class="profile-text-small mb-0"
+                style="color: #dc3545"
+              >
+                Ends {{ formattedEndDate }}
               </p>
             </div>
           </div>
           <div class="pt-3 border-top d-flex justify-content-between align-items-start">
-            <p class="profile-text text-muted mb-0" style="max-width: 400px">
-              Your access will continue until the end of your billing period.
-            </p>
-            <button class="btn btn-outline-danger btn-sm profile-btn">Cancel Subscription</button>
+            <!-- Active subscription -->
+            <template v-if="subscriptionStatus === 'active'">
+              <p class="profile-text text-muted mb-0" style="max-width: 400px">
+                Your access will continue until the end of your billing period.
+              </p>
+              <button
+                class="btn btn-outline-danger btn-sm profile-btn"
+                @click="showCancelModal = true"
+              >
+                Cancel Subscription
+              </button>
+            </template>
+
+            <!-- Cancelled subscription (still has access) -->
+            <template v-else-if="subscriptionStatus === 'cancelled'">
+              <div class="d-flex flex-column w-100">
+                <div class="d-flex justify-content-between align-items-start">
+                  <p class="profile-text text-muted mb-0" style="max-width: 400px">
+                    Your subscription has been cancelled. You'll keep access until your billing
+                    period.
+                  </p>
+                  <button
+                    class="btn btn-sm profile-btn"
+                    style="background-color: #00b7ed; color: white"
+                    :disabled="isResuming || resumeSuccess"
+                    @click="handleRenew"
+                  >
+                    <span v-if="isResuming">
+                      <span class="spinner-border spinner-border-sm me-1"></span>Processing...
+                    </span>
+                    <span v-else> <i class="bi bi-arrow-repeat me-1"></i>Resume Subscription </span>
+                  </button>
+                </div>
+                <!-- Resume Success Message -->
+                <div v-if="resumeSuccess" class="alert alert-success mt-3 mb-0 py-2">
+                  <i class="bi bi-check-circle me-2"></i>
+                  Subscription resumed!
+                </div>
+                <!-- Resume Error Message -->
+                <div v-if="resumeError" class="alert alert-danger mt-3 mb-0 py-2">
+                  <i class="bi bi-exclamation-circle me-2"></i>
+                  {{ resumeError }}
+                  <p class="mb-0 mt-1" style="font-size: 12px; color: #9ca3af">
+                    We're looking into this issue.
+                  </p>
+                </div>
+              </div>
+            </template>
+
+            <!-- Default case (none/other) - show cancel button -->
+            <template v-else>
+              <p class="profile-text text-muted mb-0" style="max-width: 400px">
+                Your access will continue until the end of your billing period.
+              </p>
+              <button
+                class="btn btn-outline-danger btn-sm profile-btn"
+                @click="showCancelModal = true"
+              >
+                Cancel Subscription
+              </button>
+            </template>
           </div>
         </div>
 
@@ -66,6 +135,14 @@
           </div>
         </div>
       </div>
+
+      <!-- Cancellation Modal -->
+      <CancellationModal
+        :isOpen="showCancelModal"
+        :nextRenewalDate="userCred.nextRenewalDate"
+        @close="showCancelModal = false"
+        @cancelled="handleCancelled"
+      />
 
       <!-- Usage -->
       <div class="mb-4 pb-4 border-bottom">
@@ -143,16 +220,24 @@
 <script>
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
-import { submitFeedback } from '@/api/api'
+import { submitFeedback, resumeSubscription } from '@/api/api'
+import CancellationModal from '@/components/CancellationModal.vue'
 
 export default {
   name: 'Profile',
+  components: {
+    CancellationModal,
+  },
   data() {
     return {
       feedbackText: '',
       isSendingFeedback: false,
       feedbackStatus: null,
       feedbackMessage: '',
+      showCancelModal: false,
+      isResuming: false,
+      resumeError: '',
+      resumeSuccess: false,
     }
   },
   computed: {
@@ -166,6 +251,8 @@ export default {
           type: 'trial',
           pictureUrl: '',
           nextRenewalDate: null,
+          subscriptionStatus: 'none',
+          subscriptionEndsAt: null,
         }
       )
     },
@@ -174,6 +261,17 @@ export default {
     },
     isPremium() {
       return this.userCred.type === 'premium'
+    },
+    subscriptionStatus() {
+      return this.userCred.subscriptionStatus || 'none'
+    },
+    formattedEndDate() {
+      if (!this.userCred.subscriptionEndsAt) return ''
+      return new Date(this.userCred.subscriptionEndsAt).toLocaleDateString('en-US', {
+        month: 'short',
+        day: 'numeric',
+        year: 'numeric',
+      })
     },
     canSendFeedback() {
       return this.feedbackText.trim().length > 0 && !this.isSendingFeedback
@@ -224,6 +322,32 @@ export default {
     },
     handleUpgrade() {
       this.$router.push('/pricing')
+    },
+    async handleCancelled() {
+      this.showCancelModal = false
+      // Reload page after short delay to ensure webhook has processed
+      setTimeout(() => {
+        window.location.reload()
+      }, 1500)
+    },
+    async handleRenew() {
+      this.isResuming = true
+      this.resumeError = ''
+      this.resumeSuccess = false
+      try {
+        const result = await resumeSubscription()
+        if (result.success) {
+          this.resumeSuccess = true
+          // Reload page after short delay to ensure webhook has processed
+          setTimeout(() => {
+            window.location.reload()
+          }, 1500)
+        } else {
+          this.resumeError = result.error || 'Failed to resume subscription'
+        }
+      } finally {
+        this.isResuming = false
+      }
     },
   },
 }
