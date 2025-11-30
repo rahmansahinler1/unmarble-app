@@ -331,3 +331,14 @@ export const submitFeedback = async function (message) {
     }
   }
 }
+
+export const getCheckoutUrl = function (userEmail) {
+  const baseUrl = import.meta.env.VITE_LEMON_SQUEEZY_CHECKOUT_URL
+  if (!baseUrl) {
+    console.error('VITE_LEMON_SQUEEZY_CHECKOUT_URL not configured')
+    return null
+  }
+
+  const checkoutUrl = `${baseUrl}&checkout[email]=${encodeURIComponent(userEmail)}`
+  return checkoutUrl
+}

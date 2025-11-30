@@ -60,7 +60,7 @@
             <p class="profile-text text-muted mb-0" style="max-width: 400px">
               Get premium, design freely!
             </p>
-            <button class="btn btn-sm profile-btn upgrade-btn">
+            <button class="btn btn-sm profile-btn upgrade-btn" @click="handleUpgrade">
               <i class="bi bi-cloud-upload-fill me-1" style="color: #00b7ed"></i>Upgrade your plan
             </button>
           </div>
@@ -221,6 +221,9 @@ export default {
       } finally {
         this.isSendingFeedback = false
       }
+    },
+    handleUpgrade() {
+      this.$router.push('/pricing')
     },
   },
 }

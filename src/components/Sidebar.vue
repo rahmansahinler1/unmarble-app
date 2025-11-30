@@ -33,8 +33,9 @@
       <!-- Upgrade Banner for Trial Users -->
       <a
         v-if="!isPremium"
-        href="#upgrade"
+        @click="handleUpgrade"
         class="upgrade-banner-link d-flex align-items-center w-100 mb-2"
+        style="cursor: pointer"
       >
         <i class="bi bi-stars me-2" style="color: #00b7ed"></i>
         <span class="flex-grow-1">Upgrade your plan</span>
@@ -83,7 +84,11 @@
             </router-link>
           </li>
           <li v-if="!isPremium">
-            <a class="dropdown-item d-flex align-items-center" href="#upgrade">
+            <a
+              class="dropdown-item d-flex align-items-center"
+              @click="handleUpgrade"
+              style="cursor: pointer"
+            >
               <i class="bi bi-stars me-2" style="font-size: 1rem; color: #5d5d5d"></i>
               <span class="nav-text" style="color: #5d5d5d">Upgrade premium</span>
             </a>
@@ -136,6 +141,9 @@ export default {
       localStorage.setItem('logout-event', Date.now().toString())
 
       window.location.href = import.meta.env.VITE_WEBSITE_URL
+    },
+    handleUpgrade() {
+      this.$router.push('/pricing')
     },
   },
   mounted() {
