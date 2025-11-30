@@ -29,11 +29,11 @@
         <ul class="pricing-features">
           <li>
             <i class="bi bi-star-fill pricing-feature-icon"></i>
-            <span>Get 2 trial image designs</span>
+            <span>Trial image design</span>
           </li>
           <li>
             <i class="bi bi-star-fill pricing-feature-icon"></i>
-            <span>Have 10 image storage capacity</span>
+            <span>Store your design</span>
           </li>
         </ul>
       </div>
@@ -44,7 +44,7 @@
           <h2 class="pricing-plan-name">Premium</h2>
           <div class="pricing-price">
             <span class="pricing-currency">$</span>
-            <span class="pricing-amount">9</span>
+            <span class="pricing-amount">20</span>
             <span class="pricing-period">USD / month</span>
           </div>
           <p class="pricing-subtitle">Unlock the full experience</p>
@@ -57,11 +57,11 @@
         <ul class="pricing-features">
           <li>
             <i class="bi bi-star-fill pricing-feature-icon"></i>
-            <span>Get 30 image designs, renews every month</span>
+            <span>Get 50 image designs, renews every month</span>
           </li>
           <li>
             <i class="bi bi-star-fill pricing-feature-icon"></i>
-            <span>Have 50 image storage capacity</span>
+            <span>Have 100 image storage capacity</span>
           </li>
           <li>
             <i class="bi bi-star-fill pricing-feature-icon"></i>
