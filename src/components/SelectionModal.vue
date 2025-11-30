@@ -198,16 +198,30 @@
   </div>
   <!-- Modal Backdrop -->
   <div v-if="show" class="modal-backdrop fade show"></div>
+
+  <!-- Limit Modal -->
+  <LimitModal
+    :isOpen="showLimitModal"
+    limitType="storage"
+    :userType="userType"
+    :nextRenewalDate="nextRenewalDate"
+    @close="closeLimitModal"
+    @upgrade="handleUpgrade"
+  />
 </template>
 
 <script>
-import { uploadImage } from '@/api/api'
+import { uploadImage, getCheckoutUrl } from '@/api/api'
 import { mapStores } from 'pinia'
 import useUserStore from '@/stores/user'
 import heic2any from 'heic2any'
+import LimitModal from '@/components/LimitModal.vue'
 
 export default {
   name: 'SelectionModal',
+  components: {
+    LimitModal,
+  },
   props: {
     show: {
       type: Boolean,
@@ -235,12 +249,19 @@ export default {
       isUploading: false,
       uploadStatus: null,
       uploadMessage: '',
+      showLimitModal: false,
     }
   },
   computed: {
     ...mapStores(useUserStore),
     hasSelection() {
       return this.selectedFile !== null
+    },
+    userType() {
+      return this.userStore?.userCred?.type || 'trial'
+    },
+    nextRenewalDate() {
+      return this.userStore?.userCred?.nextRenewalDate || null
     },
   },
   watch: {
@@ -375,8 +396,7 @@ export default {
 
       // Check storage
       if (this.userStore.userLimits.storageLeft <= 0) {
-        this.uploadStatus = 'error'
-        this.uploadMessage = 'No storage space left'
+        this.showLimitModal = true
         return
       }
 
@@ -402,6 +422,7 @@ export default {
         } else {
           this.uploadStatus = 'error'
           if (result.error.includes('Insufficient') || result.error.includes('storage')) {
+            this.showLimitModal = true
             this.uploadMessage = 'No storage space remaining. Please upgrade to premium.'
           } else {
             this.uploadMessage = `Upload Failed: ${result.error}`
@@ -442,6 +463,19 @@ export default {
     goToProfile() {
       this.closeModal()
       this.$router.push('/profile')
+    },
+    closeLimitModal() {
+      this.showLimitModal = false
+    },
+    handleUpgrade() {
+      this.showLimitModal = false
+      this.closeModal()
+      const checkoutUrl = getCheckoutUrl(this.userStore?.userCred?.email || '')
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+      } else {
+        this.$router.push('/pricing')
+      }
     },
   },
   beforeUnmount() {

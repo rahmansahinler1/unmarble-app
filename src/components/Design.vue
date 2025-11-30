@@ -255,52 +255,24 @@
     <!-- Designed Modal Backdrop -->
     <div v-if="showDesignedModal" class="modal-backdrop fade show"></div>
 
-    <!-- Error Popup Modal -->
-    <div
-      class="modal fade"
-      :class="{ show: showErrorPopup, 'd-block': showErrorPopup }"
-      tabindex="-1"
-      v-if="showErrorPopup"
-      @click.self="showErrorPopup = false"
-    >
-      <div class="modal-dialog modal-dialog-centered">
-        <div class="modal-content">
-          <!-- Modal Body -->
-          <div class="modal-body text-center py-4">
-            <i class="bi bi-emoji-frown" style="font-size: 3rem; color: #333"></i>
-            <p class="mb-0 fw-bold mt-3" style="color: #333; font-family: var(--font-family-base)">
-              {{ errorMessage }}
-            </p>
-            <div class="d-flex gap-2 mt-3 justify-content-center">
-              <button
-                class="btn btn-sm btn-outline-primary profile-go-btn"
-                style="font-family: var(--font-family-base); border-color: #00b7ed; color: #00b7ed"
-                @click="goToProfile"
-              >
-                <i class="bi bi-person-circle me-1"></i>Go to Profile
-              </button>
-              <button
-                class="btn btn-sm btn-outline-danger"
-                style="font-family: var(--font-family-base)"
-                @click="showErrorPopup = false"
-              >
-                Dismiss
-              </button>
-            </div>
-          </div>
-        </div>
-      </div>
-    </div>
-    <!-- Error Popup Backdrop -->
-    <div v-if="showErrorPopup" class="modal-backdrop fade show"></div>
+    <!-- Limit Modal -->
+    <LimitModal
+      :isOpen="showLimitModal"
+      limitType="design"
+      :userType="userType"
+      :nextRenewalDate="nextRenewalDate"
+      @close="closeLimitModal"
+      @upgrade="handleUpgrade"
+    />
   </div>
 </template>
 
 <script>
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
-import { getImage, getDesign, designImage } from '@/api/api'
+import { getImage, getDesign, designImage, getCheckoutUrl } from '@/api/api'
 import SelectionModal from '@/components/SelectionModal.vue'
+import LimitModal from '@/components/LimitModal.vue'
 
 const CONTENT_SAFETY_MESSAGE = `⚠️ Content Safety Violation
 
@@ -317,6 +289,7 @@ export default {
   name: 'Design',
   components: {
     SelectionModal,
+    LimitModal,
   },
   data() {
     return {
@@ -347,14 +320,19 @@ export default {
       designedImageId: null,
       isDesigning: false,
       designError: null,
-      showErrorPopup: false,
-      errorMessage: '',
+      showLimitModal: false,
     }
   },
   computed: {
     ...mapStores(useUserStore),
     canDesign() {
       return this.selections.yourself && this.selections.clothing && !this.isDesigning
+    },
+    userType() {
+      return this.userStore?.userCred?.type || 'trial'
+    },
+    nextRenewalDate() {
+      return this.userStore?.userCred?.nextRenewalDate || null
     },
     filteredImages() {
       if (!this.modalCategory) return []
@@ -453,8 +431,7 @@ export default {
       if (!this.selections.yourself || !this.selections.clothing) return
 
       if (this.userStore.userLimits.designsLeft <= 0) {
-        this.showErrorPopup = true
-        this.errorMessage = 'No design credits left'
+        this.showLimitModal = true
         return
       }
 
@@ -542,9 +519,20 @@ export default {
       this.designedImageId = null
     },
     goToProfile() {
-      this.showErrorPopup = false
       this.designError = null
       this.$router.push('/profile')
+    },
+    closeLimitModal() {
+      this.showLimitModal = false
+    },
+    handleUpgrade() {
+      this.showLimitModal = false
+      const checkoutUrl = getCheckoutUrl(this.userStore?.userCred?.email || '')
+      if (checkoutUrl) {
+        window.location.href = checkoutUrl
+      } else {
+        this.$router.push('/pricing')
+      }
     },
     async checkForGallerySelections() {
       const { yourself, clothing } = this.userStore.gallerySelections
