@@ -1,53 +1,67 @@
 <template>
   <div v-if="isOpen" class="limit-modal-overlay" @click.self="close">
     <div class="limit-modal">
-      <!-- Header -->
-      <div class="modal-header">
-        <h2 class="modal-title">{{ title }}</h2>
-        <button class="close-btn" @click="close">
-          <i class="bi bi-x-lg"></i>
-        </button>
-      </div>
-
-      <!-- Trial User Content -->
+      <!-- Trial User Content - New Design -->
       <template v-if="userType === 'trial'">
-        <div class="limit-info">
-          <i class="bi bi-exclamation-circle limit-icon"></i>
-          <p class="limit-message">{{ limitMessage }}</p>
+        <!-- Logo -->
+        <div class="limit-modal-logo">
+          <img src="/assets/img/logo-small.svg" alt="Unmarble" />
         </div>
 
-        <div class="upgrade-section">
-          <p class="upgrade-subtitle">Upgrade to Premium to get:</p>
-          <ul class="benefits-list">
+        <!-- Header Text -->
+        <h2 class="limit-modal-title">Limits reached</h2>
+        <p class="limit-modal-subtitle">
+          Upgrade like
+          <span class="user-avatars">
+            <img src="/assets/img/user-testimonial1.webp" alt="" class="avatar-icon" />
+            <img src="/assets/img/user-testimonial2.webp" alt="" class="avatar-icon" />
+            <img src="/assets/img/user-testimonial3.webp" alt="" class="avatar-icon" />
+          </span>
+          for only
+        </p>
+        <p class="limit-modal-price">$10 per month — Cancel anytime.</p>
+
+        <!-- Premium Card -->
+        <div class="premium-card">
+          <div class="premium-card-header">
+            <span class="premium-label">Premium</span>
+            <span class="popular-badge">Popular</span>
+          </div>
+
+          <ul class="premium-benefits">
             <li>
-              <i class="bi bi-star-fill benefit-icon"></i>
-              <span>50 credits every month</span>
+              <i class="bi bi-star-fill"></i>
+              <span>50 designs every month</span>
             </li>
             <li>
-              <i class="bi bi-star-fill benefit-icon"></i>
+              <i class="bi bi-star-fill"></i>
               <span>100 image storage capacity</span>
             </li>
             <li>
-              <i class="bi bi-star-fill benefit-icon"></i>
+              <i class="bi bi-star-fill"></i>
               <span>Higher quality image outputs</span>
             </li>
             <li>
-              <i class="bi bi-star-fill benefit-icon"></i>
+              <i class="bi bi-star-fill"></i>
               <span>Priority support & feature requests</span>
             </li>
           </ul>
+
+          <button class="btn-upgrade-new" @click="handleUpgrade">Upgrade for $10 / mo</button>
         </div>
 
-        <div class="modal-actions">
-          <button class="btn-upgrade" @click="handleUpgrade">
-            <i class="bi bi-arrow-up-circle me-2"></i>Upgrade to Premium
-          </button>
-          <button class="btn-dismiss" @click="close">Maybe later</button>
-        </div>
+        <button class="btn-maybe-later" @click="close">Maybe later</button>
       </template>
 
       <!-- Premium User Content -->
       <template v-else>
+        <div class="modal-header">
+          <h2 class="modal-title">{{ title }}</h2>
+          <button class="close-btn" @click="close">
+            <i class="bi bi-x-lg"></i>
+          </button>
+        </div>
+
         <div class="limit-info">
           <i class="bi bi-hourglass-split limit-icon limit-icon-premium"></i>
           <p class="limit-message">{{ limitMessage }}</p>

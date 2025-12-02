@@ -927,14 +927,168 @@
 
 .limit-modal {
   background: white;
-  border-radius: 16px;
-  padding: 32px;
-  max-width: 460px;
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 480px;
   width: 90%;
   max-height: 90vh;
   overflow-y: auto;
+  text-align: center;
 }
 
+/* New Trial User Design */
+.limit-modal-logo {
+  margin-bottom: 28px;
+}
+
+.limit-modal-logo img {
+  width: 56px;
+  height: 56px;
+}
+
+.limit-modal-title {
+  font-family: var(--font-family-base);
+  font-size: 32px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 14px 0;
+}
+
+.limit-modal-subtitle {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  color: #5d5d5d;
+  margin: 0;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 6px;
+  flex-wrap: wrap;
+}
+
+.user-avatars {
+  display: inline-flex;
+  align-items: center;
+}
+
+.user-avatars .avatar-icon {
+  width: 26px;
+  height: 26px;
+  border-radius: 50%;
+  border: 2px solid white;
+  margin-left: -8px;
+  object-fit: cover;
+}
+
+.user-avatars .avatar-icon:first-child {
+  margin-left: 0;
+}
+
+.limit-modal-price {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  color: #5d5d5d;
+  margin: 4px 0 32px 0;
+}
+
+/* Premium Card */
+.premium-card {
+  background: #f9f9f9;
+  border-radius: 16px;
+  padding: 28px;
+  margin-bottom: 20px;
+  text-align: left;
+}
+
+.premium-card-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 24px;
+}
+
+.premium-label {
+  font-family: var(--font-family-base);
+  font-size: 20px;
+  font-weight: 600;
+  color: #212529;
+}
+
+.popular-badge {
+  background: #00b7ed;
+  color: white;
+  font-family: var(--font-family-base);
+  font-size: 11px;
+  font-weight: 600;
+  padding: 5px 12px;
+  border-radius: 6px;
+  text-transform: uppercase;
+  letter-spacing: 0.3px;
+}
+
+.premium-benefits {
+  list-style: none;
+  padding: 0;
+  margin: 0 0 24px 0;
+}
+
+.premium-benefits li {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  font-family: var(--font-family-base);
+  font-size: 15px;
+  color: #212529;
+}
+
+.premium-benefits li:last-child {
+  margin-bottom: 0;
+}
+
+.premium-benefits li i {
+  color: #00b7ed;
+  font-size: 13px;
+  flex-shrink: 0;
+}
+
+.btn-upgrade-new {
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: #00b7ed;
+  color: white;
+  border: none;
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 24px;
+}
+
+.btn-upgrade-new:hover {
+  background: #0095c7;
+}
+
+.btn-maybe-later {
+  width: 100%;
+  padding: 14px 24px;
+  background: transparent;
+  color: #5d5d5d;
+  border: none;
+  font-family: var(--font-family-base);
+  font-size: 15px;
+  font-weight: 400;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.btn-maybe-later:hover {
+  color: #212529;
+}
+
+/* Premium User Content (keep existing styles) */
 .limit-modal .modal-header {
   display: flex;
   justify-content: space-between;

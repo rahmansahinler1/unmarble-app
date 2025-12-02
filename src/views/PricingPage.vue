@@ -44,7 +44,7 @@
           <h2 class="pricing-plan-name">Premium</h2>
           <div class="pricing-price">
             <span class="pricing-currency">$</span>
-            <span class="pricing-amount">20</span>
+            <span class="pricing-amount">10</span>
             <span class="pricing-period">USD / month</span>
           </div>
           <p class="pricing-subtitle">Unlock the full experience</p>
