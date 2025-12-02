@@ -1,14 +1,72 @@
 <template>
-  <RouterView />
+  <!-- Subscription Block Overlay (expired 7+ days or refunded) -->
+  <SubscriptionBlockOverlay
+    v-if="isBlocked"
+    :status="subscriptionStatus"
+    :days-since-expiry="daysSinceExpiry"
+  />
+
+  <!-- Past Due Banner (payment failed) -->
+  <PastDueBanner v-if="showPastDueBanner" @close="pastDueBannerDismissed = true" />
+
+  <!-- Subscription Warning Modal (expired 0-7 days) -->
+  <SubscriptionWarningModal
+    v-if="showExpiredWarning"
+    :days-since-expiry="daysSinceExpiry"
+    @close="expiredWarningDismissed = true"
+  />
+
+  <!-- Main App Content -->
+  <div :class="{ 'app-with-banner': showPastDueBanner }">
+    <RouterView />
+  </div>
 </template>
 
 <script>
+import SubscriptionBlockOverlay from '@/components/SubscriptionBlockOverlay.vue'
+import SubscriptionWarningModal from '@/components/SubscriptionWarningModal.vue'
+import PastDueBanner from '@/components/PastDueBanner.vue'
+import useUserStore from '@/stores/user'
+
 export default {
   name: 'app',
+  components: {
+    SubscriptionBlockOverlay,
+    SubscriptionWarningModal,
+    PastDueBanner,
+  },
   data() {
     return {
-      cookieCheckInterval: null
+      cookieCheckInterval: null,
+      expiredWarningDismissed: false,
+      pastDueBannerDismissed: false,
     }
+  },
+  computed: {
+    userStore() {
+      return useUserStore()
+    },
+    subscriptionStatus() {
+      return this.userStore.userCred.subscriptionStatus
+    },
+    daysSinceExpiry() {
+      return this.userStore.userCred.daysSinceExpiry || 0
+    },
+    isBlocked() {
+      if (this.subscriptionStatus === 'refunded') return true
+      if (this.subscriptionStatus === 'expired' && this.daysSinceExpiry >= 7) return true
+      return false
+    },
+    showExpiredWarning() {
+      return (
+        this.subscriptionStatus === 'expired' &&
+        this.daysSinceExpiry < 7 &&
+        !this.expiredWarningDismissed
+      )
+    },
+    showPastDueBanner() {
+      return this.subscriptionStatus === 'past_due' && !this.pastDueBannerDismissed
+    },
   },
   mounted() {
     window.addEventListener('storage', this.handleStorageChange)
@@ -35,7 +93,7 @@ export default {
           window.location.href = import.meta.env.VITE_WEBSITE_URL
         }
       }, 60000)
-    }
-  }
+    },
+  },
 }
 </script>

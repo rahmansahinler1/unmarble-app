@@ -15,6 +15,7 @@ export default defineStore('user', {
       subscriptionStatus: 'none',
       subscriptionEndsAt: null,
       daysUntilExpiry: null,
+      daysSinceExpiry: null,
     },
     userLimits: { storageLeft: null, designsLeft: null },
     previewImages: { yourself: [], clothing: [], design: [] },
@@ -51,6 +52,7 @@ export default defineStore('user', {
             user_fetch.data.user_info['subscription_status'] || 'none'
           this.userCred.subscriptionEndsAt = user_fetch.data.user_info['subscription_ends_at']
           this.userCred.daysUntilExpiry = user_fetch.data.user_info['days_until_expiry']
+          this.userCred.daysSinceExpiry = user_fetch.data.user_info['days_since_expiry']
           this.userLimits.storageLeft = user_fetch.data.user_info['storage_left']
           this.userLimits.designsLeft = user_fetch.data.user_info['designs_left']
         }

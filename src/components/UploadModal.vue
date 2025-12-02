@@ -66,10 +66,7 @@
             <div v-if="uploadStatus === 'error'" class="upload-overlay">
               <div class="upload-feedback">
                 <i class="bi bi-emoji-frown" style="font-size: 3rem; color: #333"></i>
-                <p
-                  class="mb-0 fw-bold"
-                  style="color: #333; font-family: var(--font-family-base)"
-                >
+                <p class="mb-0 fw-bold" style="color: #333; font-family: var(--font-family-base)">
                   {{ uploadMessage }}
                 </p>
                 <div class="d-flex gap-2 mt-2">
