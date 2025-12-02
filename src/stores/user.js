@@ -16,6 +16,7 @@ export default defineStore('user', {
       subscriptionEndsAt: null,
       daysUntilExpiry: null,
       daysSinceExpiry: null,
+      firstTime: false,
     },
     userLimits: { storageLeft: null, designsLeft: null },
     previewImages: { yourself: [], clothing: [], design: [] },
@@ -53,6 +54,7 @@ export default defineStore('user', {
           this.userCred.subscriptionEndsAt = user_fetch.data.user_info['subscription_ends_at']
           this.userCred.daysUntilExpiry = user_fetch.data.user_info['days_until_expiry']
           this.userCred.daysSinceExpiry = user_fetch.data.user_info['days_since_expiry']
+          this.userCred.firstTime = user_fetch.data.user_info['first_time']
           this.userLimits.storageLeft = user_fetch.data.user_info['storage_left']
           this.userLimits.designsLeft = user_fetch.data.user_info['designs_left']
         }
@@ -111,6 +113,9 @@ export default defineStore('user', {
     },
     clearGallerySelections() {
       this.gallerySelections = { yourself: null, clothing: null }
+    },
+    setFirstTime(value) {
+      this.userCred.firstTime = value
     },
   },
 })

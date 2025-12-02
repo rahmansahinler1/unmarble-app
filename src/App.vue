@@ -1,23 +1,26 @@
 <template>
+  <!-- Onboarding Modal (first-time users) -->
+  <OnboardingModal :isOpen="showOnboarding" @completed="handleOnboardingCompleted" />
+
   <!-- Subscription Block Overlay (expired 7+ days or refunded) -->
   <SubscriptionBlockOverlay
-    v-if="isBlocked"
+    v-if="isBlocked && !showOnboarding"
     :status="subscriptionStatus"
     :days-since-expiry="daysSinceExpiry"
   />
 
   <!-- Past Due Banner (payment failed) -->
-  <PastDueBanner v-if="showPastDueBanner" @close="pastDueBannerDismissed = true" />
+  <PastDueBanner v-if="showPastDueBanner && !showOnboarding" @close="pastDueBannerDismissed = true" />
 
   <!-- Subscription Warning Modal (expired 0-7 days) -->
   <SubscriptionWarningModal
-    v-if="showExpiredWarning"
+    v-if="showExpiredWarning && !showOnboarding"
     :days-since-expiry="daysSinceExpiry"
     @close="expiredWarningDismissed = true"
   />
 
   <!-- Main App Content -->
-  <div :class="{ 'app-with-banner': showPastDueBanner }">
+  <div :class="{ 'app-with-banner': showPastDueBanner && !showOnboarding }">
     <RouterView />
   </div>
 </template>
@@ -26,6 +29,7 @@
 import SubscriptionBlockOverlay from '@/components/SubscriptionBlockOverlay.vue'
 import SubscriptionWarningModal from '@/components/SubscriptionWarningModal.vue'
 import PastDueBanner from '@/components/PastDueBanner.vue'
+import OnboardingModal from '@/components/OnboardingModal.vue'
 import useUserStore from '@/stores/user'
 
 export default {
@@ -34,6 +38,7 @@ export default {
     SubscriptionBlockOverlay,
     SubscriptionWarningModal,
     PastDueBanner,
+    OnboardingModal,
   },
   data() {
     return {
@@ -67,6 +72,9 @@ export default {
     showPastDueBanner() {
       return this.subscriptionStatus === 'past_due' && !this.pastDueBannerDismissed
     },
+    showOnboarding() {
+      return this.userStore.userCred.firstTime === true
+    },
   },
   mounted() {
     window.addEventListener('storage', this.handleStorageChange)
@@ -79,6 +87,10 @@ export default {
     }
   },
   methods: {
+    handleOnboardingCompleted() {
+      // The store is already updated by the modal
+      // Modal will close automatically since firstTime is now false
+    },
     handleStorageChange(event) {
       if (event.key === 'logout-event') {
         const domain = import.meta.env.VITE_COOKIE_DOMAIN

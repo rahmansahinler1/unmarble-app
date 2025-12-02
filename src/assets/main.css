@@ -1690,3 +1690,106 @@
 .app-with-banner .app-content {
   padding-top: 72px;
 }
+
+/* ================================
+   Onboarding Modal
+================================ */
+.onboarding-modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.6);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9999;
+}
+
+.onboarding-modal {
+  background: white;
+  border-radius: 24px;
+  padding: 48px 40px;
+  max-width: 480px;
+  width: 90%;
+  text-align: center;
+}
+
+.onboarding-logo {
+  margin-bottom: 32px;
+}
+
+.onboarding-logo img {
+  width: 64px;
+  height: 64px;
+}
+
+.onboarding-content {
+  margin-bottom: 32px;
+}
+
+.onboarding-title {
+  font-family: var(--font-family-base);
+  font-size: 28px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 12px 0;
+}
+
+.onboarding-subtitle {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  color: #5d5d5d;
+  margin: 0 0 20px 0;
+}
+
+.onboarding-description {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+  line-height: 1.6;
+  margin: 0;
+}
+
+.onboarding-steps {
+  display: flex;
+  justify-content: center;
+  gap: 8px;
+  margin-bottom: 24px;
+}
+
+.step-dot {
+  width: 8px;
+  height: 8px;
+  border-radius: 50%;
+  background: #e0e0e0;
+  transition: background-color 0.2s ease;
+}
+
+.step-dot.active {
+  background: #00b7ed;
+}
+
+.btn-onboarding-action {
+  width: 100%;
+  padding: 16px 24px;
+  border-radius: 12px;
+  background: #00b7ed;
+  color: white;
+  border: none;
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+}
+
+.btn-onboarding-action:hover:not(:disabled) {
+  background: #0095c7;
+}
+
+.btn-onboarding-action:disabled {
+  opacity: 0.7;
+  cursor: not-allowed;
+}

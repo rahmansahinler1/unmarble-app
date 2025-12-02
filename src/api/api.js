@@ -379,3 +379,21 @@ export const resumeSubscription = async function () {
     return { success: false, error: error.message }
   }
 }
+
+export const completeOnboarding = async function () {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/complete_onboarding`, {
+      method: 'POST',
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    return { success: true }
+  } catch (error) {
+    console.error('Failed to complete onboarding:', error)
+    return { success: false, error: error.message }
+  }
+}
