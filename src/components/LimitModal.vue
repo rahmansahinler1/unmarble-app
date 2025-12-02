@@ -3,6 +3,11 @@
     <div class="limit-modal">
       <!-- Trial User Content - New Design -->
       <template v-if="userType === 'trial'">
+        <!-- Close Button -->
+        <button class="upgrade-modal-close" @click="close">
+          <i class="bi bi-x-lg"></i>
+        </button>
+
         <!-- Logo -->
         <div class="limit-modal-logo">
           <img src="/assets/img/logo-small.svg" alt="Unmarble" />

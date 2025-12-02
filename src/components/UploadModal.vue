@@ -367,8 +367,6 @@ export default {
       const checkoutUrl = getCheckoutUrl(this.userStore?.userCred?.email || '')
       if (checkoutUrl) {
         window.location.href = checkoutUrl
-      } else {
-        this.$router.push('/pricing')
       }
     },
   },

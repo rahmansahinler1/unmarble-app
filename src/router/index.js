@@ -2,7 +2,6 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Panel1 from '@/views/Panel1.vue'
 import Panel2 from '@/views/Panel2.vue'
 import Panel5 from '@/views/Panel5.vue'
-import PricingPage from '@/views/PricingPage.vue'
 
 const routes = [
   {
@@ -23,11 +22,6 @@ const routes = [
     name: 'Panel5',
     path: '/profile',
     component: Panel5,
-  },
-  {
-    name: 'Pricing',
-    path: '/pricing',
-    component: PricingPage,
   },
 ]
 

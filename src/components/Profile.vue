@@ -144,6 +144,9 @@
         @cancelled="handleCancelled"
       />
 
+      <!-- Upgrade Modal -->
+      <UpgradeModal :isOpen="showUpgradeModal" @close="showUpgradeModal = false" />
+
       <!-- Usage -->
       <div class="mb-4 pb-4 border-bottom">
         <div class="row g-3">
@@ -222,11 +225,13 @@ import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
 import { submitFeedback, resumeSubscription } from '@/api/api'
 import CancellationModal from '@/components/CancellationModal.vue'
+import UpgradeModal from '@/components/UpgradeModal.vue'
 
 export default {
   name: 'Profile',
   components: {
     CancellationModal,
+    UpgradeModal,
   },
   data() {
     return {
@@ -235,6 +240,7 @@ export default {
       feedbackStatus: null,
       feedbackMessage: '',
       showCancelModal: false,
+      showUpgradeModal: false,
       isResuming: false,
       resumeError: '',
       resumeSuccess: false,
@@ -321,7 +327,7 @@ export default {
       }
     },
     handleUpgrade() {
-      this.$router.push('/pricing')
+      this.showUpgradeModal = true
     },
     async handleCancelled() {
       this.showCancelModal = false

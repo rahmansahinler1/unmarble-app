@@ -102,18 +102,25 @@
         </ul>
       </div>
     </div>
+    <!-- Upgrade Modal -->
+    <UpgradeModal :isOpen="showUpgradeModal" @close="showUpgradeModal = false" />
   </div>
 </template>
 
 <script>
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
+import UpgradeModal from '@/components/UpgradeModal.vue'
 
 export default {
   name: 'Sidebar',
+  components: {
+    UpgradeModal,
+  },
   data() {
     return {
       isDropdownOpen: false,
+      showUpgradeModal: false,
     }
   },
   computed: {
@@ -143,7 +150,7 @@ export default {
       window.location.href = import.meta.env.VITE_WEBSITE_URL
     },
     handleUpgrade() {
-      this.$router.push('/pricing')
+      this.showUpgradeModal = true
     },
   },
   mounted() {
