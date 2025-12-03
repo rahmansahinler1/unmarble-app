@@ -21,6 +21,9 @@ export default defineStore('user', {
     userLimits: { storageLeft: null, designsLeft: null },
     previewImages: { yourself: [], clothing: [], design: [] },
     gallerySelections: { yourself: null, clothing: null },
+    onboardingData: {
+      gender: null,
+    },
   }),
   getters: {
     imageCounts(state) {
@@ -116,6 +119,12 @@ export default defineStore('user', {
     },
     setFirstTime(value) {
       this.userCred.firstTime = value
+    },
+    setOnboardingGender(value) {
+      this.onboardingData.gender = value
+    },
+    clearOnboardingData() {
+      this.onboardingData = { gender: null }
     },
   },
 })

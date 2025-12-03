@@ -1,42 +1,66 @@
 <template>
   <div v-if="isOpen" class="onboarding-modal-overlay">
     <div class="onboarding-modal">
-      <!-- Logo -->
-      <div class="onboarding-logo">
+      <!-- Progress Bar (shows on all steps) -->
+      <div class="onboarding-progress">
+        <div class="onboarding-progress-bar" :style="{ width: progressWidth }"></div>
+      </div>
+
+      <!-- Logo (only on welcome step) -->
+      <div v-if="currentStep === 0" class="onboarding-logo">
         <img src="/assets/img/logo-small.svg" alt="Unmarble" />
       </div>
+
+      <!-- Back Button (shows on step 1+) -->
+      <button v-if="currentStep > 0" class="onboarding-back-btn" @click="goBack">
+        <i class="bi bi-arrow-left"></i>
+      </button>
 
       <!-- Step Content -->
       <div class="onboarding-content">
         <!-- Step 1: Welcome -->
         <template v-if="currentStep === 0">
-          <h2 class="onboarding-title">Welcome to Unmarble!</h2>
-          <p class="onboarding-subtitle">
-            Let's get you started with your design journey
-          </p>
-          <p class="onboarding-description">
-            Create stunning outfit designs by combining your photos with clothing items.
-            Upload your images, select your style, and watch the magic happen.
-          </p>
+          <div class="onboarding-illustration">
+            <img src="/assets/img/welcome.svg" alt="Welcome" />
+          </div>
+          <p class="onboarding-tagline">Try clothes with one click!</p>
         </template>
 
-        <!-- Future steps can be added here -->
-      </div>
+        <!-- Step 2: Gender Selection -->
+        <template v-else-if="currentStep === 1">
+          <h2 class="onboarding-question">How do you identify?</h2>
+          <p class="onboarding-privacy">This information will always be private</p>
 
-      <!-- Step Indicator (for future multi-step) -->
-      <div v-if="totalSteps > 1" class="onboarding-steps">
-        <span
-          v-for="step in totalSteps"
-          :key="step"
-          class="step-dot"
-          :class="{ active: currentStep === step - 1 }"
-        ></span>
+          <div class="onboarding-options">
+            <button
+              class="onboarding-option-btn"
+              :class="{ selected: selectedGender === 'female' }"
+              @click="selectGender('female')"
+            >
+              Female
+            </button>
+            <button
+              class="onboarding-option-btn"
+              :class="{ selected: selectedGender === 'male' }"
+              @click="selectGender('male')"
+            >
+              Male
+            </button>
+            <button
+              class="onboarding-option-btn"
+              :class="{ selected: selectedGender === 'other' }"
+              @click="selectGender('other')"
+            >
+              Other
+            </button>
+          </div>
+        </template>
       </div>
 
       <!-- Action Button -->
       <button
         class="btn-onboarding-action"
-        :disabled="isSubmitting"
+        :disabled="isSubmitting || !canProceed"
         @click="handleAction"
       >
         <span v-if="isSubmitting">
@@ -44,7 +68,7 @@
           Getting started...
         </span>
         <span v-else>
-          {{ isLastStep ? 'Get Started' : 'Next' }}
+          {{ buttonText }}
         </span>
       </button>
     </div>
@@ -67,8 +91,9 @@ export default {
   data() {
     return {
       currentStep: 0,
-      totalSteps: 1, // Increase when adding more steps
+      totalSteps: 6,
       isSubmitting: false,
+      selectedGender: null,
     }
   },
   computed: {
@@ -78,8 +103,30 @@ export default {
     isLastStep() {
       return this.currentStep === this.totalSteps - 1
     },
+    buttonText() {
+      if (this.currentStep === 0) return "Let's Start"
+      if (this.isLastStep) return 'Get Started'
+      return 'Continue'
+    },
+    canProceed() {
+      if (this.currentStep === 1) return this.selectedGender !== null
+      return true
+    },
+    progressWidth() {
+      // Start with some fill on step 0, then progress to 100% at last step
+      return `${((this.currentStep + 1) / this.totalSteps) * 100}%`
+    },
   },
   methods: {
+    selectGender(gender) {
+      this.selectedGender = gender
+      this.userStore.setOnboardingGender(gender)
+    },
+    goBack() {
+      if (this.currentStep > 0) {
+        this.currentStep--
+      }
+    },
     async handleAction() {
       if (this.isLastStep) {
         await this.finishOnboarding()

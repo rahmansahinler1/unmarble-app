@@ -1714,6 +1714,7 @@
   max-width: 480px;
   width: 90%;
   text-align: center;
+  position: relative;
 }
 
 .onboarding-logo {
@@ -1792,4 +1793,121 @@
 .btn-onboarding-action:disabled {
   opacity: 0.7;
   cursor: not-allowed;
+}
+
+/* Onboarding illustration */
+.onboarding-illustration {
+  margin-bottom: 32px;
+}
+
+.onboarding-illustration img {
+  width: 100%;
+  max-width: 280px;
+  height: auto;
+}
+
+/* Onboarding tagline */
+.onboarding-tagline {
+  font-family: var(--font-family-base);
+  font-size: 24px;
+  font-weight: 700;
+  color: #212529;
+  opacity: 0.9;
+  margin: 0;
+  line-height: 1.4;
+}
+
+/* Progress Bar */
+.onboarding-progress {
+  width: 100%;
+  max-width: 200px;
+  height: 6px;
+  background: #e0e0e0;
+  border-radius: 3px;
+  margin: 0 auto 32px;
+  overflow: hidden;
+}
+
+.onboarding-progress-bar {
+  height: 100%;
+  background: #00b7ed;
+  border-radius: 3px;
+  transition: width 0.3s ease;
+}
+
+/* Question title (italic) */
+.onboarding-question {
+  font-family: var(--font-family-base);
+  font-size: 28px;
+  font-weight: 700;
+  font-style: italic;
+  color: #212529;
+  margin: 0 0 12px 0;
+  text-align: center;
+}
+
+/* Back button */
+.onboarding-back-btn {
+  position: absolute;
+  top: 24px;
+  left: 24px;
+  width: 40px;
+  height: 40px;
+  border: none;
+  background: transparent;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 8px;
+  transition: background-color 0.2s ease;
+}
+
+.onboarding-back-btn:hover {
+  background-color: rgba(0, 0, 0, 0.05);
+}
+
+.onboarding-back-btn i {
+  font-size: 1.25rem;
+  color: #5d5d5d;
+}
+
+/* Privacy text */
+.onboarding-privacy {
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  color: #5d5d5d;
+  margin: 0 0 40px 0;
+}
+
+/* Options container */
+.onboarding-options {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  width: 100%;
+}
+
+/* Option button */
+.onboarding-option-btn {
+  width: 100%;
+  padding: 18px 24px;
+  background: #f0f0f0;
+  border: none;
+  border-radius: 50px;
+  font-family: var(--font-family-base);
+  font-size: 16px;
+  font-weight: 500;
+  color: #212529;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.onboarding-option-btn:hover {
+  background: #e5e5e5;
+}
+
+.onboarding-option-btn.selected {
+  background: #00b7ed;
+  color: white;
 }
