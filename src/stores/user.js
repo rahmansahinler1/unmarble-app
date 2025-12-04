@@ -23,7 +23,9 @@ export default defineStore('user', {
     gallerySelections: { yourself: null, clothing: null },
     onboardingData: {
       gender: null,
+      selectedClothingId: null,
     },
+    onboardingPreviews: [],
   }),
   getters: {
     imageCounts(state) {
@@ -123,8 +125,15 @@ export default defineStore('user', {
     setOnboardingGender(value) {
       this.onboardingData.gender = value
     },
+    setOnboardingPreviews(previews) {
+      this.onboardingPreviews = previews
+    },
+    setOnboardingClothingId(id) {
+      this.onboardingData.selectedClothingId = id
+    },
     clearOnboardingData() {
-      this.onboardingData = { gender: null }
+      this.onboardingData = { gender: null, selectedClothingId: null }
+      this.onboardingPreviews = []
     },
   },
 })

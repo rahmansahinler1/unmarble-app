@@ -1,6 +1,6 @@
 <template>
   <div v-if="isOpen" class="onboarding-modal-overlay">
-    <div class="onboarding-modal">
+    <div class="onboarding-modal" :class="{ 'gallery-step': currentStep === 2 }">
       <!-- Progress Bar (shows on all steps) -->
       <div class="onboarding-progress">
         <div class="onboarding-progress-bar" :style="{ width: progressWidth }"></div>
@@ -55,6 +55,29 @@
             </button>
           </div>
         </template>
+
+        <!-- Step 3: Clothing Selection -->
+        <template v-else-if="currentStep === 2">
+          <h2 class="onboarding-question">What do you want to try on?</h2>
+          <p class="onboarding-privacy">Select one of the given clothing to see yourself in</p>
+
+          <div v-if="isLoadingPreviews" class="onboarding-loading">
+            <span class="spinner-border"></span>
+            <p>Loading clothing options...</p>
+          </div>
+
+          <div v-else class="onboarding-gallery">
+            <div
+              v-for="image in onboardingPreviews"
+              :key="image.id"
+              class="onboarding-gallery-item"
+              :class="{ selected: selectedClothingId === image.id }"
+              @click="selectClothing(image.id)"
+            >
+              <img :src="`data:image/webp;base64,${image.base64}`" alt="Clothing option" />
+            </div>
+          </div>
+        </template>
       </div>
 
       <!-- Action Button -->
@@ -76,7 +99,7 @@
 </template>
 
 <script>
-import { completeOnboarding } from '@/api/api'
+import { completeOnboarding, getDefaultPreviews } from '@/api/api'
 import useUserStore from '@/stores/user'
 
 export default {
@@ -94,6 +117,8 @@ export default {
       totalSteps: 6,
       isSubmitting: false,
       selectedGender: null,
+      selectedClothingId: null,
+      isLoadingPreviews: false,
     }
   },
   computed: {
@@ -110,7 +135,11 @@ export default {
     },
     canProceed() {
       if (this.currentStep === 1) return this.selectedGender !== null
+      if (this.currentStep === 2) return this.selectedClothingId !== null
       return true
+    },
+    onboardingPreviews() {
+      return this.userStore.onboardingPreviews
     },
     progressWidth() {
       // Start with some fill on step 0, then progress to 100% at last step
@@ -122,16 +151,43 @@ export default {
       this.selectedGender = gender
       this.userStore.setOnboardingGender(gender)
     },
+    selectClothing(id) {
+      this.selectedClothingId = id
+      this.userStore.setOnboardingClothingId(id)
+    },
     goBack() {
       if (this.currentStep > 0) {
         this.currentStep--
       }
     },
     async handleAction() {
+      // When moving from step 1 (gender) to step 2 (clothing selection)
+      if (this.currentStep === 1) {
+        this.currentStep++
+        this.isLoadingPreviews = true
+        await this.fetchDefaultPreviews()
+        return
+      }
+
       if (this.isLastStep) {
         await this.finishOnboarding()
       } else {
         this.currentStep++
+      }
+    },
+    async fetchDefaultPreviews() {
+      try {
+        const result = await getDefaultPreviews(this.selectedGender)
+        if (result.success) {
+          this.userStore.setOnboardingPreviews(result.data.previews)
+          // Clear previous selection when new previews load
+          this.selectedClothingId = null
+          this.userStore.setOnboardingClothingId(null)
+        }
+      } catch (error) {
+        console.error('Failed to fetch default previews:', error)
+      } finally {
+        this.isLoadingPreviews = false
       }
     },
     async finishOnboarding() {

@@ -397,3 +397,25 @@ export const completeOnboarding = async function () {
     return { success: false, error: error.message }
   }
 }
+
+export const getDefaultPreviews = async function (gender, ids = null) {
+  try {
+    const body = { gender }
+    if (ids) body.ids = ids
+
+    const response = await fetchWithAuth(`${API_BASE_URL}/get_default_previews`, {
+      method: 'POST',
+      body: JSON.stringify(body),
+    })
+
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return { success: true, data: data }
+  } catch (error) {
+    console.error('Error getting default previews:', error)
+    return { success: false, error: error.message }
+  }
+}
