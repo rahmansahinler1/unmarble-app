@@ -1773,17 +1773,19 @@
 }
 
 .btn-onboarding-action {
-  width: 100%;
-  padding: 16px 24px;
-  border-radius: 12px;
+  width: 80%;
+  max-width: 320px;
+  padding: 14px 24px;
+  border-radius: 50px;
   background: #00b7ed;
   color: white;
   border: none;
   font-family: var(--font-family-base);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
+  margin-top: 24px;
 }
 
 .btn-onboarding-action:hover:not(:disabled) {
@@ -1884,19 +1886,21 @@
 .onboarding-options {
   display: flex;
   flex-direction: column;
-  gap: 16px;
-  width: 100%;
+  gap: 12px;
+  width: 80%;
+  max-width: 320px;
+  margin: 0 auto;
 }
 
 /* Option button */
 .onboarding-option-btn {
   width: 100%;
-  padding: 18px 24px;
+  padding: 14px 24px;
   background: #f0f0f0;
   border: none;
   border-radius: 50px;
   font-family: var(--font-family-base);
-  font-size: 16px;
+  font-size: 15px;
   font-weight: 500;
   color: #212529;
   cursor: pointer;
@@ -1914,8 +1918,12 @@
 
 /* Expanded modal for gallery step */
 .onboarding-modal.gallery-step {
-  max-width: 640px;
-  padding: 48px 48px;
+  max-width: 700px;
+  padding: 32px 48px 40px;
+}
+
+.onboarding-modal.gallery-step .btn-onboarding-action {
+  margin-top: 32px;
 }
 
 /* Onboarding Gallery - Clothing Selection */
