@@ -1926,6 +1926,18 @@
   margin-top: 32px;
 }
 
+/* Expanded modal for upload step */
+.onboarding-modal.upload-step {
+  max-width: 500px;
+  padding: 24px 32px 32px;
+}
+
+.onboarding-modal.upload-step .onboarding-dropzone,
+.onboarding-modal.upload-step .onboarding-result {
+  max-width: 400px;
+  aspect-ratio: 4 / 5;
+}
+
 /* Onboarding Gallery - Clothing Selection */
 .onboarding-gallery {
   display: grid;

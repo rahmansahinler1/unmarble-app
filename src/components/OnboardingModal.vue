@@ -1,6 +1,6 @@
 <template>
   <div v-if="isOpen" class="onboarding-modal-overlay">
-    <div class="onboarding-modal" :class="{ 'gallery-step': currentStep === 2 }">
+    <div class="onboarding-modal" :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3 }">
       <!-- Progress Bar (shows on all steps) -->
       <div class="onboarding-progress">
         <div class="onboarding-progress-bar" :style="{ width: progressWidth }"></div>
@@ -11,8 +11,12 @@
         <img src="/assets/img/logo-small.svg" alt="Unmarble" />
       </div>
 
-      <!-- Back Button (shows on step 1+) -->
-      <button v-if="currentStep > 0" class="onboarding-back-btn" @click="goBack">
+      <!-- Back Button (shows on step 1+, but NOT on success) -->
+      <button
+        v-if="currentStep > 0 && !(currentStep === 3 && generationSuccess)"
+        class="onboarding-back-btn"
+        @click="goBack"
+      >
         <i class="bi bi-arrow-left"></i>
       </button>
 
@@ -142,11 +146,6 @@
           <p v-if="generationError" class="generation-error">
             {{ generationError }}
           </p>
-
-          <!-- Skip option (appears after 10s during generation OR on error) -->
-          <div v-if="showSkipOption || generationError" class="skip-option">
-            <a href="#" @click.prevent="handleSkip">Skip for now</a>
-          </div>
         </template>
       </div>
 
@@ -164,6 +163,11 @@
           {{ buttonText }}
         </span>
       </button>
+
+      <!-- Skip option (appears after 12s during generation OR on error) - below button -->
+      <div v-if="currentStep === 3 && (showSkipOption || generationError)" class="skip-option">
+        <a href="#" @click.prevent="handleSkip">Skip for now</a>
+      </div>
     </div>
   </div>
 </template>
@@ -388,10 +392,10 @@ export default {
       this.isGenerating = true
       this.generationError = null
 
-      // Start 10-second timer for skip option
+      // Start 12-second timer for skip option
       this.skipTimer = setTimeout(() => {
         this.showSkipOption = true
-      }, 10000)
+      }, 12000)
 
       try {
         // 1. Convert file to base64
