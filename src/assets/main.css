@@ -1977,3 +1977,162 @@
   font-family: var(--font-family-base);
   font-size: 14px;
 }
+
+/* Step 4: Upload Dropzone */
+.onboarding-dropzone {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 3 / 4;
+  border: 2px dashed #ccc;
+  border-radius: 16px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  margin: 24px auto 0;
+  overflow: hidden;
+  transition: border-color 0.2s ease;
+  position: relative;
+  background: #fafafa;
+}
+
+.onboarding-dropzone:hover {
+  border-color: #00b7ed;
+}
+
+.onboarding-dropzone.has-preview {
+  border-style: solid;
+  border-color: #00b7ed;
+  background: transparent;
+}
+
+.onboarding-dropzone i {
+  font-size: 48px;
+  color: #ccc;
+  margin-bottom: 16px;
+}
+
+.onboarding-dropzone p {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+}
+
+.onboarding-dropzone .file-hint {
+  font-size: 12px;
+  color: #999;
+  margin-top: 8px;
+}
+
+/* Preview image in dropzone */
+.onboarding-dropzone .preview-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.onboarding-dropzone .preview-change-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  color: white;
+  opacity: 0;
+  transition: opacity 0.2s ease;
+}
+
+.onboarding-dropzone:hover .preview-change-overlay {
+  opacity: 1;
+}
+
+.onboarding-dropzone .preview-change-overlay i {
+  font-size: 32px;
+  color: white;
+  margin-bottom: 8px;
+}
+
+.onboarding-dropzone .preview-change-overlay span {
+  font-size: 14px;
+}
+
+/* Generating overlay */
+.generating-overlay {
+  position: absolute;
+  inset: 0;
+  background: rgba(255, 255, 255, 0.95);
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  z-index: 10;
+}
+
+.generating-overlay .spinner-border {
+  width: 40px;
+  height: 40px;
+  color: #00b7ed;
+  margin-bottom: 16px;
+}
+
+.generating-overlay p {
+  margin: 0;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+}
+
+/* Generation result */
+.onboarding-result {
+  width: 100%;
+  max-width: 280px;
+  aspect-ratio: 3 / 4;
+  border-radius: 16px;
+  overflow: hidden;
+  margin: 24px auto 0;
+  box-shadow: 0 4px 16px rgba(0, 183, 237, 0.3);
+  border: 3px solid #00b7ed;
+}
+
+.onboarding-result img {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+/* Generation error */
+.generation-error {
+  margin: 16px auto 0;
+  padding: 12px 16px;
+  max-width: 320px;
+  background: #fff0f0;
+  border: 1px solid #ffcdd2;
+  border-radius: 8px;
+  font-family: var(--font-family-base);
+  font-size: 13px;
+  color: #c62828;
+  text-align: center;
+}
+
+/* Skip option */
+.skip-option {
+  margin-top: 16px;
+  text-align: center;
+}
+
+.skip-option a {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+  text-decoration: underline;
+  cursor: pointer;
+  transition: color 0.2s ease;
+}
+
+.skip-option a:hover {
+  color: #333;
+}

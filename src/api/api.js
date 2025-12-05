@@ -419,3 +419,27 @@ export const getDefaultPreviews = async function (gender, ids = null) {
     return { success: false, error: error.message }
   }
 }
+
+export const designOnboarding = async function (yourselfImageId, defaultClothingId) {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/design_onboarding`, {
+      method: 'POST',
+      body: JSON.stringify({
+        yourself_image_id: yourselfImageId,
+        default_clothing_id: defaultClothingId,
+      }),
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`
+      throw new Error(errorMessage)
+    }
+
+    const data = await response.json()
+    return { success: true, data: data }
+  } catch (error) {
+    console.error('Failed to design onboarding image:', error)
+    return { success: false, error: error.message }
+  }
+}
