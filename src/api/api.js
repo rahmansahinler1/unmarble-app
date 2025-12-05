@@ -380,10 +380,11 @@ export const resumeSubscription = async function () {
   }
 }
 
-export const completeOnboarding = async function () {
+export const completeOnboarding = async function (gender) {
   try {
     const response = await fetchWithAuth(`${API_BASE_URL}/complete_onboarding`, {
       method: 'POST',
+      body: JSON.stringify({ gender }),
     })
 
     if (!response.ok) {
@@ -391,7 +392,14 @@ export const completeOnboarding = async function () {
       throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
     }
 
-    return { success: true }
+    const data = await response.json()
+    return {
+      success: true,
+      data: {
+        storage_left: data.storage_left,
+        copied_images: data.copied_images,
+      },
+    }
   } catch (error) {
     console.error('Failed to complete onboarding:', error)
     return { success: false, error: error.message }

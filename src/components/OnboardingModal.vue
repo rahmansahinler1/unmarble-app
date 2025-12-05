@@ -1,8 +1,8 @@
 <template>
   <div v-if="isOpen" class="onboarding-modal-overlay">
     <div class="onboarding-modal" :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3 }">
-      <!-- Progress Bar (shows on all steps) -->
-      <div class="onboarding-progress">
+      <!-- Progress Bar (shows on steps 0-3, hidden on step 4) -->
+      <div v-if="currentStep < 4" class="onboarding-progress">
         <div class="onboarding-progress-bar" :style="{ width: progressWidth }"></div>
       </div>
 
@@ -11,9 +11,9 @@
         <img src="/assets/img/logo-small.svg" alt="Unmarble" />
       </div>
 
-      <!-- Back Button (shows on step 1+, but NOT on success) -->
+      <!-- Back Button (shows on step 1-3, but NOT on success or step 4) -->
       <button
-        v-if="currentStep > 0 && !(currentStep === 3 && generationSuccess)"
+        v-if="currentStep > 0 && currentStep < 4 && !(currentStep === 3 && generationSuccess)"
         class="onboarding-back-btn"
         @click="goBack"
       >
@@ -147,10 +147,63 @@
             {{ generationError }}
           </p>
         </template>
+
+        <!-- Step 5: Upgrade -->
+        <template v-else-if="currentStep === 4">
+          <!-- Logo -->
+          <div class="limit-modal-logo">
+            <img src="/assets/img/logo-small.svg" alt="Unmarble" />
+          </div>
+
+          <!-- Header Text -->
+          <h2 class="limit-modal-title">Get full access</h2>
+          <p class="limit-modal-subtitle">
+            Upgrade like
+            <span class="user-avatars">
+              <img src="/assets/img/user-testimonial1.webp" alt="" class="avatar-icon" />
+              <img src="/assets/img/user-testimonial2.webp" alt="" class="avatar-icon" />
+              <img src="/assets/img/user-testimonial3.webp" alt="" class="avatar-icon" />
+            </span>
+            for only
+          </p>
+          <p class="limit-modal-price">$10 per month — Cancel anytime.</p>
+
+          <!-- Premium Card -->
+          <div class="premium-card">
+            <div class="premium-card-header">
+              <span class="premium-label">Premium</span>
+              <span class="popular-badge">Popular</span>
+            </div>
+
+            <ul class="premium-benefits">
+              <li>
+                <i class="bi bi-star-fill"></i>
+                <span>50 designs every month</span>
+              </li>
+              <li>
+                <i class="bi bi-star-fill"></i>
+                <span>100 image storage capacity</span>
+              </li>
+              <li>
+                <i class="bi bi-star-fill"></i>
+                <span>Higher quality image outputs</span>
+              </li>
+              <li>
+                <i class="bi bi-star-fill"></i>
+                <span>Priority support & feature requests</span>
+              </li>
+            </ul>
+
+            <button class="btn-upgrade-new" @click="handleUpgrade">Upgrade for $10 / mo</button>
+          </div>
+
+          <button class="btn-maybe-later" @click="handleMaybeLater">Maybe later</button>
+        </template>
       </div>
 
-      <!-- Action Button -->
+      <!-- Action Button (hidden on step 4 which has its own buttons) -->
       <button
+        v-if="currentStep < 4"
         class="btn-onboarding-action"
         :disabled="isSubmitting || !canProceed"
         @click="handleAction"
@@ -173,7 +226,13 @@
 </template>
 
 <script>
-import { completeOnboarding, getDefaultPreviews, uploadImage, designOnboarding } from '@/api/api'
+import {
+  completeOnboarding,
+  getDefaultPreviews,
+  uploadImage,
+  designOnboarding,
+  getCheckoutUrl,
+} from '@/api/api'
 import useUserStore from '@/stores/user'
 import heic2any from 'heic2any'
 
@@ -189,7 +248,7 @@ export default {
   data() {
     return {
       currentStep: 0,
-      totalSteps: 6,
+      totalSteps: 5,
       isSubmitting: false,
       selectedGender: null,
       selectedClothingId: null,
@@ -210,9 +269,6 @@ export default {
     userStore() {
       return useUserStore()
     },
-    isLastStep() {
-      return this.currentStep === this.totalSteps - 1
-    },
     hasImageSelection() {
       return this.selectedFile !== null
     },
@@ -224,7 +280,6 @@ export default {
         if (this.generationError) return 'Retry'
         return 'Design'
       }
-      if (this.isLastStep) return 'Get Started'
       return 'Continue'
     },
     canProceed() {
@@ -242,8 +297,9 @@ export default {
       return this.userStore.onboardingPreviews
     },
     progressWidth() {
-      // Start with some fill on step 0, then progress to 100% at last step
-      return `${((this.currentStep + 1) / this.totalSteps) * 100}%`
+      // Progress bar shows on steps 0-3 (4 visible steps), fills to 100% at step 3
+      const visibleSteps = 4
+      return `${((this.currentStep + 1) / visibleSteps) * 100}%`
     },
   },
   methods: {
@@ -276,8 +332,8 @@ export default {
       // Step 3: Upload & Generation
       if (this.currentStep === 3) {
         if (this.generationSuccess) {
-          // Generation succeeded, move to next step
-          this.currentStep++
+          // Generation succeeded, complete onboarding and move to upgrade step
+          await this.completeAndMoveToUpgrade()
           return
         }
         // Start or retry upload and generation
@@ -285,11 +341,8 @@ export default {
         return
       }
 
-      if (this.isLastStep) {
-        await this.finishOnboarding()
-      } else {
-        this.currentStep++
-      }
+      // Default: move to next step
+      this.currentStep++
     },
     async fetchDefaultPreviews() {
       try {
@@ -306,20 +359,45 @@ export default {
         this.isLoadingPreviews = false
       }
     },
-    async finishOnboarding() {
+    async completeAndMoveToUpgrade() {
       this.isSubmitting = true
       try {
-        const result = await completeOnboarding()
+        const result = await completeOnboarding(this.selectedGender)
         if (result.success) {
-          // Update local store
-          this.userStore.setFirstTime(false)
-          this.$emit('completed')
+          // Update storage in store
+          this.userStore.updateStorageLeft(result.data.storage_left)
+
+          // Add copied clothing images to store (transform format for addPreviewImage)
+          if (result.data.copied_images && result.data.copied_images.length > 0) {
+            for (const image of result.data.copied_images) {
+              this.userStore.addPreviewImage('clothing', {
+                image_id: image.id,
+                preview_base64: image.base64,
+                faved: image.faved,
+                created_at: image.created_at,
+              })
+            }
+          }
+
+          // Move to upgrade step (firstTime stays true until user clicks "Maybe later")
+          this.currentStep = 4
         }
       } catch (error) {
         console.error('Failed to complete onboarding:', error)
       } finally {
         this.isSubmitting = false
       }
+    },
+    handleUpgrade() {
+      const url = getCheckoutUrl(this.userStore.userCred.email)
+      if (url) {
+        window.location.href = url
+      }
+    },
+    handleMaybeLater() {
+      // Only set firstTime to false when user explicitly dismisses the upgrade modal
+      this.userStore.setFirstTime(false)
+      this.$emit('completed')
     },
     // Step 3 methods
     triggerFileInput() {
@@ -458,8 +536,8 @@ export default {
       clearTimeout(this.skipTimer)
       this.showSkipOption = false
 
-      // Complete onboarding (image already uploaded if we got past upload step)
-      this.finishOnboarding()
+      // Complete onboarding and move to upgrade step
+      this.completeAndMoveToUpgrade()
     },
     resetUploadState() {
       // Clean up preview URL to prevent memory leaks

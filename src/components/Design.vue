@@ -258,7 +258,7 @@
     <!-- Limit Modal -->
     <LimitModal
       :isOpen="showLimitModal"
-      limitType="design"
+      :limitType="limitModalType"
       :userType="userType"
       :nextRenewalDate="nextRenewalDate"
       @close="closeLimitModal"
@@ -321,6 +321,7 @@ export default {
       isDesigning: false,
       designError: null,
       showLimitModal: false,
+      limitModalType: 'design',
     }
   },
   computed: {
@@ -430,7 +431,16 @@ export default {
     async designImage() {
       if (!this.selections.yourself || !this.selections.clothing) return
 
+      // Check storage capacity first (design creates a new image)
+      if (this.userStore.userLimits.storageLeft <= 0) {
+        this.limitModalType = 'storage'
+        this.showLimitModal = true
+        return
+      }
+
+      // Check design credits
       if (this.userStore.userLimits.designsLeft <= 0) {
+        this.limitModalType = 'design'
         this.showLimitModal = true
         return
       }
