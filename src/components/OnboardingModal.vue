@@ -14,9 +14,9 @@
         <img src="/assets/img/logo-small.svg" alt="Unmarble" />
       </div>
 
-      <!-- Back Button (shows on step 1-3, but NOT on success or step 4) -->
+      <!-- Back Button (shows on step 1-3, but NOT during generation, on success, or step 4) -->
       <button
-        v-if="currentStep > 0 && currentStep < 4 && !(currentStep === 3 && generationSuccess)"
+        v-if="currentStep > 0 && currentStep < 4 && !(currentStep === 3 && (generationSuccess || isGenerating))"
         class="onboarding-back-btn"
         @click="goBack"
       >
