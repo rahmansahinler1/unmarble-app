@@ -66,7 +66,7 @@
         <!-- Step 3: Clothing Selection -->
         <template v-else-if="currentStep === 2">
           <h2 class="onboarding-question">What do you want to try on?</h2>
-          <p class="onboarding-privacy">Select one of the given clothing to see yourself in</p>
+          <p class="onboarding-privacy">Select one to see yourself in</p>
 
           <div v-if="isLoadingPreviews" class="onboarding-loading">
             <span class="spinner-border"></span>
