@@ -1,6 +1,9 @@
 <template>
   <div v-if="isOpen" class="onboarding-modal-overlay">
-    <div class="onboarding-modal" :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3 }">
+    <div
+      class="onboarding-modal"
+      :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3 }"
+    >
       <!-- Progress Bar (shows on steps 0-3, hidden on step 4) -->
       <div v-if="currentStep < 4" class="onboarding-progress">
         <div class="onboarding-progress-bar" :style="{ width: progressWidth }"></div>
@@ -122,7 +125,7 @@
             <!-- Generating overlay -->
             <div v-if="isGenerating" class="generating-overlay">
               <span class="spinner-border"></span>
-              <p>Creating your design...</p>
+              <p>Designing your outfit...</p>
             </div>
 
             <!-- Empty state -->
