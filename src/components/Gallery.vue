@@ -124,6 +124,12 @@
                       >
                         <i class="bi bi-search"></i>
                       </button>
+                      <button
+                        class="gallery-action-btn gallery-action-btn-download"
+                        @click.stop="downloadImageDirect(image.id, image.category)"
+                      >
+                        <i class="bi bi-download"></i>
+                      </button>
                     </div>
                     <button
                       class="gallery-action-btn gallery-action-btn-trash"
@@ -406,6 +412,31 @@ export default {
       document.body.appendChild(link)
       link.click()
       document.body.removeChild(link)
+    },
+    async downloadImageDirect(imageId, category) {
+      try {
+        let result
+        if (category === 'design') {
+          result = await getDesign(imageId)
+        } else {
+          result = await getImage(imageId)
+        }
+
+        if (result.success) {
+          const imageData = `data:image/jpeg;base64,${result.data.image_base64}`
+          const link = document.createElement('a')
+          link.href = imageData
+          link.download = `${category}-${Date.now()}.jpg`
+          document.body.appendChild(link)
+          link.click()
+          document.body.removeChild(link)
+        } else {
+          alert('Failed to download image')
+        }
+      } catch (error) {
+        console.error('Download error:', error)
+        alert('Error downloading image')
+      }
     },
     handleImageClick(image) {
       const slot = image.category === 'clothing' ? 'clothing' : 'yourself'
