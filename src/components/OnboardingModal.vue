@@ -479,11 +479,8 @@ export default {
       }, 12000)
 
       try {
-        // 1. Convert file to base64
-        const base64 = await this.convertFileToBase64(this.selectedFile)
-
-        // 2. Upload image to 'yourself' category
-        const uploadResult = await uploadImage('yourself', base64)
+        // 1. Upload image to 'yourself' category (sends file directly as FormData)
+        const uploadResult = await uploadImage('yourself', this.selectedFile)
 
         if (!uploadResult.success) {
           throw new Error(uploadResult.error || 'Failed to upload image')
@@ -495,7 +492,7 @@ export default {
         this.userStore.addPreviewImage('yourself', uploadResult.data)
         this.userStore.updateStorageLeft(uploadResult.data.storage_left)
 
-        // 3. Call onboarding design endpoint
+        // 2. Call onboarding design endpoint
         const designResult = await designOnboarding(this.uploadedImageId, this.selectedClothingId)
 
         if (designResult.success) {
@@ -520,18 +517,6 @@ export default {
           this.showSkipOption = false
         }
       }
-    },
-    convertFileToBase64(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.onload = () => {
-          // Remove data URL prefix to get raw base64
-          const base64 = reader.result.split(',')[1]
-          resolve(base64)
-        }
-        reader.onerror = reject
-        reader.readAsDataURL(file)
-      })
     },
     handleSkip() {
       // Stop any ongoing generation

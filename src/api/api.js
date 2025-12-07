@@ -146,34 +146,52 @@ export const getDesign = async function (imageId) {
   }
 }
 
-export const uploadImage = async function (category, imageBase64) {
-  try {
-    const response = await fetchWithAuth(`${API_BASE_URL}/upload_image`, {
-      method: 'POST',
-      body: JSON.stringify({
-        category: category,
-        imageBase64: imageBase64,
-      }),
-    })
+export const uploadImage = function (category, file, onProgress) {
+  return new Promise((resolve) => {
+    const formData = new FormData()
+    formData.append('file', file)
+    formData.append('category', category)
 
-    if (!response.ok) {
-      const errorData = await response.json().catch(() => ({}))
-      const errorMessage = errorData.detail || `HTTP error! status: ${response.status}`
-      throw new Error(errorMessage)
+    const xhr = new XMLHttpRequest()
+    xhr.open('POST', `${API_BASE_URL}/upload_image`)
+    xhr.withCredentials = true
+
+    xhr.upload.onprogress = (event) => {
+      if (event.lengthComputable && onProgress) {
+        const percent = Math.round((event.loaded / event.total) * 100)
+        onProgress(percent)
+      }
     }
 
-    const data = await response.json()
-    return {
-      success: true,
-      data: data,
+    xhr.onload = () => {
+      if (xhr.status === 401) {
+        const domain = import.meta.env.VITE_COOKIE_DOMAIN
+        document.cookie = `authToken=; domain=${domain}; path=/; max-age=0`
+        window.location.href = import.meta.env.VITE_WEBSITE_URL
+        resolve({ success: false, error: 'Authentication required' })
+        return
+      }
+
+      try {
+        const data = JSON.parse(xhr.responseText)
+        if (xhr.status >= 200 && xhr.status < 300) {
+          resolve({ success: true, data: data })
+        } else {
+          const errorMessage = data.detail || `HTTP error! status: ${xhr.status}`
+          resolve({ success: false, error: errorMessage })
+        }
+      } catch {
+        resolve({ success: false, error: 'Failed to parse response' })
+      }
     }
-  } catch (error) {
-    console.error('Failed to upload file:', error)
-    return {
-      success: false,
-      error: error.message,
+
+    xhr.onerror = () => {
+      console.error('Failed to upload file: Network error')
+      resolve({ success: false, error: 'Network error' })
     }
-  }
+
+    xhr.send(formData)
+  })
 }
 
 export const updateDesignFav = async function (imageId) {

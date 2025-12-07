@@ -57,8 +57,22 @@
             <!-- Uploading State -->
             <div v-if="uploadStatus === 'uploading'" class="upload-overlay">
               <div class="upload-feedback">
-                <div class="spinner-border text-primary mb-2" role="status"></div>
-                <p class="mb-0">Uploading...</p>
+                <div v-if="uploadProgress < 100" class="w-100 px-4">
+                  <div class="progress" style="height: 20px">
+                    <div
+                      class="progress-bar progress-bar-striped progress-bar-animated"
+                      role="progressbar"
+                      :style="{ width: uploadProgress + '%' }"
+                    >
+                      {{ uploadProgress }}%
+                    </div>
+                  </div>
+                  <p class="mb-0 mt-2">Uploading...</p>
+                </div>
+                <div v-else>
+                  <div class="spinner-border text-primary mb-2" role="status"></div>
+                  <p class="mb-0">Processing...</p>
+                </div>
               </div>
             </div>
 
@@ -176,6 +190,7 @@ export default {
       isUploading: false,
       uploadStatus: null,
       uploadMessage: '',
+      uploadProgress: 0,
       showLimitModal: false,
     }
   },
@@ -301,11 +316,13 @@ export default {
 
       this.uploadStatus = 'uploading'
       this.uploadMessage = ''
+      this.uploadProgress = 0
       this.isUploading = true
 
       try {
-        const fileBase64 = await this.convertFile(this.selectedFile)
-        const result = await uploadImage(this.selectedCategory, fileBase64)
+        const result = await uploadImage(this.selectedCategory, this.selectedFile, (progress) => {
+          this.uploadProgress = progress
+        })
 
         if (result.success) {
           this.uploadStatus = 'success'
@@ -332,17 +349,6 @@ export default {
         this.isUploading = false
       }
     },
-    convertFile(file) {
-      return new Promise((resolve, reject) => {
-        const reader = new FileReader()
-        reader.readAsDataURL(file)
-        reader.onload = () => {
-          const base64String = reader.result.split(',')[1]
-          resolve(base64String)
-        }
-        reader.onerror = (error) => reject(error)
-      })
-    },
     resetUploadState() {
       if (this.previewUrl) {
         URL.revokeObjectURL(this.previewUrl)
@@ -353,6 +359,7 @@ export default {
       this.isUploading = false
       this.uploadStatus = null
       this.uploadMessage = ''
+      this.uploadProgress = 0
     },
     goToProfile() {
       this.closeModal()
