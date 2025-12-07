@@ -167,7 +167,7 @@
 import { uploadImage, getCheckoutUrl } from '@/api/api'
 import { mapStores } from 'pinia'
 import useUserStore from '@/stores/user'
-import heic2any from 'heic2any'
+import { processImageForUpload } from '@/utils/imageProcessor'
 import LimitModal from '@/components/LimitModal.vue'
 
 export default {
@@ -245,17 +245,16 @@ export default {
     },
     handleFileSelect(event) {
       const file = event.target.files[0]
-      this.processFile(file)
+      this.selectFile(file)
       event.target.value = ''
     },
     handleDrop(event) {
       const file = event.dataTransfer.files[0]
-      this.processFile(file)
+      this.selectFile(file)
     },
-    async processFile(file) {
+    selectFile(file) {
       if (!file) return
 
-      const maxSize = 5 * 1024 * 1024
       const allowedTypes = [
         'image/jpeg',
         'image/jpg',
@@ -270,35 +269,18 @@ export default {
         return
       }
 
-      if (file.size > maxSize) {
-        alert('Please upload files smaller than 5MB')
+      // Check max size (25MB) - will be compressed on upload
+      if (file.size > 25 * 1024 * 1024) {
+        alert('File too large. Maximum size is 25MB.')
         return
-      }
-
-      let processedFile = file
-
-      if (file.type === 'image/heic' || file.type === 'image/heif') {
-        try {
-          const convertedBlob = await heic2any({
-            blob: file,
-            toType: 'image/jpeg',
-            quality: 0.9,
-          })
-          processedFile = new File([convertedBlob], file.name.replace(/\.heic$/i, '.jpg'), {
-            type: 'image/jpeg',
-          })
-        } catch (error) {
-          alert('Failed to convert HEIC image. Please try a different format.')
-          return
-        }
       }
 
       if (this.previewUrl) {
         URL.revokeObjectURL(this.previewUrl)
       }
 
-      this.selectedFile = processedFile
-      this.previewUrl = URL.createObjectURL(processedFile)
+      this.selectedFile = file
+      this.previewUrl = URL.createObjectURL(file)
       this.uploadStatus = null
       this.uploadMessage = ''
     },
@@ -320,7 +302,10 @@ export default {
       this.isUploading = true
 
       try {
-        const result = await uploadImage(this.selectedCategory, this.selectedFile, (progress) => {
+        // Process image (compress/convert) before upload
+        const processedFile = await processImageForUpload(this.selectedFile)
+
+        const result = await uploadImage(this.selectedCategory, processedFile, (progress) => {
           this.uploadProgress = progress
         })
 

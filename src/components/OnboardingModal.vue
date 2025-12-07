@@ -237,7 +237,7 @@ import {
   getCheckoutUrl,
 } from '@/api/api'
 import useUserStore from '@/stores/user'
-import heic2any from 'heic2any'
+import { processImageForUpload } from '@/utils/imageProcessor'
 
 export default {
   name: 'OnboardingModal',
@@ -410,11 +410,11 @@ export default {
     },
     handleFileSelect(event) {
       const file = event.target.files[0]
-      if (file) this.processFile(file)
+      if (file) this.selectFile(file)
     },
     handleDrop(event) {
       const file = event.dataTransfer.files[0]
-      if (file) this.processFile(file)
+      if (file) this.selectFile(file)
     },
     onDragOver() {
       // Could add visual feedback for drag over state
@@ -422,7 +422,7 @@ export default {
     onDragLeave() {
       // Could remove visual feedback
     },
-    async processFile(file) {
+    selectFile(file) {
       // Validate file type
       const validTypes = [
         'image/jpeg',
@@ -437,37 +437,20 @@ export default {
         return
       }
 
-      // Validate file size (5MB)
-      const maxSize = 5 * 1024 * 1024
-      if (file.size > maxSize) {
-        this.generationError = 'File size must be less than 5MB'
+      // Check max size (25MB) - will be compressed on upload
+      if (file.size > 25 * 1024 * 1024) {
+        this.generationError = 'File too large. Maximum size is 25MB.'
         return
       }
 
       this.generationError = null
 
-      // Handle HEIC conversion
-      let processedFile = file
-      if (file.type.toLowerCase() === 'image/heic' || file.type.toLowerCase() === 'image/heif') {
-        try {
-          const convertedBlob = await heic2any({
-            blob: file,
-            toType: 'image/jpeg',
-            quality: 0.9,
-          })
-          processedFile = new File([convertedBlob], file.name.replace(/\.(heic|heif)$/i, '.jpg'), {
-            type: 'image/jpeg',
-          })
-        } catch (error) {
-          console.error('HEIC conversion failed:', error)
-          this.generationError = 'Failed to process HEIC image. Please try a different format.'
-          return
-        }
-      }
-
       // Store file and create preview
-      this.selectedFile = processedFile
-      this.imagePreviewUrl = URL.createObjectURL(processedFile)
+      if (this.imagePreviewUrl) {
+        URL.revokeObjectURL(this.imagePreviewUrl)
+      }
+      this.selectedFile = file
+      this.imagePreviewUrl = URL.createObjectURL(file)
     },
     async handleUploadAndGenerate() {
       this.isGenerating = true
@@ -479,8 +462,11 @@ export default {
       }, 12000)
 
       try {
-        // 1. Upload image to 'yourself' category (sends file directly as FormData)
-        const uploadResult = await uploadImage('yourself', this.selectedFile)
+        // 1. Process image (compress/convert) before upload
+        const processedFile = await processImageForUpload(this.selectedFile)
+
+        // 2. Upload image to 'yourself' category
+        const uploadResult = await uploadImage('yourself', processedFile)
 
         if (!uploadResult.success) {
           throw new Error(uploadResult.error || 'Failed to upload image')
