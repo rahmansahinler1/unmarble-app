@@ -1,6 +1,6 @@
 <template>
   <!-- Sidebar -->
-  <div class="app-sidebar d-flex flex-column">
+  <div class="app-sidebar d-none d-md-flex flex-column">
     <!-- Navigation Sections -->
     <div class="flex-grow-1">
       <div class="nav-section mt-3">
