@@ -2192,8 +2192,8 @@
     text-decoration: none;
     color: #5d5d5d;
     font-family: var(--font-family-base);
-    font-size: 10px;
-    font-weight: 500;
+    font-size: 9px;
+    font-weight: 600;
     gap: 4px;
     padding: 8px 16px;
     transition: color 0.2s ease;
@@ -2229,6 +2229,7 @@
     height: 100vh;
     background-color: #ffffff;
     overflow-x: hidden;
+    overflow-y: auto;
   }
 
   .app-container {
@@ -2246,9 +2247,6 @@
     padding: 0px 0 0px 0;
     margin: 0 !important;
     background: #ffffff;
-    position: sticky;
-    top: 0;
-    z-index: 100;
   }
 
   /* --------------------------------
@@ -2262,11 +2260,9 @@
     padding: 0 0px 0px 0px;
     margin-bottom: 0 !important;
     background: #ffffff;
-    position: sticky;
-    top: 46px;
-    z-index: 99;
     -webkit-overflow-scrolling: touch;
     scrollbar-width: none;
+    justify-content: center;
   }
 
   .gallery-filters::-webkit-scrollbar {
@@ -2290,21 +2286,42 @@
   -------------------------------- */
   .container-fluid {
     padding: 0 !important;
+    margin: 0 !important;
   }
 
   /* --------------------------------
-     Gallery Card Container
+     Gallery Card Container - Remove background
   -------------------------------- */
   .card {
-    border: none;
-    border-radius: 0;
+    border: none !important;
+    border-radius: 0 !important;
     min-height: auto !important;
-    background: transparent;
-    box-shadow: none;
+    background: transparent !important;
+    box-shadow: none !important;
+    margin: 0 !important;
+    padding: 0 !important;
   }
 
   .card-body {
-    padding: 0;
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Remove row/col padding */
+  .row {
+    margin: 0 !important;
+    padding: 0 !important;
+    --bs-gutter-x: 0;
+  }
+
+  .col-12,
+  [class*='col-'] {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 0 !important;
   }
 
   /* --------------------------------
@@ -2314,7 +2331,7 @@
     display: grid;
     grid-template-columns: repeat(3, 1fr);
     gap: 1px;
-    padding: 0;
+    padding: 1px;
     padding-bottom: 0;
     margin: 0;
     background-color: #ffffff;
@@ -2425,17 +2442,6 @@
   .gallery-item.selected {
     border: 2px solid #00b7ed;
     transform: none;
-  }
-
-  /* --------------------------------
-     Row Container Adjustments
-  -------------------------------- */
-  .row {
-    margin: 0;
-  }
-
-  .col-12 {
-    padding: 0;
   }
 
   /* --------------------------------
