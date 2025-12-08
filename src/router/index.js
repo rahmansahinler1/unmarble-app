@@ -2,6 +2,7 @@ import { createRouter, createWebHistory } from 'vue-router'
 import Panel1 from '@/views/Panel1.vue'
 import Panel2 from '@/views/Panel2.vue'
 import Panel5 from '@/views/Panel5.vue'
+import { trackPageView } from '@/utils/posthog'
 
 const routes = [
   {
@@ -39,6 +40,11 @@ router.beforeEach((to, from, next) => {
   }
 
   next()
+})
+
+// Track page views in PostHog after each navigation
+router.afterEach((to) => {
+  trackPageView(to.fullPath)
 })
 
 export default router
