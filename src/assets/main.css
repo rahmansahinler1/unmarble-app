@@ -2589,23 +2589,35 @@
     gap: 6px;
   }
 
-  /* All buttons - uniform sizing (smaller font, same height) */
-  .modal-dialog.modal-xl.modal-dialog-scrollable .modal-body > .d-flex.flex-row .btn-sm {
-    font-size: 9px;
-    padding: 6px 8px;
-    height: 32px;
-    display: flex;
+  /* Hide "Back to Selection" text on mobile - show only arrow icon */
+  .modal-dialog.modal-xl.modal-dialog-scrollable .modal-header .btn-link span {
+    display: none;
+  }
+
+  /* Button row container - ensure horizontal layout */
+  .modal-dialog.modal-xl.modal-dialog-scrollable .modal-body > .d-flex.flex-row {
+    display: flex !important;
+    flex-direction: row !important;
+    flex-wrap: nowrap !important;
+  }
+
+  /* All category/action buttons in modal - uniform sizing */
+  .modal-dialog.modal-xl.modal-dialog-scrollable .modal-body .btn-sm {
+    font-size: 8px;
+    padding: 4px 8px;
+    height: 28px;
+    display: inline-flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* Upload button - same height but slightly wider */
+  /* Upload button - smaller (both UploadModal and SelectionModal) */
   .modal-dialog.modal-xl.modal-dialog-scrollable .upload-btn {
     width: auto;
-    height: 32px;
-    font-size: 9px;
-    min-width: 85px;
-    padding: 6px 14px;
+    height: 28px;
+    font-size: 8px;
+    min-width: 70px;
+    padding: 4px 10px;
     display: flex;
     align-items: center;
     justify-content: center;
