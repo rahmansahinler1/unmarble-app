@@ -169,8 +169,17 @@
           <p v-else class="nav-text"><i class="bi bi-magic me-1"></i>Click Design Button</p>
         </div>
 
-        <!-- Redesign and Download buttons -->
-        <div class="d-flex justify-content-center mt-3 gap-2">
+        <!-- Design, Redesign and Download buttons -->
+        <div class="d-flex justify-content-center mt-3 gap-2 design-actions-row">
+          <button
+            class="design-btn"
+            :class="{ 'design-btn-active': canDesign }"
+            :disabled="!canDesign"
+            @click="designImage"
+          >
+            <span>Design</span>
+            <span><i class="bi bi-magic"></i> {{ userStore.userLimits.designsLeft || 0 }}</span>
+          </button>
           <button
             class="btn btn-outline-secondary btn-sm"
             :disabled="!designedImage"
@@ -189,8 +198,8 @@
       </div>
     </div>
 
-    <!-- Design Button -->
-    <div class="row">
+    <!-- Design Button (desktop only) -->
+    <div class="row design-btn-desktop-row">
       <div class="col-12 text-center mb-4">
         <button
           class="design-btn"

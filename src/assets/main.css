@@ -669,6 +669,11 @@
   gap: 0.25rem;
 }
 
+/* Hide inline Design button on desktop - use separate row instead */
+.design-actions-row .design-btn {
+  display: none;
+}
+
 .separator-icon {
   width: 48px;
   height: 48px;
@@ -2801,12 +2806,12 @@
     flex: 0 0 100%;
     max-width: 100%;
     justify-content: center;
-    margin: 4px 0 0 0 !important;
+    margin: 8px 0 8px 0 !important; /* Equal gap above and below */
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(4) .separator-icon {
-    width: 32px;
-    height: 32px;
+    width: 26px;
+    height: 26px;
     transform: rotate(90deg); /* Rotate to point down */
   }
 
@@ -2831,10 +2836,16 @@
     border-width: 1px !important;
   }
 
-  /* Result card - centered with 4:5 ratio, fixed width */
+  /* Result card - centered with 4:5 ratio, bigger size */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    width: 40% !important;
-    padding-bottom: 55% !important; /* 4:5 ratio of 70% width */
+    width: 57% !important;
+    padding-bottom: 71% !important; /* 4:5 ratio, 10% bigger */
+  }
+
+  /* Result card arrow icon - point upwards */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i {
+    transform: rotate(180deg);
+    display: inline-block;
   }
 
   /* Card titles - smaller gap to dropzone */
@@ -2862,7 +2873,7 @@
   /* Replace buttons under selection cards */
   .container-fluid .row.h-100 > .col-auto:nth-child(1) .d-flex.justify-content-center.mt-3,
   .container-fluid .row.h-100 > .col-auto:nth-child(3) .d-flex.justify-content-center.mt-3 {
-    margin-top: 6px !important;
+    margin-top: 3px !important;
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm,
@@ -2872,45 +2883,48 @@
     height: 24px;
   }
 
-  /* Redesign and Download buttons under Result card - smaller */
-  .container-fluid .row.h-100 > .col-auto:nth-child(5) .d-flex.justify-content-center.mt-3 {
-    margin-top: 6px !important;
-    gap: 4px !important;
+  /* Hide desktop-only Design button row on mobile */
+  .design-btn-desktop-row {
+    display: none !important;
   }
 
-  .container-fluid .row.h-100 > .col-auto:nth-child(5) .btn-outline-secondary.btn-sm {
-    font-size: 8px;
-    padding: 4px 8px;
-    height: 26px;
+  /* Actions row (Design + Redesign + Download) - all in one row */
+  .design-actions-row,
+  .design-actions-row.mt-3,
+  .design-actions-row.gap-2 {
+    margin-top: 3px !important;
+    gap: 4px !important;
+    display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  /* All buttons in actions row - same height, smaller font */
+  .design-actions-row .btn-outline-secondary.btn-sm {
+    font-size: 7px;
+    padding: 3px 6px;
+    height: 22px;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* Design button row - show it, style for mobile */
-  .container-fluid .row:last-child:not(.h-100) {
+  /* Design button in actions row - match other buttons */
+  .design-actions-row .design-btn {
+    position: relative !important;
+    width: auto;
+    min-width: unset;
+    height: 22px;
+    font-size: 7px;
+    border-radius: 6px;
     display: flex !important;
-    margin: 8px 0 0 0 !important;
-    padding: 0 16px !important;
-  }
-
-  .container-fluid .row:last-child:not(.h-100) .col-12 {
-    padding: 0 !important;
-  }
-
-  /* Design button - same size as Redesign/Download */
-  .design-btn {
-    width: 50%;
-    height: 28px;
-    font-size: 9px;
-    border-radius: 8px;
-    display: flex;
     align-items: center;
-    justify-content: space-between;
-    padding: 0 12px;
+    justify-content: center;
+    padding: 3px 8px;
+    gap: 4px;
   }
 
-  .design-btn span {
-    font-size: 9px;
+  .design-actions-row .design-btn span {
+    font-size: 7px;
   }
 }
