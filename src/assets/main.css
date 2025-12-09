@@ -2748,4 +2748,169 @@
   .subscription-warning-modal .modal-title {
     font-size: 18px;
   }
+
+  /* ================================
+     Design Page Mobile Layout
+  ================================ */
+
+  /* Main container - vertical layout */
+  .container-fluid.h-100.d-flex.flex-column {
+    padding: 0 1px !important;
+    height: auto !important;
+  }
+
+  /* Main row - wrap to column */
+  .container-fluid .row.h-100.align-items-center.justify-content-center {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    gap: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Selection cards row wrapper - first two cards + plus icon */
+  .container-fluid .row.h-100 > .col-auto {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Yourself and Clothing cards - side by side */
+  .container-fluid .row.h-100 > .col-auto:nth-child(1),
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) {
+    flex: 0 0 calc(50% - 12px);
+    max-width: calc(50% - 12px);
+  }
+
+  /* Plus icon between cards */
+  .container-fluid .row.h-100 > .col-auto:nth-child(2) {
+    flex: 0 0 24px;
+    max-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(2) .separator-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Result arrow - full width, centered, rotated to point down */
+  .container-fluid .row.h-100 > .col-auto:nth-child(4) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    justify-content: center;
+    margin: 4px 0 0 0 !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(4) .separator-icon {
+    width: 32px;
+    height: 32px;
+    transform: rotate(90deg); /* Rotate to point down */
+  }
+
+  /* Result card - centered, not full width */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Selection card styling */
+  .selection-card {
+    width: 100% !important;
+    height: 0 !important;
+    padding-bottom: 125% !important; /* 4:5 ratio */
+    min-height: unset !important;
+    max-height: unset !important;
+    border-radius: 12px;
+    border-width: 1px !important;
+  }
+
+  /* Result card - centered with 4:5 ratio, fixed width */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
+    width: 40% !important;
+    padding-bottom: 55% !important; /* 4:5 ratio of 70% width */
+  }
+
+  /* Card titles - smaller gap to dropzone */
+  .card-title,
+  .card-title.mb-3,
+  h3.card-title {
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .card-title i {
+    font-size: 11px;
+  }
+
+  /* Selection card placeholder text */
+  .selection-card .nav-text {
+    font-size: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+
+  /* Replace buttons under selection cards */
+  .container-fluid .row.h-100 > .col-auto:nth-child(1) .d-flex.justify-content-center.mt-3,
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) .d-flex.justify-content-center.mt-3 {
+    margin-top: 6px !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm,
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm {
+    font-size: 8px;
+    padding: 4px 8px;
+    height: 24px;
+  }
+
+  /* Redesign and Download buttons under Result card - smaller */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .d-flex.justify-content-center.mt-3 {
+    margin-top: 6px !important;
+    gap: 4px !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .btn-outline-secondary.btn-sm {
+    font-size: 8px;
+    padding: 4px 8px;
+    height: 26px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* Design button row - show it, style for mobile */
+  .container-fluid .row:last-child:not(.h-100) {
+    display: flex !important;
+    margin: 8px 0 0 0 !important;
+    padding: 0 16px !important;
+  }
+
+  .container-fluid .row:last-child:not(.h-100) .col-12 {
+    padding: 0 !important;
+  }
+
+  /* Design button - same size as Redesign/Download */
+  .design-btn {
+    width: 50%;
+    height: 28px;
+    font-size: 9px;
+    border-radius: 8px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+  }
+
+  .design-btn span {
+    font-size: 9px;
+  }
 }
