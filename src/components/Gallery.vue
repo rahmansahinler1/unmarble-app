@@ -156,14 +156,14 @@
       <div class="modal-dialog modal-xl modal-dialog-centered">
         <div class="modal-content">
           <div class="modal-header">
-            <h5 class="modal-title">Full Image</h5>
+            <h5 class="modal-title">Your Photo</h5>
             <button type="button" class="btn-close" @click="closeImageModal"></button>
           </div>
 
           <div class="modal-body text-center">
             <div v-if="loadingFullImage" class="py-5">
               <div class="spinner-border text-primary mb-2" role="status"></div>
-              <p class="nav-text text-muted">Loading full image...</p>
+              <p class="nav-text text-muted">Loading image...</p>
             </div>
             <img
               v-else-if="fullImage"
