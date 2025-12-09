@@ -2607,6 +2607,48 @@
   }
 
   /* --------------------------------
+     Full Image View Modal
+  -------------------------------- */
+  .modal-dialog.modal-xl.modal-dialog-centered {
+    margin: 16px;
+    max-width: calc(100% - 32px);
+    width: calc(100% - 32px);
+    height: auto;
+    min-height: calc(100% - 32px);
+    display: flex;
+    align-items: center;
+  }
+
+  .modal-dialog.modal-xl.modal-dialog-centered .modal-content {
+    border-radius: 12px;
+    height: auto;
+    min-height: auto;
+    width: 100%;
+  }
+
+  .modal-dialog.modal-xl.modal-dialog-centered .modal-body {
+    padding: 16px;
+  }
+
+  .modal-dialog.modal-xl.modal-dialog-centered .modal-header {
+    padding: 12px 16px;
+  }
+
+  .modal-dialog.modal-xl.modal-dialog-centered .modal-footer {
+    padding: 12px 16px;
+  }
+
+  /* Footer buttons - smaller font matching upload modal */
+  .modal-dialog.modal-xl.modal-dialog-centered .modal-footer .btn {
+    font-size: 9px;
+    height: 32px;
+    padding: 6px 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  /* --------------------------------
      Limit Modal Adjustments
   -------------------------------- */
   .limit-modal {
