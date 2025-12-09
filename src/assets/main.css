@@ -3023,4 +3023,66 @@
       box-shadow: 0 4px 20px rgba(0, 183, 237, 0.7);
     }
   }
+
+  /* ================================
+     Profile Page Mobile
+  ================================ */
+  /* Container - add horizontal padding */
+  #profile .container-fluid {
+    padding: 0 16px !important;
+  }
+
+  /* Page title - centered with top gap */
+  .profile-page-title {
+    font-size: 14px;
+    text-align: center;
+    margin-bottom: 12px !important;
+    padding-top: 12px;
+  }
+
+  /* Profile header (name, plan titles) */
+  .profile-header {
+    font-size: 14px;
+  }
+
+  /* Profile text (email, descriptions) */
+  .profile-text {
+    font-size: 12px;
+  }
+
+  /* Profile small text (dates, labels) */
+  .profile-text-small {
+    font-size: 10px;
+  }
+
+  /* Profile buttons */
+  .profile-btn {
+    font-size: 10px;
+    padding: 4px 10px;
+  }
+
+  /* Icons in profile cards */
+  #profile .bi {
+    font-size: 1.25rem !important;
+  }
+
+  /* Profile picture - smaller */
+  #profile .profile-picture img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  /* Card padding - tighter */
+  #profile .border.rounded {
+    padding: 12px !important;
+  }
+
+  /* Usage stats cards */
+  #profile .nav-text.fw-bold {
+    font-size: 14px;
+  }
+
+  #profile .nav-text-small {
+    font-size: 10px;
+  }
 }
