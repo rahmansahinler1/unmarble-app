@@ -2808,7 +2808,7 @@
     flex: 0 0 100%;
     max-width: 100%;
     justify-content: center;
-    margin: 4px 0 4px 0 !important; /* Smaller gaps */
+    margin: 4px 0 8px 0 !important; /* Smaller gaps */
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(4) .separator-icon {
@@ -2838,10 +2838,10 @@
     border-width: 1px !important;
   }
 
-  /* Result card - centered with 4:5 ratio, bigger size */
+  /* Result card - centered with 4:5 ratio, dynamic sizing with max cap */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    width: 67% !important;
-    padding-bottom: 80% !important; /* 4:5 ratio */
+    width: clamp(160px, 62vw, 240px) !important;
+    padding-bottom: clamp(200px, 76vw, 300px) !important; /* 4:5 ratio maintained */
   }
 
   /* Result card arrow icon - point upwards */
