@@ -2852,7 +2852,7 @@
 
   /* Result card arrow icon - point upwards */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i {
-    transform: rotate(180deg);
+    transform: rotate(90deg);
     display: inline-block;
   }
 
