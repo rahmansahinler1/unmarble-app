@@ -2227,7 +2227,7 @@
     font-size: 14px;
     font-weight: 600;
     text-align: center;
-    padding: 0px 0 0px 0;
+    padding: 12px 0 8px 0;
     margin: 0 !important;
     background: #ffffff;
   }
@@ -2240,7 +2240,7 @@
     flex-wrap: nowrap;
     overflow-x: auto;
     gap: 0px;
-    padding: 0 0px 0px 0px;
+    padding: 0 0px 12px 0px;
     margin-bottom: 0 !important;
     background: #ffffff;
     -webkit-overflow-scrolling: touch;
