@@ -2699,12 +2699,20 @@
     max-width: 90%;
   }
 
-  .onboarding-title {
-    font-size: 22px;
+  /* Onboarding text - linear interpolation from 360px to 420px (60px range) */
+  .onboarding-tagline {
+    /* 20px at 360px → 24px at 420px */
+    font-size: clamp(20px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 24px);
   }
 
-  .onboarding-subtitle {
-    font-size: 14px;
+  .onboarding-question {
+    /* 20px at 360px → 24px at 420px */
+    font-size: clamp(20px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 24px);
+  }
+
+  .onboarding-privacy {
+    /* 14px at 360px → 16px at 420px */
+    font-size: clamp(14px, calc(14px + (16 - 14) * ((100vw - 360px) / 60)), 16px);
   }
 
   .onboarding-gallery {
