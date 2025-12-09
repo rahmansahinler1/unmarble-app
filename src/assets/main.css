@@ -2758,10 +2758,12 @@
      Design Page Mobile Layout
   ================================ */
 
-  /* Main container - vertical layout */
+  /* Prevent horizontal scroll on Design page */
   .container-fluid.h-100.d-flex.flex-column {
     padding: 0 1px !important;
     height: auto !important;
+    overflow-x: hidden !important;
+    max-width: 100vw !important;
   }
 
   /* Main row - wrap to column */
@@ -2806,7 +2808,7 @@
     flex: 0 0 100%;
     max-width: 100%;
     justify-content: center;
-    margin: 8px 0 8px 0 !important; /* Equal gap above and below */
+    margin: 4px 0 4px 0 !important; /* Smaller gaps */
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(4) .separator-icon {
@@ -2838,8 +2840,8 @@
 
   /* Result card - centered with 4:5 ratio, bigger size */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    width: 57% !important;
-    padding-bottom: 71% !important; /* 4:5 ratio, 10% bigger */
+    width: 67% !important;
+    padding-bottom: 80% !important; /* 4:5 ratio */
   }
 
   /* Result card arrow icon - point upwards */
@@ -2870,7 +2872,7 @@
     white-space: nowrap;
   }
 
-  /* Replace buttons under selection cards */
+  /* Replace buttons under selection cards - icon only, no border */
   .container-fluid .row.h-100 > .col-auto:nth-child(1) .d-flex.justify-content-center.mt-3,
   .container-fluid .row.h-100 > .col-auto:nth-child(3) .d-flex.justify-content-center.mt-3 {
     margin-top: 3px !important;
@@ -2878,9 +2880,18 @@
 
   .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm,
   .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm {
-    font-size: 8px;
-    padding: 4px 8px;
-    height: 24px;
+    border: none !important;
+    background: transparent !important;
+    padding: 4px;
+    font-size: 0; /* Hide text */
+    height: auto;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm i,
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm i {
+    font-size: 12px;
+    margin: 0 !important;
+    color: #5d5d5d;
   }
 
   /* Hide desktop-only Design button row on mobile */
@@ -2888,43 +2899,110 @@
     display: none !important;
   }
 
-  /* Actions row (Design + Redesign + Download) - all in one row */
+  /* Actions row - only contains Redesign + Download now (Design is FAB) */
   .design-actions-row,
   .design-actions-row.mt-3,
   .design-actions-row.gap-2 {
     margin-top: 3px !important;
-    gap: 4px !important;
+    gap: 16px !important;
     display: flex !important;
     flex-wrap: nowrap;
     justify-content: center;
   }
 
-  /* All buttons in actions row - same height, smaller font */
+  /* Action buttons (Redesign + Download) - icon only, no border */
   .design-actions-row .btn-outline-secondary.btn-sm {
-    font-size: 7px;
-    padding: 3px 6px;
-    height: 22px;
+    border: none !important;
+    background: transparent !important;
+    padding: 4px;
+    font-size: 0; /* Hide text */
+    height: auto;
     display: flex;
     align-items: center;
     justify-content: center;
   }
 
-  /* Design button in actions row - match other buttons */
-  .design-actions-row .design-btn {
-    position: relative !important;
-    width: auto;
-    min-width: unset;
-    height: 22px;
-    font-size: 7px;
-    border-radius: 6px;
-    display: flex !important;
-    align-items: center;
-    justify-content: center;
-    padding: 3px 8px;
-    gap: 4px;
+  .design-actions-row .btn-outline-secondary.btn-sm i {
+    font-size: 12px;
+    margin: 0 !important;
+    color: #5d5d5d;
   }
 
-  .design-actions-row .design-btn span {
-    font-size: 7px;
+  .design-actions-row .btn-outline-secondary.btn-sm:disabled i {
+    color: #ccc;
+  }
+
+  /* Design button - FAB style (fixed bottom-right) */
+  .design-actions-row .design-btn {
+    position: fixed !important;
+    bottom: calc(60px + 16px); /* Above bottom nav (60px) + spacing */
+    right: 1px;
+    width: 48px;
+    height: 48px;
+    min-width: unset;
+    border-radius: 50%;
+    background-color: #00b7ed;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    gap: 1px;
+    box-shadow: 0 4px 12px rgba(0, 183, 237, 0.4);
+    z-index: 999;
+  }
+
+  /* Hide "Design" text in FAB */
+  .design-actions-row .design-btn > span:first-child {
+    display: none;
+  }
+
+  /* Show icon + count in FAB */
+  .design-actions-row .design-btn > span:last-child {
+    background: transparent;
+    padding: 0;
+    font-size: 10px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1px;
+    color: #ffffff;
+  }
+
+  .design-actions-row .design-btn > span:last-child i {
+    font-size: 16px;
+  }
+
+  /* FAB disabled state */
+  .design-actions-row .design-btn:disabled {
+    background-color: #ccc;
+    box-shadow: none;
+  }
+
+  /* FAB active animation (hop + pulse-glow, same as desktop) */
+  .design-actions-row .design-btn.design-btn-active {
+    animation:
+      fab-hop 1s ease-in-out infinite,
+      fab-pulse-glow 1.5s ease-in-out infinite;
+  }
+
+  @keyframes fab-hop {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes fab-pulse-glow {
+    0%,
+    100% {
+      box-shadow: 0 4px 12px rgba(0, 183, 237, 0.4);
+    }
+    50% {
+      box-shadow: 0 4px 20px rgba(0, 183, 237, 0.7);
+    }
   }
 }
