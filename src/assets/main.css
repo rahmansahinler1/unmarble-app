@@ -2838,10 +2838,16 @@
     border-width: 1px !important;
   }
 
-  /* Result card - centered with 4:5 ratio, dynamic sizing with max cap */
+  /* Result card - centered with 4:5 ratio, linear interpolation (223px→334px width, 274px→411px height) */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    width: clamp(160px, 62vw, 240px) !important;
-    padding-bottom: clamp(200px, 76vw, 300px) !important; /* 4:5 ratio maintained */
+    /* Width: 223px at 360px → 334px at 430px (50% growth over 70px range) */
+    width: clamp(223px, calc(223px + (334 - 223) * ((100vw - 360px) / 70)), 334px) !important;
+    /* Height: 274px at 360px → 411px at 430px (4:5 ratio maintained) */
+    padding-bottom: clamp(
+      274px,
+      calc(274px + (411 - 274) * ((100vw - 360px) / 70)),
+      411px
+    ) !important;
   }
 
   /* Result card arrow icon - point upwards */
