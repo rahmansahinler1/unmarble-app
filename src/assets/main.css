@@ -3093,4 +3093,14 @@
   #profile .nav-text-small {
     font-size: 10px;
   }
+
+  /* Section spacing - reduce mb-4 gaps for mobile */
+  #profile .mb-4 {
+    margin-bottom: 32px !important;
+  }
+
+  /* Feedback section - reduce bottom padding */
+  #profile .mb-4:last-of-type {
+    margin-bottom: 32px !important;
+  }
 }
