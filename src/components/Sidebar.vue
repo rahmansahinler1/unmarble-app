@@ -4,9 +4,10 @@
     <!-- Navigation Sections -->
     <div class="flex-grow-1">
       <div class="nav-section mt-3">
-        <!-- Logo -->
+        <!-- Logo - wide for desktop, small for tablet -->
         <button type="button" class="logo-button mb-5 mt-3">
-          <img src="/assets/img/logo_wide.svg" alt="Unmarble" class="logo-image" />
+          <img src="/assets/img/logo_wide.svg" alt="Unmarble" class="logo-image logo-wide" />
+          <img src="/assets/img/logo-small.svg" alt="Unmarble" class="logo-image logo-small" />
         </button>
 
         <!-- Section Title -->

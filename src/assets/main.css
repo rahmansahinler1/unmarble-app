@@ -61,10 +61,19 @@
 }
 
 .logo-image {
-  width: 223px;
   height: auto;
   display: block;
   opacity: 0.9;
+}
+
+/* Desktop - show wide logo, hide small */
+.logo-wide {
+  width: 223px;
+  display: block;
+}
+
+.logo-small {
+  display: none;
 }
 
 /* --------------------------------
@@ -735,7 +744,7 @@
 }
 
 /* Responsive Design */
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .app-sidebar {
     width: 100%;
     height: auto;
@@ -1342,7 +1351,7 @@
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 767px) {
   .gallery-grid {
     grid-template-columns: repeat(2, 1fr);
   }
@@ -3102,5 +3111,122 @@
   /* Feedback section - reduce bottom padding */
   #profile .mb-4:last-of-type {
     margin-bottom: 32px !important;
+  }
+}
+
+/* ================================
+   Tablet Responsive (768px - 1024px)
+================================ */
+@media (min-width: 768px) and (max-width: 1024px) {
+  /* Sidebar - narrow, icon-only */
+  .app-sidebar {
+    width: 72px;
+  }
+
+  /* Main content - adjust for narrow sidebar */
+  .app-content {
+    left: 72px;
+    width: calc(100% - 72px);
+  }
+
+  /* Logo - show small, hide wide */
+  .logo-button {
+    justify-content: center;
+    margin-bottom: 24px !important;
+  }
+
+  .logo-wide {
+    display: none;
+  }
+
+  .logo-small {
+    display: block;
+    width: 40px;
+  }
+
+  /* Section title - hide */
+  .section-title {
+    display: none;
+  }
+
+  /* Nav section - center items */
+  .nav-section {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Nav items - icon only, centered */
+  .nav-item {
+    justify-content: center;
+    padding: 12px;
+    width: 48px;
+  }
+
+  .nav-item .nav-text {
+    display: none;
+  }
+
+  .nav-icon {
+    margin-right: 0;
+    font-size: 1.3rem;
+  }
+
+  /* Profile section - avatar only */
+  .profile-section {
+    padding: 8px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Upgrade banner - icon only */
+  .upgrade-banner-link {
+    justify-content: center !important;
+    padding: 8px;
+    width: 48px;
+  }
+
+  .upgrade-banner-link span,
+  .upgrade-banner-link .bi-arrow-right {
+    display: none;
+  }
+
+  .upgrade-banner-link .bi-stars {
+    margin: 0 !important;
+    font-size: 1.3rem;
+  }
+
+  /* Profile button - avatar only */
+  .profile-button {
+    width: 48px;
+    height: 48px;
+    padding: 4px;
+    justify-content: center;
+  }
+
+  .profile-button .profile-avatar,
+  .profile-button .profile-avatar-initials {
+    margin: 0 !important;
+  }
+
+  .profile-button .profile-avatar img {
+    width: 36px !important;
+    height: 36px !important;
+  }
+
+  /* Hide name, plan badge, chevron */
+  .profile-button .flex-grow-1,
+  .profile-button .bi-chevron-up,
+  .profile-button .bi-chevron-down {
+    display: none;
+  }
+
+  /* Dropdown menu - position to the right of sidebar */
+  .profile-section .dropdown-menu {
+    left: 72px !important;
+    bottom: 0 !important;
+    top: auto !important;
+    min-width: 200px;
   }
 }
