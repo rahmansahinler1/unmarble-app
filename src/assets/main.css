@@ -2214,7 +2214,7 @@
     max-width: 100vw;
     padding: 0;
     padding-bottom: 70px;
-    height: 100vh;
+    height: 100svh; /* Use small viewport height to account for browser UI */
     background-color: #ffffff;
     overflow-x: hidden;
     overflow-y: auto;
@@ -2858,15 +2858,15 @@
     border-width: 1px !important;
   }
 
-  /* Result card - centered with 4:5 ratio, linear interpolation (223px→334px width, 274px→411px height) */
+  /* Result card - centered with 4:5 ratio, linear interpolation (219px→297px width, 274px→371px height) */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    /* Width: 223px at 360px → 334px at 430px (50% growth over 70px range) */
-    width: clamp(223px, calc(223px + (334 - 223) * ((100vw - 360px) / 70)), 334px) !important;
-    /* Height: 274px at 360px → 411px at 430px (4:5 ratio maintained) */
+    /* Width: 219px at 360px → 297px at 430px (4:5 ratio maintained) */
+    width: clamp(219px, calc(219px + (297 - 219) * ((100vw - 360px) / 70)), 297px) !important;
+    /* Height: 274px at 360px → 371px at 430px (reduced for mobile browser UI) */
     padding-bottom: clamp(
       274px,
-      calc(274px + (411 - 274) * ((100vw - 360px) / 70)),
-      411px
+      calc(274px + (371 - 274) * ((100vw - 360px) / 70)),
+      371px
     ) !important;
   }
 
