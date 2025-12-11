@@ -3257,17 +3257,17 @@
     margin: 0 !important;
   }
 
-  /* Yourself and Clothing cards - side by side */
+  /* Yourself and Clothing cards - side by side, dynamic max-width (280px→400px) */
   .container-fluid .row.h-100 > .col-auto:nth-child(1),
   .container-fluid .row.h-100 > .col-auto:nth-child(3) {
-    flex: 0 0 calc(50% - 12px);
-    max-width: calc(50% - 12px);
+    flex: 0 0 calc(50% - 20px);
+    max-width: clamp(280px, calc(280px + (400 - 280) * ((100vw - 768px) / 256)), 400px);
   }
 
-  /* Plus icon between cards */
+  /* Plus icon between cards - dynamic size (24px→40px container, 20px→32px icon) */
   .container-fluid .row.h-100 > .col-auto:nth-child(2) {
-    flex: 0 0 24px;
-    max-width: 24px;
+    flex: 0 0 clamp(24px, calc(24px + (40 - 24) * ((100vw - 768px) / 256)), 36px);
+    max-width: clamp(24px, calc(24px + (40 - 24) * ((100vw - 768px) / 256)), 36px);
     display: flex;
     align-items: center;
     justify-content: center;
@@ -3275,11 +3275,11 @@
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(2) .separator-icon {
-    width: 20px;
-    height: 20px;
+    width: clamp(20px, calc(20px + (32 - 20) * ((100vw - 768px) / 256)), 32px);
+    height: clamp(20px, calc(20px + (32 - 20) * ((100vw - 768px) / 256)), 32px);
   }
 
-  /* Result arrow - full width, centered, rotated to point down */
+  /* Result arrow - full width, centered, rotated to point down, dynamic size (26px→40px) */
   .container-fluid .row.h-100 > .col-auto:nth-child(4) {
     flex: 0 0 100%;
     max-width: 100%;
@@ -3288,8 +3288,8 @@
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(4) .separator-icon {
-    width: 26px;
-    height: 26px;
+    width: clamp(26px, calc(26px + (40 - 26) * ((100vw - 768px) / 256)), 40px);
+    height: clamp(26px, calc(26px + (40 - 26) * ((100vw - 768px) / 256)), 40px);
     transform: rotate(90deg);
   }
 
@@ -3314,10 +3314,11 @@
     border-width: 1px !important;
   }
 
-  /* Result card - fixed size for tablet (larger than mobile) */
+  /* Result card - dynamic size for tablet (300px→430px width, 375px→538px height, 4:5 ratio) */
+  /* Linear interpolation: clamp(min, calc(min + (max - min) * ((100vw - 768px) / 256)), max) */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    width: 280px !important;
-    padding-bottom: 350px !important; /* 4:5 ratio: 280 * 1.25 = 350 */
+    width: clamp(300px, calc(300px + 130 * (100vw - 768px) / 256), 430px) !important;
+    padding-bottom: clamp(375px, calc(375px + 163 * (100vw - 768px) / 256), 538px) !important;
   }
 
   /* Result card arrow icon - point upwards */
@@ -3326,21 +3327,21 @@
     display: inline-block;
   }
 
-  /* Card titles - smaller */
+  /* Card titles - dynamic size (11px→14px) */
   .card-title,
   .card-title.mb-3,
   h3.card-title {
-    font-size: 11px !important;
+    font-size: clamp(11px, calc(11px + (14 - 11) * ((100vw - 768px) / 256)), 14px) !important;
     margin-bottom: 4px !important;
   }
 
   .card-title i {
-    font-size: 11px;
+    font-size: clamp(11px, calc(11px + (14 - 11) * ((100vw - 768px) / 256)), 14px);
   }
 
-  /* Selection card placeholder text */
+  /* Selection card placeholder text - dynamic size (10px→13px) */
   .selection-card .nav-text {
-    font-size: 10px;
+    font-size: clamp(10px, calc(10px + (13 - 10) * ((100vw - 768px) / 256)), 13px);
     position: absolute;
     top: 50%;
     left: 50%;
@@ -3348,7 +3349,7 @@
     white-space: nowrap;
   }
 
-  /* Replace buttons - icon only */
+  /* Replace buttons - icon only, dynamic size (12px→16px) */
   .container-fluid .row.h-100 > .col-auto:nth-child(1) .d-flex.justify-content-center.mt-3,
   .container-fluid .row.h-100 > .col-auto:nth-child(3) .d-flex.justify-content-center.mt-3 {
     margin-top: 3px !important;
@@ -3358,14 +3359,14 @@
   .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm {
     border: none !important;
     background: transparent !important;
-    padding: 4px;
+    padding: clamp(4px, calc(4px + (8 - 4) * ((100vw - 768px) / 256)), 8px);
     font-size: 0;
     height: auto;
   }
 
   .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm i,
   .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm i {
-    font-size: 12px;
+    font-size: clamp(12px, calc(12px + (16 - 12) * ((100vw - 768px) / 256)), 16px);
     margin: 0 !important;
     color: #5d5d5d;
   }
@@ -3386,11 +3387,11 @@
     justify-content: center;
   }
 
-  /* Action buttons (Redesign + Download) - icon only */
+  /* Action buttons (Redesign + Download) - icon only, dynamic size (12px→18px) */
   .design-actions-row .btn-outline-secondary.btn-sm {
     border: none !important;
     background: transparent !important;
-    padding: 4px;
+    padding: clamp(4px, calc(4px + (8 - 4) * ((100vw - 768px) / 256)), 8px);
     font-size: 0;
     height: auto;
     display: flex;
@@ -3399,7 +3400,7 @@
   }
 
   .design-actions-row .btn-outline-secondary.btn-sm i {
-    font-size: 12px;
+    font-size: clamp(12px, calc(12px + (18 - 12) * ((100vw - 768px) / 256)), 18px);
     margin: 0 !important;
     color: #5d5d5d;
   }
@@ -3408,13 +3409,13 @@
     color: #ccc;
   }
 
-  /* Design button - FAB style (fixed bottom-right, NO bottom nav offset) */
+  /* Design button - FAB style, dynamic size (56px→72px) */
   .design-actions-row .design-btn {
     position: fixed !important;
-    bottom: 16px;
-    right: 16px;
-    width: 56px;
-    height: 56px;
+    bottom: clamp(16px, calc(16px + (24 - 16) * ((100vw - 768px) / 256)), 24px);
+    right: clamp(16px, calc(16px + (24 - 16) * ((100vw - 768px) / 256)), 24px);
+    width: clamp(56px, calc(56px + (72 - 56) * ((100vw - 768px) / 256)), 72px);
+    height: clamp(56px, calc(56px + (72 - 56) * ((100vw - 768px) / 256)), 72px);
     min-width: unset;
     border-radius: 50%;
     background-color: #00b7ed;
@@ -3433,11 +3434,11 @@
     display: none;
   }
 
-  /* Show icon + count in FAB */
+  /* Show icon + count in FAB - dynamic size (11px→14px text, 18px→24px icon) */
   .design-actions-row .design-btn > span:last-child {
     background: transparent;
     padding: 0;
-    font-size: 11px;
+    font-size: clamp(11px, calc(11px + (14 - 11) * ((100vw - 768px) / 256)), 14px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3446,7 +3447,7 @@
   }
 
   .design-actions-row .design-btn > span:last-child i {
-    font-size: 18px;
+    font-size: clamp(18px, calc(18px + (24 - 18) * ((100vw - 768px) / 256)), 24px);
   }
 
   /* FAB disabled state */
