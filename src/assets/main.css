@@ -2858,15 +2858,15 @@
     border-width: 1px !important;
   }
 
-  /* Result card - centered with 4:5 ratio, linear interpolation (219px→273px width, 274px→341px height) */
+  /* Result card - centered with 4:5 ratio, linear interpolation (219px→257px width, 274px→321px height) */
   .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
-    /* Width: 219px at 360px → 273px at 430px (4:5 ratio maintained) */
-    width: clamp(219px, calc(219px + (273 - 219) * ((100vw - 360px) / 70)), 273px) !important;
-    /* Height: 274px at 360px → 341px at 430px (reduced for mobile browser UI) */
+    /* Width: 219px at 360px → 257px at 430px (4:5 ratio maintained) */
+    width: clamp(219px, calc(219px + (257 - 219) * ((100vw - 360px) / 70)), 257px) !important;
+    /* Height: 274px at 360px → 321px at 430px (reduced for mobile browser UI) */
     padding-bottom: clamp(
       274px,
-      calc(274px + (341 - 274) * ((100vw - 360px) / 70)),
-      341px
+      calc(274px + (321 - 274) * ((100vw - 360px) / 70)),
+      321px
     ) !important;
   }
 
