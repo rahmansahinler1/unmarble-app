@@ -3229,4 +3229,256 @@
     top: auto !important;
     min-width: 200px;
   }
+
+  /* ================================
+     Design Page Tablet Layout
+  ================================ */
+
+  /* Prevent horizontal scroll on Design page */
+  .container-fluid.h-100.d-flex.flex-column {
+    padding: 0 1px !important;
+    height: auto !important;
+    overflow-x: hidden !important;
+    max-width: 100% !important;
+  }
+
+  /* Main row - wrap to column */
+  .container-fluid .row.h-100.align-items-center.justify-content-center {
+    flex-wrap: wrap !important;
+    height: auto !important;
+    gap: 0;
+    margin: 0 !important;
+    padding: 0 !important;
+  }
+
+  /* Selection cards row wrapper */
+  .container-fluid .row.h-100 > .col-auto {
+    padding: 0 !important;
+    margin: 0 !important;
+  }
+
+  /* Yourself and Clothing cards - side by side */
+  .container-fluid .row.h-100 > .col-auto:nth-child(1),
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) {
+    flex: 0 0 calc(50% - 12px);
+    max-width: calc(50% - 12px);
+  }
+
+  /* Plus icon between cards */
+  .container-fluid .row.h-100 > .col-auto:nth-child(2) {
+    flex: 0 0 24px;
+    max-width: 24px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 2rem !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(2) .separator-icon {
+    width: 20px;
+    height: 20px;
+  }
+
+  /* Result arrow - full width, centered, rotated to point down */
+  .container-fluid .row.h-100 > .col-auto:nth-child(4) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    justify-content: center;
+    margin: 4px 0 8px 0 !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(4) .separator-icon {
+    width: 26px;
+    height: 26px;
+    transform: rotate(90deg);
+  }
+
+  /* Result card container - centered */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) {
+    flex: 0 0 100%;
+    max-width: 100%;
+    padding: 0 !important;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
+  /* Selection card styling - 4:5 ratio */
+  .selection-card {
+    width: 100% !important;
+    height: 0 !important;
+    padding-bottom: 125% !important;
+    min-height: unset !important;
+    max-height: unset !important;
+    border-radius: 12px;
+    border-width: 1px !important;
+  }
+
+  /* Result card - fixed size for tablet (larger than mobile) */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card {
+    width: 280px !important;
+    padding-bottom: 350px !important; /* 4:5 ratio: 280 * 1.25 = 350 */
+  }
+
+  /* Result card arrow icon - point upwards */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i {
+    transform: rotate(90deg);
+    display: inline-block;
+  }
+
+  /* Card titles - smaller */
+  .card-title,
+  .card-title.mb-3,
+  h3.card-title {
+    font-size: 11px !important;
+    margin-bottom: 4px !important;
+  }
+
+  .card-title i {
+    font-size: 11px;
+  }
+
+  /* Selection card placeholder text */
+  .selection-card .nav-text {
+    font-size: 10px;
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    white-space: nowrap;
+  }
+
+  /* Replace buttons - icon only */
+  .container-fluid .row.h-100 > .col-auto:nth-child(1) .d-flex.justify-content-center.mt-3,
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) .d-flex.justify-content-center.mt-3 {
+    margin-top: 3px !important;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm,
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm {
+    border: none !important;
+    background: transparent !important;
+    padding: 4px;
+    font-size: 0;
+    height: auto;
+  }
+
+  .container-fluid .row.h-100 > .col-auto:nth-child(1) .btn-outline-secondary.btn-sm i,
+  .container-fluid .row.h-100 > .col-auto:nth-child(3) .btn-outline-secondary.btn-sm i {
+    font-size: 12px;
+    margin: 0 !important;
+    color: #5d5d5d;
+  }
+
+  /* Hide desktop-only Design button row */
+  .design-btn-desktop-row {
+    display: none !important;
+  }
+
+  /* Actions row */
+  .design-actions-row,
+  .design-actions-row.mt-3,
+  .design-actions-row.gap-2 {
+    margin-top: 3px !important;
+    gap: 16px !important;
+    display: flex !important;
+    flex-wrap: nowrap;
+    justify-content: center;
+  }
+
+  /* Action buttons (Redesign + Download) - icon only */
+  .design-actions-row .btn-outline-secondary.btn-sm {
+    border: none !important;
+    background: transparent !important;
+    padding: 4px;
+    font-size: 0;
+    height: auto;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  .design-actions-row .btn-outline-secondary.btn-sm i {
+    font-size: 12px;
+    margin: 0 !important;
+    color: #5d5d5d;
+  }
+
+  .design-actions-row .btn-outline-secondary.btn-sm:disabled i {
+    color: #ccc;
+  }
+
+  /* Design button - FAB style (fixed bottom-right, NO bottom nav offset) */
+  .design-actions-row .design-btn {
+    position: fixed !important;
+    bottom: 16px;
+    right: 16px;
+    width: 56px;
+    height: 56px;
+    min-width: unset;
+    border-radius: 50%;
+    background-color: #00b7ed;
+    display: flex !important;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 0;
+    gap: 2px;
+    box-shadow: 0 4px 12px rgba(0, 183, 237, 0.4);
+    z-index: 999;
+  }
+
+  /* Hide "Design" text in FAB */
+  .design-actions-row .design-btn > span:first-child {
+    display: none;
+  }
+
+  /* Show icon + count in FAB */
+  .design-actions-row .design-btn > span:last-child {
+    background: transparent;
+    padding: 0;
+    font-size: 11px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 2px;
+    color: #ffffff;
+  }
+
+  .design-actions-row .design-btn > span:last-child i {
+    font-size: 18px;
+  }
+
+  /* FAB disabled state */
+  .design-actions-row .design-btn:disabled {
+    background-color: #ccc;
+    box-shadow: none;
+  }
+
+  /* FAB active animation */
+  .design-actions-row .design-btn.design-btn-active {
+    animation:
+      tablet-fab-hop 1s ease-in-out infinite,
+      tablet-fab-pulse 1.5s ease-in-out infinite;
+  }
+
+  @keyframes tablet-fab-hop {
+    0%,
+    100% {
+      transform: translateY(0);
+    }
+    50% {
+      transform: translateY(-6px);
+    }
+  }
+
+  @keyframes tablet-fab-pulse {
+    0%,
+    100% {
+      box-shadow: 0 4px 12px rgba(0, 183, 237, 0.4);
+    }
+    50% {
+      box-shadow: 0 4px 20px rgba(0, 183, 237, 0.7);
+    }
+  }
 }
