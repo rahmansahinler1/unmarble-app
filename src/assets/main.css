@@ -610,6 +610,19 @@
   object-fit: cover;
 }
 
+/* Result card ready-to-design state */
+.selection-card.ready-to-design {
+  border-color: #00b7ed;
+  border-style: solid;
+  animation: selection-glow 2s ease-in-out infinite;
+  cursor: pointer;
+}
+
+.selection-card.ready-to-design:hover {
+  border-color: #0095c7;
+  background-color: rgba(0, 183, 237, 0.08);
+}
+
 .design-btn {
   font-family: var(--font-family-base);
   font-size: 14px;

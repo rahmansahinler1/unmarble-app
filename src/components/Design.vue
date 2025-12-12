@@ -116,8 +116,11 @@
         <h3 class="card-title mb-3 text-center"><i class="bi bi-camera-fill me-1"></i>Result</h3>
         <div
           class="selection-card"
-          :class="{ clickable: designedImage }"
-          @click="designedImage && opendesignedImageModal()"
+          :class="{
+            clickable: designedImage,
+            'ready-to-design': canDesign && !designedImage && !isDesigning && !designError,
+          }"
+          @click="handleResultCardClick"
         >
           <!-- Error State -->
           <div v-if="designError" class="card-error-overlay">
@@ -166,7 +169,7 @@
           </p>
 
           <!-- Can design trigger -->
-          <p v-else class="nav-text"><i class="bi bi-magic me-1"></i>Click Design Button</p>
+          <p v-else class="nav-text"><i class="bi bi-cursor me-1"></i>Click to Design</p>
         </div>
 
         <!-- Design, Redesign and Download buttons -->
@@ -365,6 +368,13 @@ export default {
     },
   },
   methods: {
+    handleResultCardClick() {
+      if (this.designedImage) {
+        this.opendesignedImageModal()
+      } else if (this.canDesign && !this.designError) {
+        this.designImage()
+      }
+    },
     openModal(category) {
       this.modalCategory = category
       this.showModal = true
