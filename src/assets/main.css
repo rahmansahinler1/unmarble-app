@@ -2892,8 +2892,8 @@
     ) !important;
   }
 
-  /* Result card arrow icon - point upwards */
-  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i {
+  /* Result card arrow icon - point upwards (only for arrow icons) */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i.bi-arrow-left-circle-fill {
     transform: rotate(90deg);
     display: inline-block;
   }
@@ -2985,8 +2985,8 @@
     position: fixed !important;
     bottom: calc(60px + 16px); /* Above bottom nav (60px) + spacing */
     right: 1px;
-    width: 48px;
-    height: 48px;
+    width: 58px;
+    height: 58px;
     min-width: unset;
     border-radius: 50%;
     background-color: #00b7ed;
@@ -3009,7 +3009,7 @@
   .design-actions-row .design-btn > span:last-child {
     background: transparent;
     padding: 0;
-    font-size: 10px;
+    font-size: 12px;
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3018,7 +3018,7 @@
   }
 
   .design-actions-row .design-btn > span:last-child i {
-    font-size: 16px;
+    font-size: 19px;
   }
 
   /* FAB disabled state */
@@ -3334,8 +3334,8 @@
     padding-bottom: clamp(375px, calc(375px + 163 * (100vw - 768px) / 256), 538px) !important;
   }
 
-  /* Result card arrow icon - point upwards */
-  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i {
+  /* Result card arrow icon - point upwards (only for arrow icons) */
+  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i.bi-arrow-left-circle-fill {
     transform: rotate(90deg);
     display: inline-block;
   }
@@ -3422,13 +3422,13 @@
     color: #ccc;
   }
 
-  /* Design button - FAB style, dynamic size (56px→72px) */
+  /* Design button - FAB style, dynamic size (67px→86px, +20%) */
   .design-actions-row .design-btn {
     position: fixed !important;
     bottom: clamp(16px, calc(16px + (24 - 16) * ((100vw - 768px) / 256)), 24px);
     right: clamp(16px, calc(16px + (24 - 16) * ((100vw - 768px) / 256)), 24px);
-    width: clamp(56px, calc(56px + (72 - 56) * ((100vw - 768px) / 256)), 72px);
-    height: clamp(56px, calc(56px + (72 - 56) * ((100vw - 768px) / 256)), 72px);
+    width: clamp(67px, calc(67px + (86 - 67) * ((100vw - 768px) / 256)), 86px);
+    height: clamp(67px, calc(67px + (86 - 67) * ((100vw - 768px) / 256)), 86px);
     min-width: unset;
     border-radius: 50%;
     background-color: #00b7ed;
@@ -3447,11 +3447,11 @@
     display: none;
   }
 
-  /* Show icon + count in FAB - dynamic size (11px→14px text, 18px→24px icon) */
+  /* Show icon + count in FAB - dynamic size (13px→17px text, 22px→29px icon, +20%) */
   .design-actions-row .design-btn > span:last-child {
     background: transparent;
     padding: 0;
-    font-size: clamp(11px, calc(11px + (14 - 11) * ((100vw - 768px) / 256)), 14px);
+    font-size: clamp(13px, calc(13px + (17 - 13) * ((100vw - 768px) / 256)), 17px);
     display: flex;
     flex-direction: column;
     align-items: center;
@@ -3460,7 +3460,7 @@
   }
 
   .design-actions-row .design-btn > span:last-child i {
-    font-size: clamp(18px, calc(18px + (24 - 18) * ((100vw - 768px) / 256)), 24px);
+    font-size: clamp(22px, calc(22px + (29 - 22) * ((100vw - 768px) / 256)), 29px);
   }
 
   /* FAB disabled state */
