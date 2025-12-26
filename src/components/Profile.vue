@@ -18,6 +18,15 @@
           <div class="profile-info">
             <h6 class="profile-header mb-1">{{ userCred.name }} {{ userCred.surname }}</h6>
             <p class="profile-text text-muted mb-0">{{ userCred.email }}</p>
+            <!-- Mobile logout button - only visible below 768px -->
+            <button
+              class="btn btn-link p-0 mt-2 d-flex align-items-center d-md-none text-decoration-none"
+              style="color: #5d5d5d"
+              @click="handleLogout"
+            >
+              <i class="bi bi-box-arrow-in-left me-2" style="font-size: 1rem"></i>
+              <span class="profile-text">Log out</span>
+            </button>
           </div>
         </div>
       </div>
@@ -361,6 +370,12 @@ export default {
       } finally {
         this.isResuming = false
       }
+    },
+    handleLogout() {
+      const domain = import.meta.env.VITE_COOKIE_DOMAIN
+      document.cookie = `authToken=; domain=${domain}; path=/; max-age=0`
+      localStorage.setItem('logout-event', Date.now().toString())
+      window.location.href = import.meta.env.VITE_WEBSITE_URL
     },
   },
 }
