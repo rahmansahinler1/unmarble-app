@@ -181,6 +181,13 @@
       <!-- Feedback -->
       <div class="mb-4">
         <div class="p-3 border rounded">
+          <div class="d-flex align-items-center mb-3">
+            <i
+              class="bi bi-chat-square-quote-fill me-2"
+              style="font-size: 1.75rem; color: #00b7ed"
+            ></i>
+            <h6 class="profile-header mb-0" style="opacity: 0.85">Feedback</h6>
+          </div>
           <textarea
             v-model="feedbackText"
             class="form-control mb-2 nav-text-small"
