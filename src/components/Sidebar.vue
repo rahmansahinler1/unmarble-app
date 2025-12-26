@@ -105,6 +105,14 @@
     </div>
     <!-- Upgrade Modal -->
     <UpgradeModal :isOpen="showUpgradeModal" @close="showUpgradeModal = false" />
+
+    <!-- Logout Modal -->
+    <LogoutModal
+      :isOpen="showLogoutModal"
+      :userEmail="userCred.email"
+      @close="showLogoutModal = false"
+      @confirm="performLogout"
+    />
   </div>
 </template>
 
@@ -112,16 +120,19 @@
 import useUserStore from '@/stores/user'
 import { mapStores } from 'pinia'
 import UpgradeModal from '@/components/UpgradeModal.vue'
+import LogoutModal from '@/components/LogoutModal.vue'
 
 export default {
   name: 'Sidebar',
   components: {
     UpgradeModal,
+    LogoutModal,
   },
   data() {
     return {
       isDropdownOpen: false,
       showUpgradeModal: false,
+      showLogoutModal: false,
     }
   },
   computed: {
@@ -143,11 +154,12 @@ export default {
       this.isDropdownOpen = !this.isDropdownOpen
     },
     handleLogout() {
+      this.showLogoutModal = true
+    },
+    performLogout() {
       const domain = import.meta.env.VITE_COOKIE_DOMAIN
       document.cookie = `authToken=; domain=${domain}; path=/; max-age=0`
-
       localStorage.setItem('logout-event', Date.now().toString())
-
       window.location.href = import.meta.env.VITE_WEBSITE_URL
     },
     handleUpgrade() {

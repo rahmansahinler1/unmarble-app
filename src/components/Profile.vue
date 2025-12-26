@@ -156,6 +156,14 @@
       <!-- Upgrade Modal -->
       <UpgradeModal :isOpen="showUpgradeModal" @close="showUpgradeModal = false" />
 
+      <!-- Logout Modal -->
+      <LogoutModal
+        :isOpen="showLogoutModal"
+        :userEmail="userCred.email"
+        @close="showLogoutModal = false"
+        @confirm="performLogout"
+      />
+
       <!-- Usage -->
       <div class="mb-4 pb-4 border-bottom">
         <div class="row g-3">
@@ -242,12 +250,14 @@ import { mapStores } from 'pinia'
 import { submitFeedback, resumeSubscription } from '@/api/api'
 import CancellationModal from '@/components/CancellationModal.vue'
 import UpgradeModal from '@/components/UpgradeModal.vue'
+import LogoutModal from '@/components/LogoutModal.vue'
 
 export default {
   name: 'Profile',
   components: {
     CancellationModal,
     UpgradeModal,
+    LogoutModal,
   },
   data() {
     return {
@@ -257,6 +267,7 @@ export default {
       feedbackMessage: '',
       showCancelModal: false,
       showUpgradeModal: false,
+      showLogoutModal: false,
       isResuming: false,
       resumeError: '',
       resumeSuccess: false,
@@ -372,6 +383,9 @@ export default {
       }
     },
     handleLogout() {
+      this.showLogoutModal = true
+    },
+    performLogout() {
       const domain = import.meta.env.VITE_COOKIE_DOMAIN
       document.cookie = `authToken=; domain=${domain}; path=/; max-age=0`
       localStorage.setItem('logout-event', Date.now().toString())
