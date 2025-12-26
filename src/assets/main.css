@@ -365,17 +365,24 @@
 }
 
 .upgrade-btn {
-  background-color: #00b7ed;
-  color: white;
-  border: 1px solid #00b7ed;
+  display: inline-flex;
+  align-items: center;
+  background-color: transparent !important;
+  color: #333 !important;
+  border: 1px solid rgba(0, 0, 0, 0.15) !important;
   animation: pulse-upgrade 2s ease-in-out infinite;
 }
 
 .upgrade-btn:hover {
-  background-color: #0095c7;
-  border-color: #0095c7;
-  color: white;
+  background-color: rgba(0, 183, 237, 0.05) !important;
+  border-color: #00b7ed !important;
+  color: #333 !important;
   animation: none;
+}
+
+.upgrade-btn i {
+  color: #00b7ed;
+  font-size: 1.1rem;
 }
 
 @keyframes pulse-upgrade {

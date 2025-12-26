@@ -130,7 +130,7 @@
               Get premium, design freely!
             </p>
             <button class="btn btn-sm profile-btn upgrade-btn" @click="handleUpgrade">
-              <i class="bi bi-cloud-upload-fill me-1" style="color: #00b7ed"></i>Upgrade your plan
+              <i class="bi bi-stars me-1"></i>Upgrade your plan
             </button>
           </div>
         </div>
