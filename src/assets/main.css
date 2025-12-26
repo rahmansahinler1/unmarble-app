@@ -2344,6 +2344,7 @@
   .gallery-filters .btn {
     flex-shrink: 0;
     font-size: 8px;
+    font-weight: 600;
     padding: 4px 7px;
     border-radius: 12px;
   }
@@ -2965,6 +2966,7 @@
   .card-title.mb-3,
   h3.card-title {
     font-size: 11px !important;
+    font-weight: 700 !important;
     margin-bottom: 4px !important;
   }
 
