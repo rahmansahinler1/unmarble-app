@@ -292,9 +292,11 @@ export default {
   },
   methods: {
     startGalleryTour() {
-      // Check if we have clothing and yourself photos for Step 5
+      // Check if we have clothing and at least one non-clothing photo for Steps 5a and 5b
       const hasClothing = this.userStore?.previewImages?.clothing?.length > 0
-      const hasYourself = this.userStore?.previewImages?.yourself?.length > 0
+      const hasNonClothing =
+        (this.userStore?.previewImages?.yourself?.length > 0) ||
+        (this.userStore?.previewImages?.design?.length > 0)
 
       const driverObj = driver({
         showProgress: true,
@@ -390,8 +392,39 @@ export default {
             },
           },
           {
-            ...(hasClothing && hasYourself
-              ? { element: '.gallery-item[data-category="clothing"], .gallery-item[data-category="yourself"]' }
+            ...(hasClothing ? { element: '.gallery-item[data-category="clothing"]' } : {}),
+            popover: {
+              title: '',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
+                    alt="Tour Step 5a"
+                    class="tour-image"
+                  />
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Select Clothing</h2>
+                    <p class="tour-text">
+                      First, select a clothing item like this one.
+                    </p>
+                  </div>
+                </div>
+              `,
+              side: 'right',
+              align: 'start',
+            },
+          },
+          {
+            ...(hasNonClothing
+              ? {
+                  element: () => {
+                    // Find first non-clothing item (yourself or design)
+                    const nonClothing = document.querySelector(
+                      '.gallery-item[data-category="yourself"], .gallery-item[data-category="design"]',
+                    )
+                    return nonClothing
+                  },
+                }
               : {}),
             popover: {
               title: '',
@@ -399,19 +432,19 @@ export default {
                 <div class="tour-content">
                   <img
                     src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
-                    alt="Tour Step 5"
+                    alt="Tour Step 5b"
                     class="tour-image"
                   />
                   <div class="tour-text-container">
-                    <h2 class="tour-title">Design by Selection</h2>
+                    <h2 class="tour-title">Select Your Photo</h2>
                     <p class="tour-text">
-                      Select a photo and a clothing item. Unmarble will open the design for you automatically.
+                      Then, select a photo of yourself or a design. Unmarble will open the design view automatically.
                     </p>
                   </div>
                 </div>
               `,
-              side: 'top',
-              align: 'center',
+              side: 'right',
+              align: 'start',
             },
           },
           {
