@@ -297,7 +297,7 @@ export default {
         steps: [
           {
             popover: {
-              title: 'Welcome to Unmarble!',
+              title: '',
               description: `
                 <div class="tour-content">
                   <img
@@ -305,16 +305,19 @@ export default {
                     alt="Welcome to Unmarble"
                     class="tour-image"
                   />
-                  <p class="tour-text">
-                    This is your gallery. Upload your photos and clothing here, then select them to try on new outfits.
-                  </p>
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Welcome to Unmarble!</h2>
+                    <p class="tour-text">
+                      This is your gallery. Upload your photos and clothing here, then select them to try on new outfits.
+                    </p>
+                  </div>
                 </div>
               `,
             },
           },
           {
             popover: {
-              title: 'Step 2 - Placeholder',
+              title: '',
               description: `
                 <div class="tour-content">
                   <img
@@ -322,16 +325,19 @@ export default {
                     alt="Tour Step 2"
                     class="tour-image"
                   />
-                  <p class="tour-text">
-                    Placeholder text for step 2.
-                  </p>
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Step 2 - Placeholder</h2>
+                    <p class="tour-text">
+                      Placeholder text for step 2.
+                    </p>
+                  </div>
                 </div>
               `,
             },
           },
           {
             popover: {
-              title: 'Step 3 - Placeholder',
+              title: '',
               description: `
                 <div class="tour-content">
                   <img
@@ -339,16 +345,19 @@ export default {
                     alt="Tour Step 3"
                     class="tour-image"
                   />
-                  <p class="tour-text">
-                    Placeholder text for step 3.
-                  </p>
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Step 3 - Placeholder</h2>
+                    <p class="tour-text">
+                      Placeholder text for step 3.
+                    </p>
+                  </div>
                 </div>
               `,
             },
           },
           {
             popover: {
-              title: 'Step 4 - Placeholder',
+              title: '',
               description: `
                 <div class="tour-content">
                   <img
@@ -356,16 +365,19 @@ export default {
                     alt="Tour Step 4"
                     class="tour-image"
                   />
-                  <p class="tour-text">
-                    Placeholder text for step 4.
-                  </p>
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Step 4 - Placeholder</h2>
+                    <p class="tour-text">
+                      Placeholder text for step 4.
+                    </p>
+                  </div>
                 </div>
               `,
             },
           },
           {
             popover: {
-              title: 'Step 5 - Placeholder',
+              title: '',
               description: `
                 <div class="tour-content">
                   <img
@@ -373,16 +385,19 @@ export default {
                     alt="Tour Step 5"
                     class="tour-image"
                   />
-                  <p class="tour-text">
-                    Placeholder text for step 5.
-                  </p>
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Step 5 - Placeholder</h2>
+                    <p class="tour-text">
+                      Placeholder text for step 5.
+                    </p>
+                  </div>
                 </div>
               `,
             },
           },
           {
             popover: {
-              title: 'Step 6 - Placeholder',
+              title: '',
               description: `
                 <div class="tour-content">
                   <img
@@ -390,9 +405,12 @@ export default {
                     alt="Tour Step 6"
                     class="tour-image"
                   />
-                  <p class="tour-text">
-                    Placeholder text for step 6.
-                  </p>
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Step 6 - Placeholder</h2>
+                    <p class="tour-text">
+                      Placeholder text for step 6.
+                    </p>
+                  </div>
                 </div>
               `,
             },
