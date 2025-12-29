@@ -15,6 +15,7 @@
   },
   "dependencies": {
     "browser-image-compression": "^2.0.2",
+    "driver.js": "^1.4.0",
     "heic2any": "^0.0.4",
     "pinia": "^3.0.3",
     "posthog-js": "^1.302.2",

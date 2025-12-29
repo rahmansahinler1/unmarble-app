@@ -209,11 +209,16 @@ import {
   getDesign,
 } from '@/api/api'
 import UploadModal from '@/components/UploadModal.vue'
+import { driver } from 'driver.js'
+import 'driver.js/dist/driver.css'
 
 export default {
   name: 'Gallery',
   components: {
     UploadModal,
+  },
+  mounted() {
+    this.startGalleryTour()
   },
   data() {
     return {
@@ -285,6 +290,32 @@ export default {
     },
   },
   methods: {
+    startGalleryTour() {
+      const driverObj = driver({
+        showProgress: false,
+        steps: [
+          {
+            popover: {
+              title: 'Welcome to Unmarble!',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    alt="Welcome to Unmarble"
+                    class="tour-image"
+                  />
+                  <p class="tour-text">
+                    This is your gallery. Upload your photos and clothing here, then select them to try on new outfits.
+                  </p>
+                </div>
+              `,
+            },
+          },
+        ],
+      })
+
+      driverObj.drive()
+    },
     selectFilter(filter) {
       this.selectedFilter = filter
     },

@@ -26,7 +26,11 @@
 }
 
 .loading-text {
-  font-family: ui-sans-serif, -apple-system, system-ui, sans-serif;
+  font-family:
+    ui-sans-serif,
+    -apple-system,
+    system-ui,
+    sans-serif;
   font-size: 16px;
   font-weight: 400;
   color: #5d5d5d;
@@ -3045,7 +3049,12 @@
   }
 
   /* Result card arrow icon - point upwards (only for arrow icons) */
-  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i.bi-arrow-left-circle-fill {
+  .container-fluid
+    .row.h-100
+    > .col-auto:nth-child(5)
+    .selection-card
+    .nav-text
+    i.bi-arrow-left-circle-fill {
     transform: rotate(90deg);
     display: inline-block;
   }
@@ -3500,7 +3509,12 @@
   }
 
   /* Result card arrow icon - point upwards (only for arrow icons) */
-  .container-fluid .row.h-100 > .col-auto:nth-child(5) .selection-card .nav-text i.bi-arrow-left-circle-fill {
+  .container-fluid
+    .row.h-100
+    > .col-auto:nth-child(5)
+    .selection-card
+    .nav-text
+    i.bi-arrow-left-circle-fill {
     transform: rotate(90deg);
     display: inline-block;
   }
@@ -3667,4 +3681,28 @@
   .logout-modal {
     padding: 28px;
   }
+}
+
+/* --------------------------------
+   Tour Popover Styles
+-------------------------------- */
+.tour-content {
+  display: flex;
+  gap: 20px;
+  align-items: flex-start;
+  max-width: 550px;
+  min-width: 450px;
+}
+
+.tour-image {
+  width: 140px;
+  flex-shrink: 0;
+  border-radius: 8px;
+}
+
+.tour-text {
+  font-size: 14px;
+  line-height: 1.5;
+  margin: 0;
+  flex: 1;
 }
