@@ -292,7 +292,8 @@ export default {
   methods: {
     startGalleryTour() {
       const driverObj = driver({
-        showProgress: false,
+        showProgress: true,
+        popoverClass: 'unmarble-tour-popover',
         steps: [
           {
             popover: {
@@ -306,6 +307,91 @@ export default {
                   />
                   <p class="tour-text">
                     This is your gallery. Upload your photos and clothing here, then select them to try on new outfits.
+                  </p>
+                </div>
+              `,
+            },
+          },
+          {
+            popover: {
+              title: 'Step 2 - Placeholder',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    alt="Tour Step 2"
+                    class="tour-image"
+                  />
+                  <p class="tour-text">
+                    Placeholder text for step 2.
+                  </p>
+                </div>
+              `,
+            },
+          },
+          {
+            popover: {
+              title: 'Step 3 - Placeholder',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    alt="Tour Step 3"
+                    class="tour-image"
+                  />
+                  <p class="tour-text">
+                    Placeholder text for step 3.
+                  </p>
+                </div>
+              `,
+            },
+          },
+          {
+            popover: {
+              title: 'Step 4 - Placeholder',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    alt="Tour Step 4"
+                    class="tour-image"
+                  />
+                  <p class="tour-text">
+                    Placeholder text for step 4.
+                  </p>
+                </div>
+              `,
+            },
+          },
+          {
+            popover: {
+              title: 'Step 5 - Placeholder',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    alt="Tour Step 5"
+                    class="tour-image"
+                  />
+                  <p class="tour-text">
+                    Placeholder text for step 5.
+                  </p>
+                </div>
+              `,
+            },
+          },
+          {
+            popover: {
+              title: 'Step 6 - Placeholder',
+              description: `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    alt="Tour Step 6"
+                    class="tour-image"
+                  />
+                  <p class="tour-text">
+                    Placeholder text for step 6.
                   </p>
                 </div>
               `,
