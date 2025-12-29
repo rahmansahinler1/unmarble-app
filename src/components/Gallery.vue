@@ -71,6 +71,7 @@
               <div
                 class="gallery-item"
                 :class="{ 'gallery-item-selected': isImageSelected(image.id) }"
+                :data-category="image.category"
                 v-for="image in getPreviews"
                 :key="image.id"
               >
@@ -291,6 +292,10 @@ export default {
   },
   methods: {
     startGalleryTour() {
+      // Check if we have clothing and yourself photos for Step 5
+      const hasClothing = this.userStore?.previewImages?.clothing?.length > 0
+      const hasYourself = this.userStore?.previewImages?.yourself?.length > 0
+
       const driverObj = driver({
         showProgress: true,
         popoverClass: 'unmarble-tour-popover',
@@ -339,6 +344,7 @@ export default {
             },
           },
           {
+            element: '.gallery-item:not(.gallery-item-upload) .gallery-actions',
             popover: {
               title: '',
               description: `
@@ -356,9 +362,12 @@ export default {
                   </div>
                 </div>
               `,
+              side: 'bottom',
+              align: 'center',
             },
           },
           {
+            element: '.gallery-item-upload',
             popover: {
               title: '',
               description: `
@@ -376,9 +385,14 @@ export default {
                   </div>
                 </div>
               `,
+              side: 'right',
+              align: 'start',
             },
           },
           {
+            ...(hasClothing && hasYourself
+              ? { element: '.gallery-item[data-category="clothing"], .gallery-item[data-category="yourself"]' }
+              : {}),
             popover: {
               title: '',
               description: `
@@ -396,9 +410,12 @@ export default {
                   </div>
                 </div>
               `,
+              side: 'top',
+              align: 'center',
             },
           },
           {
+            ...(window.innerWidth >= 768 ? { element: '.app-sidebar a[href*="design"]' } : {}),
             popover: {
               title: '',
               description: `
@@ -416,6 +433,8 @@ export default {
                   </div>
                 </div>
               `,
+              side: 'right',
+              align: 'center',
             },
           },
         ],
