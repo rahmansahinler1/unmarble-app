@@ -301,7 +301,7 @@ export default {
               description: `
                 <div class="tour-content">
                   <img
-                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    src="${new URL('/assets/img/tour_welcome.svg', import.meta.url).href}"
                     alt="Welcome to Unmarble"
                     class="tour-image"
                   />
@@ -316,23 +316,26 @@ export default {
             },
           },
           {
+            element: '.gallery-item:not(.gallery-item-upload)',
             popover: {
               title: '',
               description: `
                 <div class="tour-content">
                   <img
-                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
                     alt="Tour Step 2"
                     class="tour-image"
                   />
                   <div class="tour-text-container">
-                    <h2 class="tour-title">Step 2 - Placeholder</h2>
+                    <h2 class="tour-title">Your Photos</h2>
                     <p class="tour-text">
-                      Placeholder text for step 2.
+                      This is one of your photo. Photos, clothing, and designs appear as cards like this, grouped by category.
                     </p>
                   </div>
                 </div>
               `,
+              side: 'right',
+              align: 'start',
             },
           },
           {
@@ -341,14 +344,14 @@ export default {
               description: `
                 <div class="tour-content">
                   <img
-                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
                     alt="Tour Step 3"
                     class="tour-image"
                   />
                   <div class="tour-text-container">
-                    <h2 class="tour-title">Step 3 - Placeholder</h2>
+                    <h2 class="tour-title">Action Buttons</h2>
                     <p class="tour-text">
-                      Placeholder text for step 3.
+                      Use these buttons to favorite, view full size, download, or delete an item.
                     </p>
                   </div>
                 </div>
@@ -361,14 +364,14 @@ export default {
               description: `
                 <div class="tour-content">
                   <img
-                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
                     alt="Tour Step 4"
                     class="tour-image"
                   />
                   <div class="tour-text-container">
-                    <h2 class="tour-title">Step 4 - Placeholder</h2>
+                    <h2 class="tour-title">Upload a photo</h2>
                     <p class="tour-text">
-                      Placeholder text for step 4.
+                      Add a new photo here. Click the card, choose your image, and pick a category.
                     </p>
                   </div>
                 </div>
@@ -381,14 +384,14 @@ export default {
               description: `
                 <div class="tour-content">
                   <img
-                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
                     alt="Tour Step 5"
                     class="tour-image"
                   />
                   <div class="tour-text-container">
-                    <h2 class="tour-title">Step 5 - Placeholder</h2>
+                    <h2 class="tour-title">Design by Selection</h2>
                     <p class="tour-text">
-                      Placeholder text for step 5.
+                      Select a photo and a clothing item. Unmarble will open the design for you automatically.
                     </p>
                   </div>
                 </div>
@@ -401,14 +404,14 @@ export default {
               description: `
                 <div class="tour-content">
                   <img
-                    src="${new URL('/assets/img/tour.svg', import.meta.url).href}"
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
                     alt="Tour Step 6"
                     class="tour-image"
                   />
                   <div class="tour-text-container">
-                    <h2 class="tour-title">Step 6 - Placeholder</h2>
+                    <h2 class="tour-title">Use the Sidebar</h2>
                     <p class="tour-text">
-                      Placeholder text for step 6.
+                      Use the sidebar to move between pages, like Design and your gallery.
                     </p>
                   </div>
                 </div>
