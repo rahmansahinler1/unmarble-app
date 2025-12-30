@@ -208,6 +208,7 @@ import {
   deleteDesign,
   updateDesignFav,
   getDesign,
+  completeTour,
 } from '@/api/api'
 import UploadModal from '@/components/UploadModal.vue'
 import { driver } from 'driver.js'
@@ -219,7 +220,10 @@ export default {
     UploadModal,
   },
   mounted() {
-    this.startGalleryTour()
+    // Only show tour if user completed onboarding but hasn't seen tour yet
+    if (this.userStore.userCred.user_status === 'onboarded') {
+      this.startGalleryTour()
+    }
   },
   data() {
     return {
@@ -301,6 +305,22 @@ export default {
       const driverObj = driver({
         showProgress: true,
         popoverClass: 'unmarble-tour-popover',
+        onHighlightStarted: async (element, step, options) => {
+          // On first step shown, complete tour
+          if (options.state.activeIndex === 0) {
+            try {
+              const result = await completeTour()
+              if (result.success) {
+                // Update user status to active (tour completed)
+                this.userStore.setUserStatus('active')
+              }
+            } catch (error) {
+              console.error('Failed to complete tour:', error)
+              // Still update status locally to prevent tour from showing again
+              this.userStore.setUserStatus('active')
+            }
+          }
+        },
         steps: [
           {
             popover: {

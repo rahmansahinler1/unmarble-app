@@ -73,7 +73,7 @@ export default {
       return this.subscriptionStatus === 'past_due' && !this.pastDueBannerDismissed
     },
     showOnboarding() {
-      return this.userStore.userCred.firstTime === true
+      return this.userStore.userCred.user_status === 'first_time'
     },
   },
   mounted() {

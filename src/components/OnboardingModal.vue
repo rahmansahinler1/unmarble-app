@@ -363,14 +363,29 @@ export default {
       }
     },
     async completeAndMoveToUpgrade() {
+      // Just move to upgrade step without calling API
+      // API will be called when user clicks "Maybe later" button
+      this.currentStep = 4
+    },
+    handleUpgrade() {
+      const url = getCheckoutUrl(this.userStore.userCred.email)
+      if (url) {
+        window.location.href = url
+      }
+    },
+    async handleMaybeLater() {
       this.isSubmitting = true
       try {
+        // Call completeOnboarding NOW (when user finishes upgrade step)
         const result = await completeOnboarding(this.selectedGender)
-        if (result.success) {
-          // Update storage in store
-          this.userStore.updateStorageLeft(result.data.storage_left)
 
-          // Add copied clothing images to store (transform format for addPreviewImage)
+        if (result.success) {
+          // Update storage if returned
+          if (result.data.storage_left !== undefined) {
+            this.userStore.updateStorageLeft(result.data.storage_left)
+          }
+
+          // Add copied images if returned
           if (result.data.copied_images && result.data.copied_images.length > 0) {
             for (const image of result.data.copied_images) {
               this.userStore.addPreviewImage('clothing', {
@@ -382,25 +397,19 @@ export default {
             }
           }
 
-          // Move to upgrade step (firstTime stays true until user clicks "Maybe later")
-          this.currentStep = 4
+          // Set user_status to 'onboarded' (ready for tour)
+          this.userStore.setUserStatus('onboarded')
+
+          this.$emit('completed')
+
+          // Navigate to gallery to trigger tour
+          this.$router.push('/gallery')
         }
       } catch (error) {
         console.error('Failed to complete onboarding:', error)
       } finally {
         this.isSubmitting = false
       }
-    },
-    handleUpgrade() {
-      const url = getCheckoutUrl(this.userStore.userCred.email)
-      if (url) {
-        window.location.href = url
-      }
-    },
-    handleMaybeLater() {
-      // Only set firstTime to false when user explicitly dismisses the upgrade modal
-      this.userStore.setFirstTime(false)
-      this.$emit('completed')
     },
     // Step 3 methods
     triggerFileInput() {

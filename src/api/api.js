@@ -424,6 +424,28 @@ export const completeOnboarding = async function (gender) {
   }
 }
 
+export const completeTour = async function () {
+  try {
+    const response = await fetchWithAuth(`${API_BASE_URL}/complete_tour`, {
+      method: 'POST',
+    })
+
+    if (!response.ok) {
+      const errorData = await response.json().catch(() => ({}))
+      throw new Error(errorData.detail || `HTTP error! status: ${response.status}`)
+    }
+
+    const data = await response.json()
+    return {
+      success: true,
+      data: data,
+    }
+  } catch (error) {
+    console.error('Failed to complete tour:', error)
+    return { success: false, error: error.message }
+  }
+}
+
 export const getDefaultPreviews = async function (gender, ids = null) {
   try {
     const body = { gender }

@@ -16,7 +16,7 @@ export default defineStore('user', {
       subscriptionEndsAt: null,
       daysUntilExpiry: null,
       daysSinceExpiry: null,
-      firstTime: false,
+      user_status: 'active',
     },
     userLimits: { storageLeft: null, designsLeft: null },
     previewImages: { yourself: [], clothing: [], design: [] },
@@ -59,7 +59,7 @@ export default defineStore('user', {
           this.userCred.subscriptionEndsAt = user_fetch.data.user_info['subscription_ends_at']
           this.userCred.daysUntilExpiry = user_fetch.data.user_info['days_until_expiry']
           this.userCred.daysSinceExpiry = user_fetch.data.user_info['days_since_expiry']
-          this.userCred.firstTime = user_fetch.data.user_info['first_time']
+          this.userCred.user_status = user_fetch.data.user_info['user_status'] || 'active'
           this.userLimits.storageLeft = user_fetch.data.user_info['storage_left']
           this.userLimits.designsLeft = user_fetch.data.user_info['designs_left']
         }
@@ -119,8 +119,8 @@ export default defineStore('user', {
     clearGallerySelections() {
       this.gallerySelections = { yourself: null, clothing: null }
     },
-    setFirstTime(value) {
-      this.userCred.firstTime = value
+    setUserStatus(status) {
+      this.userCred.user_status = status
     },
     setOnboardingGender(value) {
       this.onboardingData.gender = value
