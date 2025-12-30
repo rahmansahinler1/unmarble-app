@@ -322,6 +322,11 @@ export default {
         return desktopSide
       }
 
+      // Helper to get responsive alignment
+      const getAlignment = (desktopAlign) => {
+        return isMobile ? 'start' : desktopAlign
+      }
+
       // Check if we have clothing and at least one non-clothing photo for Steps 5a and 5b
       const hasClothing = this.userStore?.previewImages?.clothing?.length > 0
       const hasNonClothing =
@@ -411,7 +416,8 @@ export default {
                 </div>
               `,
               side: 'bottom',
-              align: 'center',
+              align: getAlignment('center'),
+              popoverOffset: 20,
             },
           },
           {
