@@ -3880,3 +3880,59 @@
     height: 28px;
   }
 }
+
+/* --------------------------------
+   Gallery Header with Tour Restart Button
+-------------------------------- */
+
+.gallery-header {
+  position: relative;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.gallery-header .dashboard-title {
+  flex: 1;
+  margin: 0;
+  padding: 1rem 0;
+}
+
+.tour-restart-btn {
+  position: absolute;
+  right: 1rem;
+  top: 50%;
+  transform: translateY(-50%);
+  background-color: transparent;
+  border: none;
+  color: #5d5d5d;
+  font-size: 24px;
+  line-height: 1;
+  padding: 0.5rem;
+  cursor: pointer;
+  transition: color 0.2s ease, transform 0.2s ease;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.tour-restart-btn:hover {
+  color: #00b7ed;
+  transform: translateY(-50%) scale(1.1);
+}
+
+.tour-restart-btn:active {
+  transform: translateY(-50%) scale(0.95);
+}
+
+.tour-restart-btn i {
+  pointer-events: none;
+}
+
+/* Mobile responsiveness */
+@media (max-width: 767px) {
+  .tour-restart-btn {
+    font-size: 20px;
+    right: 0.5rem;
+  }
+}

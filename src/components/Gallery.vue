@@ -1,7 +1,18 @@
 <template>
   <!-- Gallery Page -->
   <div class="container-fluid">
-    <h1 class="dashboard-title mb-3 mt-3 text-center">Gallery</h1>
+    <!-- Gallery Header with Title and Tour Button -->
+    <div class="gallery-header">
+      <h1 class="dashboard-title mb-3 mt-3 text-center">Gallery</h1>
+      <button
+        class="tour-restart-btn"
+        @click="restartTour"
+        title="Restart tour"
+        aria-label="Restart tour"
+      >
+        <i class="bi bi-question-circle"></i>
+      </button>
+    </div>
 
     <div class="row">
       <div class="col-12 mb-4">
@@ -305,14 +316,22 @@ export default {
     },
   },
   methods: {
+    restartTour() {
+      // Reset tourStarted flag to allow tour to run again
+      this.tourStarted = false
+      // Start the tour immediately
+      this.startGalleryTour()
+    },
     checkAndStartTour() {
       // Only show tour if user completed onboarding but hasn't seen tour yet
       if (this.userStore.userCred.user_status === 'onboarded' && !this.tourStarted) {
-        this.tourStarted = true
         this.startGalleryTour()
       }
     },
     startGalleryTour() {
+      // Set flag to prevent multiple simultaneous tours
+      this.tourStarted = true
+
       // Helper to get mobile-friendly placement
       const isMobile = window.innerWidth < 768
       const getPlacement = (desktopSide) => {
@@ -337,18 +356,21 @@ export default {
         showProgress: true,
         popoverClass: 'unmarble-tour-popover',
         onHighlightStarted: async (element, step, options) => {
-          // On first step shown, complete tour
+          // On first step shown, complete tour (only for first-time users)
           if (options.state.activeIndex === 0) {
-            try {
-              const result = await completeTour()
-              if (result.success) {
-                // Update user status to active (tour completed)
+            // Only call API if user is still in 'onboarded' status (first tour)
+            if (this.userStore.userCred.user_status === 'onboarded') {
+              try {
+                const result = await completeTour()
+                if (result.success) {
+                  // Update user status to active (tour completed)
+                  this.userStore.setUserStatus('active')
+                }
+              } catch (error) {
+                console.error('Failed to complete tour:', error)
+                // Still update status locally to prevent tour from showing again
                 this.userStore.setUserStatus('active')
               }
-            } catch (error) {
-              console.error('Failed to complete tour:', error)
-              // Still update status locally to prevent tour from showing again
-              this.userStore.setUserStatus('active')
             }
           }
         },
