@@ -231,8 +231,8 @@ export default {
           this.checkAndStartTour()
         }
       },
-      immediate: false
-    }
+      immediate: false,
+    },
   },
   data() {
     return {
@@ -533,7 +533,7 @@ export default {
                   <div class="tour-text-container">
                     <h2 class="tour-title">Navigation</h2>
                     <p class="tour-text">
-                      Tap the Design icon here to switch between Gallery, Design, and Profile pages.
+                      Use the navigations here to move between pages, like Design and your gallery.
                     </p>
                   </div>
                 </div>
