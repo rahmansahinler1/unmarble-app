@@ -3816,7 +3816,7 @@
 /* Progress indicator styling (e.g., "1 of 6") */
 .driver-popover.unmarble-tour-popover .driver-popover-progress-text {
   font-family: var(--font-family-base);
-  font-size: 13px;
+  font-size: 11px;
   font-weight: 400;
   color: #999999;
 }
@@ -3824,43 +3824,59 @@
 /* Mobile responsive styles for tour */
 @media (max-width: 767px) {
   .driver-popover.unmarble-tour-popover {
-    max-width: 90vw;
+    max-width: 95vw;
     min-width: unset;
-    width: 90vw;
-    padding: 20px;
+    width: 95vw;
+    padding: 12px;
   }
 
   .tour-content {
-    flex-direction: column;
-    gap: 16px;
-    align-items: center;
+    flex-direction: row;
+    gap: 12px;
+    align-items: flex-start;
   }
 
   .tour-image {
-    width: 160px;
+    width: 110px;
+    flex-shrink: 0;
     order: 1;
   }
 
   .tour-text-container {
+    flex: 1;
     order: 2;
-    align-items: center;
-    text-align: center;
+    min-width: 0;
   }
 
   .tour-title {
-    font-size: 22px;
+    font-size: 18px;
+    line-height: 1.2;
   }
 
   .tour-text {
-    font-size: 14px;
+    font-size: 13px;
+    line-height: 1.5;
   }
 
   .driver-popover.unmarble-tour-popover .driver-popover-footer {
-    flex-direction: column-reverse;
+    margin-top: 12px;
+    flex-direction: row;
+    justify-content: space-between;
     gap: 8px;
   }
 
   .driver-popover.unmarble-tour-popover .driver-popover-footer button {
-    width: 100%;
+    padding: 6px 12px;
+    font-size: 12px;
+  }
+
+  .driver-popover.unmarble-tour-popover .driver-popover-progress-text {
+    font-size: 10px;
+  }
+
+  .driver-popover.unmarble-tour-popover .driver-popover-close-btn {
+    font-size: 20px;
+    width: 28px;
+    height: 28px;
   }
 }

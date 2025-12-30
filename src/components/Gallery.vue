@@ -313,6 +313,15 @@ export default {
       }
     },
     startGalleryTour() {
+      // Helper to get mobile-friendly placement
+      const isMobile = window.innerWidth < 768
+      const getPlacement = (desktopSide) => {
+        if (!isMobile) return desktopSide
+        // On mobile, prefer 'bottom' for most cases
+        if (desktopSide === 'right') return 'bottom'
+        return desktopSide
+      }
+
       // Check if we have clothing and at least one non-clothing photo for Steps 5a and 5b
       const hasClothing = this.userStore?.previewImages?.clothing?.length > 0
       const hasNonClothing =
@@ -378,7 +387,7 @@ export default {
                   </div>
                 </div>
               `,
-              side: 'right',
+              side: getPlacement('right'),
               align: 'start',
             },
           },
@@ -424,7 +433,7 @@ export default {
                   </div>
                 </div>
               `,
-              side: 'right',
+              side: getPlacement('right'),
               align: 'start',
             },
           },
@@ -447,7 +456,7 @@ export default {
                   </div>
                 </div>
               `,
-              side: 'right',
+              side: getPlacement('right'),
               align: 'start',
             },
           },
@@ -480,15 +489,20 @@ export default {
                   </div>
                 </div>
               `,
-              side: 'right',
+              side: isMobile ? 'top' : 'right',
               align: 'start',
             },
           },
           {
-            ...(window.innerWidth >= 768 ? { element: '.app-sidebar a[href*="design"]' } : {}),
+            element:
+              window.innerWidth >= 768
+                ? '.app-sidebar a[href*="design"]'
+                : '.mobile-bottom-nav a[href*="design"]',
             popover: {
               title: '',
-              description: `
+              description:
+                window.innerWidth >= 768
+                  ? `
                 <div class="tour-content">
                   <img
                     src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
@@ -502,8 +516,23 @@ export default {
                     </p>
                   </div>
                 </div>
+              `
+                  : `
+                <div class="tour-content">
+                  <img
+                    src="${new URL('/assets/img/tour_pointing.svg', import.meta.url).href}"
+                    alt="Tour Step 6"
+                    class="tour-image"
+                  />
+                  <div class="tour-text-container">
+                    <h2 class="tour-title">Navigation</h2>
+                    <p class="tour-text">
+                      Tap the Design icon here to switch between Gallery, Design, and Profile pages.
+                    </p>
+                  </div>
+                </div>
               `,
-              side: 'right',
+              side: window.innerWidth >= 768 ? 'right' : 'top',
               align: 'center',
             },
           },
