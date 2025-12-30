@@ -385,6 +385,10 @@ export default {
             this.userStore.updateStorageLeft(result.data.storage_left)
           }
 
+          // IMPORTANT: Set user_status FIRST before any other updates
+          // This ensures the status is set before Gallery component mounts
+          this.userStore.setUserStatus('onboarded')
+
           // Add copied images if returned
           if (result.data.copied_images && result.data.copied_images.length > 0) {
             for (const image of result.data.copied_images) {
@@ -396,9 +400,6 @@ export default {
               })
             }
           }
-
-          // Set user_status to 'onboarded' (ready for tour)
-          this.userStore.setUserStatus('onboarded')
 
           this.$emit('completed')
 

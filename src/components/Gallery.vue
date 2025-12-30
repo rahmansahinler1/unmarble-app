@@ -220,15 +220,25 @@ export default {
     UploadModal,
   },
   mounted() {
-    // Only show tour if user completed onboarding but hasn't seen tour yet
-    if (this.userStore.userCred.user_status === 'onboarded') {
-      this.startGalleryTour()
+    // Check tour status on mount
+    this.checkAndStartTour()
+  },
+  watch: {
+    // Watch for user_status changes to handle race condition during navigation
+    'userStore.userCred.user_status': {
+      handler(newStatus) {
+        if (newStatus === 'onboarded' && !this.tourStarted) {
+          this.checkAndStartTour()
+        }
+      },
+      immediate: false
     }
   },
   data() {
     return {
       selectedFilter: 'all',
       deleteConfirmId: null,
+      tourStarted: false,
       showImageModal: false,
       showUploadModal: false,
       fullImage: null,
@@ -295,12 +305,19 @@ export default {
     },
   },
   methods: {
+    checkAndStartTour() {
+      // Only show tour if user completed onboarding but hasn't seen tour yet
+      if (this.userStore.userCred.user_status === 'onboarded' && !this.tourStarted) {
+        this.tourStarted = true
+        this.startGalleryTour()
+      }
+    },
     startGalleryTour() {
       // Check if we have clothing and at least one non-clothing photo for Steps 5a and 5b
       const hasClothing = this.userStore?.previewImages?.clothing?.length > 0
       const hasNonClothing =
-        (this.userStore?.previewImages?.yourself?.length > 0) ||
-        (this.userStore?.previewImages?.design?.length > 0)
+        this.userStore?.previewImages?.yourself?.length > 0 ||
+        this.userStore?.previewImages?.design?.length > 0
 
       const driverObj = driver({
         showProgress: true,
@@ -425,7 +442,7 @@ export default {
                   <div class="tour-text-container">
                     <h2 class="tour-title">Select Clothing</h2>
                     <p class="tour-text">
-                      First, select a clothing item like this one.
+                      First, select a clothing item like this one by clicking on it.
                     </p>
                   </div>
                 </div>
