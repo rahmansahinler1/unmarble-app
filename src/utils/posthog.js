@@ -3,7 +3,7 @@ import posthog from 'posthog-js'
 export function initPostHog() {
   posthog.init('phc_J3QPecCLfUvcvgXsyOqAkaUMQcjOYAi7Bw8AZ27oVFj', {
     api_host: 'https://us.i.posthog.com',
-    person_profiles: 'identified_only',
+    person_profiles: 'always',
     capture_pageview: false,
   })
 }

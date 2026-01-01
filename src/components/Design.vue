@@ -285,6 +285,7 @@ import { mapStores } from 'pinia'
 import { getImage, getDesign, designImage, getCheckoutUrl } from '@/api/api'
 import SelectionModal from '@/components/SelectionModal.vue'
 import LimitModal from '@/components/LimitModal.vue'
+import { posthog } from '@/utils/posthog'
 
 const CONTENT_SAFETY_MESSAGE = `⚠️ Content Safety Violation
 
@@ -450,14 +451,14 @@ export default {
     async designImage() {
       if (!this.selections.yourself || !this.selections.clothing) return
 
-      // Check storage capacity first (design creates a new image)
+      posthog.capture('design_button_clicked', { button_location: 'main' })
+
       if (this.userStore.userLimits.storageLeft <= 0) {
         this.limitModalType = 'storage'
         this.showLimitModal = true
         return
       }
 
-      // Check design credits
       if (this.userStore.userLimits.designsLeft <= 0) {
         this.limitModalType = 'design'
         this.showLimitModal = true
@@ -555,6 +556,7 @@ export default {
       this.showLimitModal = false
     },
     handleUpgrade() {
+      posthog.capture('upgrade_button_clicked', { source: 'modal' })
       this.showLimitModal = false
       const checkoutUrl = getCheckoutUrl(this.userStore?.userCred?.email || '')
       if (checkoutUrl) {

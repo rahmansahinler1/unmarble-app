@@ -238,6 +238,7 @@ import {
 } from '@/api/api'
 import useUserStore from '@/stores/user'
 import { processImageForUpload } from '@/utils/imageProcessor'
+import { posthog } from '@/utils/posthog'
 
 export default {
   name: 'OnboardingModal',
@@ -324,8 +325,8 @@ export default {
       }
     },
     async handleAction() {
-      // When moving from step 1 (gender) to step 2 (clothing selection)
       if (this.currentStep === 1) {
+        posthog.capture('onboarding_step_completed', { step: 1 })
         this.currentStep++
         this.isLoadingPreviews = true
         await this.fetchDefaultPreviews()
@@ -368,6 +369,7 @@ export default {
       this.currentStep = 4
     },
     handleUpgrade() {
+      posthog.capture('upgrade_button_clicked', { source: 'onboarding' })
       const url = getCheckoutUrl(this.userStore.userCred.email)
       if (url) {
         window.location.href = url
@@ -375,8 +377,9 @@ export default {
     },
     async handleMaybeLater() {
       this.isSubmitting = true
+      posthog.capture('onboarding_completed', { method: 'completed' })
+
       try {
-        // Call completeOnboarding NOW (when user finishes upgrade step)
         const result = await completeOnboarding(this.selectedGender)
 
         if (result.success) {
@@ -515,12 +518,10 @@ export default {
       }
     },
     handleSkip() {
-      // Stop any ongoing generation
+      posthog.capture('onboarding_completed', { method: 'skip' })
       this.isGenerating = false
       clearTimeout(this.skipTimer)
       this.showSkipOption = false
-
-      // Complete onboarding and move to upgrade step
       this.completeAndMoveToUpgrade()
     },
     resetUploadState() {
