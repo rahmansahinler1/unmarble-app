@@ -219,7 +219,6 @@ import {
   deleteDesign,
   updateDesignFav,
   getDesign,
-  completeTour,
 } from '@/api/api'
 import UploadModal from '@/components/UploadModal.vue'
 import { driver } from 'driver.js'
@@ -230,21 +229,7 @@ export default {
   components: {
     UploadModal,
   },
-  mounted() {
-    // Check tour status on mount
-    this.checkAndStartTour()
-  },
-  watch: {
-    // Watch for user_status changes to handle race condition during navigation
-    'userStore.userCred.user_status': {
-      handler(newStatus) {
-        if (newStatus === 'onboarded' && !this.tourStarted) {
-          this.checkAndStartTour()
-        }
-      },
-      immediate: false,
-    },
-  },
+  mounted() {},
   data() {
     return {
       selectedFilter: 'all',
@@ -322,12 +307,6 @@ export default {
       // Start the tour immediately
       this.startGalleryTour()
     },
-    checkAndStartTour() {
-      // Only show tour if user completed onboarding but hasn't seen tour yet
-      if (this.userStore.userCred.user_status === 'onboarded' && !this.tourStarted) {
-        this.startGalleryTour()
-      }
-    },
     startGalleryTour() {
       // Set flag to prevent multiple simultaneous tours
       this.tourStarted = true
@@ -355,24 +334,8 @@ export default {
       const driverObj = driver({
         showProgress: true,
         popoverClass: 'unmarble-tour-popover',
-        onHighlightStarted: async (element, step, options) => {
-          // On first step shown, complete tour (only for first-time users)
-          if (options.state.activeIndex === 0) {
-            // Only call API if user is still in 'onboarded' status (first tour)
-            if (this.userStore.userCred.user_status === 'onboarded') {
-              try {
-                const result = await completeTour()
-                if (result.success) {
-                  // Update user status to active (tour completed)
-                  this.userStore.setUserStatus('active')
-                }
-              } catch (error) {
-                console.error('Failed to complete tour:', error)
-                // Still update status locally to prevent tour from showing again
-                this.userStore.setUserStatus('active')
-              }
-            }
-          }
+        onHighlightStarted: () => {
+          // Tour is now purely educational, no status updates
         },
         steps: [
           {
