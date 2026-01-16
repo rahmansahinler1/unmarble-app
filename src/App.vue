@@ -45,6 +45,7 @@ export default {
       cookieCheckInterval: null,
       expiredWarningDismissed: false,
       pastDueBannerDismissed: false,
+      onboardingModalOpen: false,
     }
   },
   computed: {
@@ -73,10 +74,13 @@ export default {
       return this.subscriptionStatus === 'past_due' && !this.pastDueBannerDismissed
     },
     showOnboarding() {
-      return this.userStore.userCred.user_status === 'first_time'
+      return this.userStore.userCred.user_status === 'first_time' || this.onboardingModalOpen
     },
   },
   mounted() {
+    if (this.userStore.userCred.user_status === 'first_time') {
+      this.onboardingModalOpen = true
+    }
     window.addEventListener('storage', this.handleStorageChange)
     this.startCookieValidation()
   },
@@ -88,8 +92,7 @@ export default {
   },
   methods: {
     handleOnboardingCompleted() {
-      // The store is already updated by the modal
-      // Modal will close automatically since firstTime is now false
+      this.onboardingModalOpen = false
     },
     handleStorageChange(event) {
       if (event.key === 'logout-event') {

@@ -16,7 +16,11 @@
 
       <!-- Back Button (shows on step 1-3, but NOT during generation, on success, or step 4) -->
       <button
-        v-if="currentStep > 0 && currentStep < 4 && !(currentStep === 3 && (generationSuccess || isGenerating))"
+        v-if="
+          currentStep > 0 &&
+          currentStep < 4 &&
+          !(currentStep === 3 && (generationSuccess || isGenerating))
+        "
         class="onboarding-back-btn"
         @click="goBack"
       >
@@ -325,6 +329,7 @@ export default {
       }
     },
     async handleAction() {
+      // Step 1: Gender selection → load clothing previews
       if (this.currentStep === 1) {
         posthog.capture('onboarding_step_completed', { step: 1 })
         this.currentStep++
@@ -333,19 +338,28 @@ export default {
         return
       }
 
-      // Step 3: Upload & Generation
-      if (this.currentStep === 3) {
-        if (this.generationSuccess) {
-          // Generation succeeded, complete onboarding and move to upgrade step
-          await this.completeAndMoveToUpgrade()
-          return
-        }
-        // Start or retry upload and generation
-        await this.handleUploadAndGenerate()
+      // Step 2: Clothing selection → move to upload
+      if (this.currentStep === 2) {
+        posthog.capture('onboarding_step_completed', { step: 2 })
+        this.currentStep++
         return
       }
 
-      // Default: move to next step
+      // Step 3: Upload & Design
+      if (this.currentStep === 3) {
+        if (this.generationSuccess) {
+          // User clicked "Continue" after successful design
+          posthog.capture('onboarding_step_completed', { step: 3 })
+          this.currentStep = 4
+          return
+        }
+
+        // User clicked "Design" - start upload and generation
+        await this.handleDesignClick()
+        return
+      }
+
+      // Step 0 (Welcome): just advance
       this.currentStep++
     },
     async fetchDefaultPreviews() {
@@ -363,57 +377,23 @@ export default {
         this.isLoadingPreviews = false
       }
     },
-    async completeAndMoveToUpgrade() {
-      // Just move to upgrade step without calling API
-      // API will be called when user clicks "Maybe later" button
-      this.currentStep = 4
-    },
     handleUpgrade() {
       posthog.capture('upgrade_button_clicked', { source: 'onboarding' })
+
+      this.$emit('completed')
+
       const url = getCheckoutUrl(this.userStore.userCred.email)
       if (url) {
         window.location.href = url
       }
     },
-    async handleMaybeLater() {
-      this.isSubmitting = true
-      posthog.capture('onboarding_completed', { method: 'completed' })
+    handleMaybeLater() {
+      // Onboarding already completed in Design step
+      // Just close modal and navigate
+      posthog.capture('onboarding_upgrade_skipped', { source: 'maybe_later' })
 
-      try {
-        const result = await completeOnboarding(this.selectedGender)
-
-        if (result.success) {
-          // Update storage if returned
-          if (result.data.storage_left !== undefined) {
-            this.userStore.updateStorageLeft(result.data.storage_left)
-          }
-
-          // IMPORTANT: Set user_status FIRST before any other updates
-          // This ensures the status is set before Gallery component mounts
-          this.userStore.setUserStatus('onboarded')
-
-          // Add copied images if returned
-          if (result.data.copied_images && result.data.copied_images.length > 0) {
-            for (const image of result.data.copied_images) {
-              this.userStore.addPreviewImage('clothing', {
-                image_id: image.id,
-                preview_base64: image.base64,
-                faved: image.faved,
-                created_at: image.created_at,
-              })
-            }
-          }
-
-          this.$emit('completed')
-
-          // Navigate to gallery to trigger tour
-          this.$router.push('/gallery')
-        }
-      } catch (error) {
-        console.error('Failed to complete onboarding:', error)
-      } finally {
-        this.isSubmitting = false
-      }
+      this.$emit('completed')
+      this.$router.push('/gallery')
     },
     // Step 3 methods
     triggerFileInput() {
@@ -465,20 +445,41 @@ export default {
       this.selectedFile = file
       this.imagePreviewUrl = URL.createObjectURL(file)
     },
-    async handleUploadAndGenerate() {
+    async handleDesignClick() {
       this.isGenerating = true
       this.generationError = null
-
-      // Start 12-second timer for skip option
       this.skipTimer = setTimeout(() => {
         this.showSkipOption = true
-      }, 12000)
+      }, 20000)
 
       try {
-        // 1. Process image (compress/convert) before upload
-        const processedFile = await processImageForUpload(this.selectedFile)
+        // 1. Complete Onboarding
+        const onboardingResult = await completeOnboarding(this.selectedGender)
+
+        if (onboardingResult.success) {
+          if (onboardingResult.data.storage_left !== undefined) {
+            this.userStore.updateStorageLeft(onboardingResult.data.storage_left)
+          }
+
+          this.userStore.setUserStatus('onboarded')
+
+          if (
+            onboardingResult.data.copied_images &&
+            onboardingResult.data.copied_images.length > 0
+          ) {
+            for (const image of onboardingResult.data.copied_images) {
+              this.userStore.addPreviewImage('clothing', {
+                image_id: image.id,
+                preview_base64: image.base64,
+                faved: image.faved,
+                created_at: image.created_at,
+              })
+            }
+          }
+        }
 
         // 2. Upload image to 'yourself' category
+        const processedFile = await processImageForUpload(this.selectedFile)
         const uploadResult = await uploadImage('yourself', processedFile)
 
         if (!uploadResult.success) {
@@ -491,7 +492,7 @@ export default {
         this.userStore.addPreviewImage('yourself', uploadResult.data)
         this.userStore.updateStorageLeft(uploadResult.data.storage_left)
 
-        // 2. Call onboarding design endpoint
+        // 3. Call onboarding design endpoint
         const designResult = await designOnboarding(this.uploadedImageId, this.selectedClothingId)
 
         if (designResult.success) {
@@ -502,6 +503,12 @@ export default {
           this.userStore.addPreviewImage('design', designResult.data)
           this.userStore.updateStorageLeft(designResult.data.storage_left)
           this.userStore.updateDesignsLeft(designResult.data.designs_left)
+
+          // Track design completion
+          posthog.capture('onboarding_design_completed', {
+            gender: this.selectedGender,
+            clothing_id: this.selectedClothingId,
+          })
         } else {
           throw new Error(designResult.error || 'Generation failed')
         }
@@ -511,18 +518,20 @@ export default {
       } finally {
         this.isGenerating = false
         clearTimeout(this.skipTimer)
-        // Keep showSkipOption visible on error so user can skip
         if (!this.generationError) {
           this.showSkipOption = false
         }
       }
     },
     handleSkip() {
-      posthog.capture('onboarding_completed', { method: 'skip' })
+      posthog.capture('onboarding_design_skipped', { reason: 'timeout_20s' })
+
       this.isGenerating = false
       clearTimeout(this.skipTimer)
       this.showSkipOption = false
-      this.completeAndMoveToUpgrade()
+
+      this.$emit('completed')
+      this.$router.push('/gallery')
     },
     resetUploadState() {
       // Clean up preview URL to prevent memory leaks
