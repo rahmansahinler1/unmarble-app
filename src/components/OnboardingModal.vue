@@ -329,7 +329,6 @@ export default {
       }
     },
     async handleAction() {
-      // Step 1: Gender selection → load clothing previews
       if (this.currentStep === 1) {
         posthog.capture('onboarding_step_completed', { step: 1 })
         this.currentStep++
@@ -338,28 +337,23 @@ export default {
         return
       }
 
-      // Step 2: Clothing selection → move to upload
       if (this.currentStep === 2) {
         posthog.capture('onboarding_step_completed', { step: 2 })
         this.currentStep++
         return
       }
 
-      // Step 3: Upload & Design
       if (this.currentStep === 3) {
         if (this.generationSuccess) {
-          // User clicked "Continue" after successful design
           posthog.capture('onboarding_step_completed', { step: 3 })
           this.currentStep = 4
           return
         }
 
-        // User clicked "Design" - start upload and generation
         await this.handleDesignClick()
         return
       }
 
-      // Step 0 (Welcome): just advance
       this.currentStep++
     },
     async fetchDefaultPreviews() {
@@ -367,7 +361,6 @@ export default {
         const result = await getDefaultPreviews(this.selectedGender)
         if (result.success) {
           this.userStore.setOnboardingPreviews(result.data.previews)
-          // Clear previous selection when new previews load
           this.selectedClothingId = null
           this.userStore.setOnboardingClothingId(null)
         }
@@ -388,14 +381,11 @@ export default {
       }
     },
     handleMaybeLater() {
-      // Onboarding already completed in Design step
-      // Just close modal and navigate
       posthog.capture('onboarding_upgrade_skipped', { source: 'maybe_later' })
 
       this.$emit('completed')
       this.$router.push('/gallery')
     },
-    // Step 3 methods
     triggerFileInput() {
       if (!this.isGenerating) {
         this.$refs.fileInput.click()
@@ -416,7 +406,6 @@ export default {
       // Could remove visual feedback
     },
     selectFile(file) {
-      // Validate file type
       const validTypes = [
         'image/jpeg',
         'image/jpg',
@@ -430,7 +419,6 @@ export default {
         return
       }
 
-      // Check max size (25MB) - will be compressed on upload
       if (file.size > 25 * 1024 * 1024) {
         this.generationError = 'File too large. Maximum size is 25MB.'
         return
@@ -438,7 +426,6 @@ export default {
 
       this.generationError = null
 
-      // Store file and create preview
       if (this.imagePreviewUrl) {
         URL.revokeObjectURL(this.imagePreviewUrl)
       }
@@ -453,7 +440,6 @@ export default {
       }, 20000)
 
       try {
-        // 1. Complete Onboarding
         const onboardingResult = await completeOnboarding(this.selectedGender)
 
         if (onboardingResult.success) {
@@ -478,7 +464,6 @@ export default {
           }
         }
 
-        // 2. Upload image to 'yourself' category
         const processedFile = await processImageForUpload(this.selectedFile)
         const uploadResult = await uploadImage('yourself', processedFile)
 
@@ -488,23 +473,19 @@ export default {
 
         this.uploadedImageId = uploadResult.data.image_id
 
-        // Add uploaded image to store
         this.userStore.addPreviewImage('yourself', uploadResult.data)
         this.userStore.updateStorageLeft(uploadResult.data.storage_left)
 
-        // 3. Call onboarding design endpoint
         const designResult = await designOnboarding(this.uploadedImageId, this.selectedClothingId)
 
         if (designResult.success) {
           this.generationSuccess = true
           this.generatedImageUrl = `data:image/webp;base64,${designResult.data.image_base64}`
 
-          // Add design to store
           this.userStore.addPreviewImage('design', designResult.data)
           this.userStore.updateStorageLeft(designResult.data.storage_left)
           this.userStore.updateDesignsLeft(designResult.data.designs_left)
 
-          // Track design completion
           posthog.capture('onboarding_design_completed', {
             gender: this.selectedGender,
             clothing_id: this.selectedClothingId,
@@ -534,7 +515,6 @@ export default {
       this.$router.push('/gallery')
     },
     resetUploadState() {
-      // Clean up preview URL to prevent memory leaks
       if (this.imagePreviewUrl) {
         URL.revokeObjectURL(this.imagePreviewUrl)
       }
@@ -550,7 +530,6 @@ export default {
     },
   },
   beforeUnmount() {
-    // Clean up preview URL
     if (this.imagePreviewUrl) {
       URL.revokeObjectURL(this.imagePreviewUrl)
     }
