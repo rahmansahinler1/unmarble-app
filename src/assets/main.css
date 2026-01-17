@@ -1879,7 +1879,7 @@
 .onboarding-modal {
   background: white;
   border-radius: 24px;
-  padding: 24px 24px;
+  padding: 24px 20px;
   width: 80%;
   max-height: 95vh;
   overflow-y: auto;
@@ -1951,7 +1951,7 @@
   color: white;
   border: none;
   font-family: var(--font-family-base);
-  font-size: 15px;
+  font-size: clamp(11px, calc(11px + (15 - 11) * ((100vw - 1368px) / 332)), 15px);
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
@@ -2010,7 +2010,7 @@
 /* Question title (italic) */
 .onboarding-question {
   font-family: var(--font-family-base);
-  font-size: 28px;
+  font-size: clamp(24px, calc(24px + (28 - 24) * ((100vw - 1368px) / 332)), 28px);
   font-weight: 700;
   font-style: italic;
   color: #212529;
@@ -2047,9 +2047,9 @@
 /* Privacy text */
 .onboarding-privacy {
   font-family: var(--font-family-base);
-  font-size: 16px;
+  font-size: clamp(13px, calc(13px + (16 - 13) * ((100vw - 1368px) / 332)), 16px);
   color: #5d5d5d;
-  margin: 0 0 40px 0;
+  margin: 0 0 24px 0;
 }
 
 /* Options container */
@@ -2112,10 +2112,10 @@
 .onboarding-gallery {
   display: grid;
   grid-template-columns: repeat(3, 1fr);
-  column-gap: 12px;
-  row-gap: 12px;
+  column-gap: clamp(12px, calc(12px + (16 - 12) * ((100vw - 1368px) / 332)), 16px);
+  row-gap: clamp(24px, calc(24px + (32 - 24) * ((100vw - 1368px) / 332)), 32px);
   width: 100%;
-  max-width: 480px;
+  max-width: clamp(360px, calc(360px + (480 - 360) * ((100vw - 1368px) / 332)), 480px);
   margin: 12px auto 0;
 }
 
@@ -2932,17 +2932,22 @@
   /* Onboarding text - linear interpolation from 360px to 420px (60px range) */
   .onboarding-tagline {
     /* 20px at 360px → 24px at 420px */
-    font-size: clamp(20px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 24px);
+    font-size: clamp(12px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 18px);
   }
 
   .onboarding-question {
     /* 20px at 360px → 24px at 420px */
-    font-size: clamp(20px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 24px);
+    font-size: clamp(12px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 18px);
   }
 
   .onboarding-privacy {
     /* 14px at 360px → 16px at 420px */
-    font-size: clamp(14px, calc(14px + (16 - 14) * ((100vw - 360px) / 60)), 16px);
+    font-size: clamp(8px, calc(14px + (16 - 14) * ((100vw - 360px) / 60)), 12px);
+  }
+
+  .onboarding-option-btn {
+    /* 20px at 360px → 24px at 420px */
+    font-size: clamp(8px, calc(20px + (24 - 20) * ((100vw - 360px) / 60)), 12px);
   }
 
   .onboarding-gallery {
@@ -3745,6 +3750,33 @@
   -------------------------------- */
   .logout-modal {
     padding: 28px;
+  }
+
+  /* --------------------------------
+     Onboarding Modal - Tablet Responsive
+  -------------------------------- */
+  .onboarding-question {
+    /* 22px at 768px → 26px at 1024px */
+    font-size: clamp(22px, calc(22px + (26 - 22) * ((100vw - 768px) / 256)), 26px);
+  }
+
+  .onboarding-privacy {
+    /* 12px at 768px → 15px at 1024px */
+    font-size: clamp(12px, calc(12px + (15 - 12) * ((100vw - 768px) / 256)), 15px);
+  }
+
+  .onboarding-gallery {
+    /* Gallery width: 300px at 768px → 400px at 1024px */
+    max-width: clamp(300px, calc(300px + (400 - 300) * ((100vw - 768px) / 256)), 400px);
+    /* Column gap: 10px at 768px → 14px at 1024px */
+    column-gap: clamp(10px, calc(10px + (14 - 10) * ((100vw - 768px) / 256)), 14px);
+    /* Row gap: 20px at 768px → 28px at 1024px */
+    row-gap: clamp(20px, calc(20px + (28 - 20) * ((100vw - 768px) / 256)), 28px);
+  }
+
+  .btn-onboarding-action {
+    /* Button font: 10px at 768px → 13px at 1024px */
+    font-size: clamp(10px, calc(10px + (13 - 10) * ((100vw - 768px) / 256)), 13px);
   }
 }
 
