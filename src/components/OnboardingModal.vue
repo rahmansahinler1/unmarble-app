@@ -94,20 +94,22 @@
               class="onboarding-gallery-item onboarding-upload-tile"
               :class="{ selected: isCustomClothingSelected }"
               @click="triggerCustomClothingInput"
+              role="button"
+              aria-label="Upload your own clothing"
+              tabindex="0"
+              @keydown.enter="triggerCustomClothingInput"
+              @keydown.space.prevent="triggerCustomClothingInput"
             >
               <!-- Show preview if custom clothing file exists (regardless of selection state) -->
               <template v-if="customClothingPreviewUrl">
                 <img :src="customClothingPreviewUrl" alt="Your clothing" class="custom-clothing-preview" />
-                <div class="custom-clothing-overlay">
-                  <i class="bi bi-arrow-repeat"></i>
-                  <span>Click to change</span>
-                </div>
               </template>
 
               <!-- Show upload prompt if not selected -->
               <template v-else>
-                <i class="bi bi-plus-circle upload-icon"></i>
-                <span class="upload-text">Upload your own</span>
+                <div class="onboarding-upload-content">
+                  <i class="bi bi-plus-circle-fill onboarding-upload-icon"></i>
+                </div>
               </template>
             </div>
 
@@ -672,67 +674,3 @@ export default {
   },
 }
 </script>
-
-<style scoped>
-/* Upload tile specific styles */
-.onboarding-upload-tile {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: center;
-  cursor: pointer;
-  position: relative;
-  border: 2px dashed #ccc;
-  background-color: #f9f9f9;
-}
-
-.onboarding-upload-tile:hover {
-  border-color: #666;
-  background-color: #f0f0f0;
-}
-
-.onboarding-upload-tile.selected {
-  border: 2px solid #000;
-  border-style: solid;
-}
-
-.upload-icon {
-  font-size: 2rem;
-  color: #666;
-  margin-bottom: 0.5rem;
-}
-
-.upload-text {
-  font-size: 0.875rem;
-  color: #666;
-  text-align: center;
-}
-
-/* Custom clothing preview styles */
-.custom-clothing-preview {
-  width: 100%;
-  height: 100%;
-  object-fit: cover;
-}
-
-.custom-clothing-overlay {
-  position: absolute;
-  bottom: 0;
-  left: 0;
-  right: 0;
-  background: rgba(0, 0, 0, 0.7);
-  color: white;
-  padding: 0.5rem;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  gap: 0.25rem;
-  font-size: 0.75rem;
-  opacity: 0;
-  transition: opacity 0.2s;
-}
-
-.onboarding-upload-tile:hover .custom-clothing-overlay {
-  opacity: 1;
-}
-</style>
