@@ -2212,7 +2212,7 @@
 
 /* Upload icon styling - matches Gallery.vue */
 .onboarding-upload-icon {
-  font-size: 6rem;
+  font-size: clamp(3.5rem, calc(3.5rem + (4 - 3.5) * ((100vw - 360px) / 60)), 4rem);
   color: #00b7ed;
   cursor: pointer;
   transition: all 0.3s ease;
@@ -2995,8 +2995,9 @@
   }
 
   /* Mobile upload icon styles - matches Gallery.vue mobile behavior */
+  /* Responsive scaling: 3.5rem (56px) at 360px → 4rem (64px) at 420px */
   .onboarding-upload-icon {
-    font-size: 3rem;
+    font-size: clamp(3.5rem, calc(3.5rem + (4 - 3.5) * ((100vw - 360px) / 60)), 4rem);
   }
 
   .onboarding-upload-icon:hover {
