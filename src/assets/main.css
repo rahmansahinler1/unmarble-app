@@ -1888,6 +1888,35 @@
   position: relative;
 }
 
+/* Override for upgrade step - match original .limit-modal styling */
+.onboarding-modal.upgrade-step {
+  max-width: 480px;
+  padding: 48px 40px;
+}
+
+/* Ensure upgrade modal elements don't inherit responsive styles */
+.onboarding-modal.upgrade-step .limit-modal-title {
+  font-size: 32px; /* Original size, no responsive */
+  margin: 0 0 14px 0;
+}
+
+.onboarding-modal.upgrade-step .limit-modal-subtitle {
+  font-size: 16px; /* Original size, no responsive */
+}
+
+.onboarding-modal.upgrade-step .limit-modal-price {
+  font-size: 16px; /* Original size, no responsive */
+}
+
+.onboarding-modal.upgrade-step .btn-upgrade-new {
+  font-size: 16px; /* Original size, no responsive */
+  margin-top: 24px; /* Original margin, no responsive */
+}
+
+.onboarding-modal.upgrade-step .btn-maybe-later {
+  font-size: 15px; /* Original size, no responsive */
+}
+
 .onboarding-logo {
   margin-bottom: 32px;
 }

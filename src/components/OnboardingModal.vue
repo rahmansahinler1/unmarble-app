@@ -2,7 +2,7 @@
   <div v-if="isOpen" class="onboarding-modal-overlay">
     <div
       class="onboarding-modal"
-      :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3 }"
+      :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3, 'upgrade-step': currentStep === 4 }"
     >
       <!-- Progress Bar (shows on steps 0-3, hidden on step 4) -->
       <div v-if="currentStep < 4" class="onboarding-progress">
