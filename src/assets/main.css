@@ -1879,10 +1879,9 @@
 .onboarding-modal {
   background: white;
   border-radius: 24px;
-  padding: 48px 40px;
-  max-width: 480px;
-  width: 90%;
-  max-height: 90vh;
+  padding: 24px 24px;
+  width: 80%;
+  max-height: 95vh;
   overflow-y: auto;
   text-align: center;
   position: relative;
@@ -1956,7 +1955,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-top: 24px;
+  margin-top: 20px;
 }
 
 .btn-onboarding-action:hover:not(:disabled) {
@@ -2114,9 +2113,10 @@
   display: grid;
   grid-template-columns: repeat(3, 1fr);
   column-gap: 12px;
-  row-gap: 36px;
+  row-gap: 12px;
   width: 100%;
-  margin-top: 12px;
+  max-width: 480px;
+  margin: 12px auto 0;
 }
 
 .onboarding-gallery-item {
@@ -3975,7 +3975,9 @@
   line-height: 1;
   padding: 0.5rem;
   cursor: pointer;
-  transition: color 0.2s ease, transform 0.2s ease;
+  transition:
+    color 0.2s ease,
+    transform 0.2s ease;
   display: flex;
   align-items: center;
   justify-content: center;
