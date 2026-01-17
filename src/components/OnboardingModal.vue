@@ -95,8 +95,8 @@
               :class="{ selected: isCustomClothingSelected }"
               @click="triggerCustomClothingInput"
             >
-              <!-- Show preview if custom clothing selected -->
-              <template v-if="isCustomClothingSelected && customClothingPreviewUrl">
+              <!-- Show preview if custom clothing file exists (regardless of selection state) -->
+              <template v-if="customClothingPreviewUrl">
                 <img :src="customClothingPreviewUrl" alt="Your clothing" class="custom-clothing-preview" />
                 <div class="custom-clothing-overlay">
                   <i class="bi bi-arrow-repeat"></i>
@@ -355,15 +355,26 @@ export default {
       this.userStore.setOnboardingGender(gender)
     },
     selectClothing(id) {
-      // If switching from custom clothing to default, clean up preview
-      if (this.isCustomClothingSelected) {
-        this.clearCustomClothing()
-      }
-
+      // Mark default as selected (custom clothing preview remains visible but unselected)
       this.selectedClothingId = id
       this.userStore.setOnboardingClothingId(id)
+
+      // Unselect custom clothing tile (but keep preview visible)
+      this.isCustomClothingSelected = false
     },
     triggerCustomClothingInput() {
+      // If preview exists but not selected, select it first
+      if (this.customClothingPreviewUrl && !this.isCustomClothingSelected) {
+        // Mark custom clothing as selected
+        this.isCustomClothingSelected = true
+        // Unselect default clothing
+        this.selectedClothingId = null
+        this.userStore.setOnboardingClothingId(null)
+        return  // Don't trigger file picker
+      }
+
+      // If preview exists and is already selected, trigger re-selection
+      // OR if no preview exists, trigger initial selection
       this.$refs.customClothingInput.click()
     },
     handleCustomClothingSelect(event) {
@@ -638,7 +649,7 @@ export default {
       if (this.imagePreviewUrl) {
         URL.revokeObjectURL(this.imagePreviewUrl)
       }
-      this.clearCustomClothing()
+      // DO NOT clear custom clothing - preserve selection when going back
       this.selectedFile = null
       this.imagePreviewUrl = null
       this.isGenerating = false
