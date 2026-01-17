@@ -2105,7 +2105,7 @@
 
 .onboarding-modal.upload-step .onboarding-dropzone,
 .onboarding-modal.upload-step .onboarding-result {
-  max-width: 400px;
+  max-width: clamp(360px, calc(360px + (480 - 360) * ((100vw - 1368px) / 332)), 480px);
   aspect-ratio: 4 / 5;
 }
 
@@ -2215,7 +2215,7 @@
 /* Step 4: Upload Dropzone */
 .onboarding-dropzone {
   width: 100%;
-  max-width: 280px;
+  max-width: clamp(360px, calc(360px + (480 - 360) * ((100vw - 1368px) / 332)), 480px);
   aspect-ratio: 3 / 4;
   border: 2px dashed #ccc;
   border-radius: 16px;
@@ -2323,7 +2323,7 @@
 /* Generation result */
 .onboarding-result {
   width: 100%;
-  max-width: 280px;
+  max-width: clamp(360px, calc(360px + (480 - 360) * ((100vw - 1368px) / 332)), 480px);
   aspect-ratio: 3 / 4;
   border-radius: 16px;
   overflow: hidden;
