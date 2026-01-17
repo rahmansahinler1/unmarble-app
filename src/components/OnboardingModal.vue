@@ -78,15 +78,47 @@
           </div>
 
           <div v-else class="onboarding-gallery">
+            <!-- Default clothing items -->
             <div
               v-for="image in onboardingPreviews"
               :key="image.id"
               class="onboarding-gallery-item"
-              :class="{ selected: selectedClothingId === image.id }"
+              :class="{ selected: selectedClothingId === image.id && !isCustomClothingSelected }"
               @click="selectClothing(image.id)"
             >
               <img :src="`data:image/webp;base64,${image.base64}`" alt="Clothing option" />
             </div>
+
+            <!-- Upload button tile (9th tile) -->
+            <div
+              class="onboarding-gallery-item onboarding-upload-tile"
+              :class="{ selected: isCustomClothingSelected }"
+              @click="triggerCustomClothingInput"
+            >
+              <!-- Show preview if custom clothing selected -->
+              <template v-if="isCustomClothingSelected && customClothingPreviewUrl">
+                <img :src="customClothingPreviewUrl" alt="Your clothing" class="custom-clothing-preview" />
+                <div class="custom-clothing-overlay">
+                  <i class="bi bi-arrow-repeat"></i>
+                  <span>Click to change</span>
+                </div>
+              </template>
+
+              <!-- Show upload prompt if not selected -->
+              <template v-else>
+                <i class="bi bi-plus-circle upload-icon"></i>
+                <span class="upload-text">Upload your own</span>
+              </template>
+            </div>
+
+            <!-- Hidden file input -->
+            <input
+              type="file"
+              ref="customClothingInput"
+              @change="handleCustomClothingSelect"
+              accept="image/jpeg,image/jpg,image/png,image/webp,image/heic,image/heif"
+              hidden
+            />
           </div>
         </template>
 
@@ -261,6 +293,10 @@ export default {
       selectedGender: null,
       selectedClothingId: null,
       isLoadingPreviews: false,
+      // Custom clothing upload state
+      customClothingFile: null,
+      customClothingPreviewUrl: null,
+      isCustomClothingSelected: false,
       // Step 3 (upload & generation) state
       selectedFile: null,
       imagePreviewUrl: null,
@@ -292,7 +328,10 @@ export default {
     },
     canProceed() {
       if (this.currentStep === 1) return this.selectedGender !== null
-      if (this.currentStep === 2) return this.selectedClothingId !== null
+      if (this.currentStep === 2) {
+        // Allow proceeding if EITHER default clothing OR custom clothing selected
+        return this.selectedClothingId !== null || this.isCustomClothingSelected
+      }
       if (this.currentStep === 3) {
         // Can proceed if: has file selected (for Design), generation succeeded (for Continue), or has error (for Retry)
         if (this.generationSuccess) return true
@@ -316,8 +355,68 @@ export default {
       this.userStore.setOnboardingGender(gender)
     },
     selectClothing(id) {
+      // If switching from custom clothing to default, clean up preview
+      if (this.isCustomClothingSelected) {
+        this.clearCustomClothing()
+      }
+
       this.selectedClothingId = id
       this.userStore.setOnboardingClothingId(id)
+    },
+    triggerCustomClothingInput() {
+      this.$refs.customClothingInput.click()
+    },
+    handleCustomClothingSelect(event) {
+      const file = event.target.files[0]
+      if (!file) return
+
+      // Validate file type
+      const validTypes = [
+        'image/jpeg',
+        'image/jpg',
+        'image/png',
+        'image/webp',
+        'image/heic',
+        'image/heif',
+      ]
+      if (!validTypes.includes(file.type.toLowerCase())) {
+        this.generationError = 'Please select a valid image file (JPG, PNG, WEBP, or HEIC)'
+        return
+      }
+
+      // Validate file size (25MB max)
+      if (file.size > 25 * 1024 * 1024) {
+        this.generationError = 'File too large. Maximum size is 25MB.'
+        return
+      }
+
+      // Clean up previous preview URL if exists
+      if (this.customClothingPreviewUrl) {
+        URL.revokeObjectURL(this.customClothingPreviewUrl)
+      }
+
+      // Store file and create preview
+      this.customClothingFile = file
+      this.customClothingPreviewUrl = URL.createObjectURL(file)
+      this.isCustomClothingSelected = true
+
+      // Clear any default clothing selection
+      this.selectedClothingId = null
+      this.userStore.setOnboardingClothingId(null)
+
+      // Clear any error messages
+      this.generationError = null
+
+      // Reset file input to allow re-selecting same file
+      event.target.value = ''
+    },
+    clearCustomClothing() {
+      if (this.customClothingPreviewUrl) {
+        URL.revokeObjectURL(this.customClothingPreviewUrl)
+      }
+      this.customClothingFile = null
+      this.customClothingPreviewUrl = null
+      this.isCustomClothingSelected = false
     },
     goBack() {
       if (this.currentStep > 0) {
@@ -476,7 +575,27 @@ export default {
         this.userStore.addPreviewImage('yourself', uploadResult.data)
         this.userStore.updateStorageLeft(uploadResult.data.storage_left)
 
-        const designResult = await designOnboarding(this.uploadedImageId, this.selectedClothingId)
+        // If custom clothing selected, upload it
+        let uploadedClothingId = null
+        if (this.isCustomClothingSelected && this.customClothingFile) {
+          const processedClothing = await processImageForUpload(this.customClothingFile)
+          const clothingUploadResult = await uploadImage('clothing', processedClothing)
+
+          if (!clothingUploadResult.success) {
+            throw new Error(clothingUploadResult.error || 'Failed to upload clothing')
+          }
+
+          uploadedClothingId = clothingUploadResult.data.image_id
+          this.userStore.addPreviewImage('clothing', clothingUploadResult.data)
+          this.userStore.updateStorageLeft(clothingUploadResult.data.storage_left)
+        }
+
+        // Call design API with appropriate parameters
+        const designResult = await designOnboarding(
+          this.uploadedImageId,
+          this.isCustomClothingSelected ? null : this.selectedClothingId,
+          uploadedClothingId
+        )
 
         if (designResult.success) {
           this.generationSuccess = true
@@ -489,6 +608,7 @@ export default {
           posthog.capture('onboarding_design_completed', {
             gender: this.selectedGender,
             clothing_id: this.selectedClothingId,
+            custom_clothing: this.isCustomClothingSelected,
           })
         } else {
           throw new Error(designResult.error || 'Generation failed')
@@ -518,6 +638,7 @@ export default {
       if (this.imagePreviewUrl) {
         URL.revokeObjectURL(this.imagePreviewUrl)
       }
+      this.clearCustomClothing()
       this.selectedFile = null
       this.imagePreviewUrl = null
       this.isGenerating = false
@@ -533,7 +654,74 @@ export default {
     if (this.imagePreviewUrl) {
       URL.revokeObjectURL(this.imagePreviewUrl)
     }
+    if (this.customClothingPreviewUrl) {
+      URL.revokeObjectURL(this.customClothingPreviewUrl)
+    }
     clearTimeout(this.skipTimer)
   },
 }
 </script>
+
+<style scoped>
+/* Upload tile specific styles */
+.onboarding-upload-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  position: relative;
+  border: 2px dashed #ccc;
+  background-color: #f9f9f9;
+}
+
+.onboarding-upload-tile:hover {
+  border-color: #666;
+  background-color: #f0f0f0;
+}
+
+.onboarding-upload-tile.selected {
+  border: 2px solid #000;
+  border-style: solid;
+}
+
+.upload-icon {
+  font-size: 2rem;
+  color: #666;
+  margin-bottom: 0.5rem;
+}
+
+.upload-text {
+  font-size: 0.875rem;
+  color: #666;
+  text-align: center;
+}
+
+/* Custom clothing preview styles */
+.custom-clothing-preview {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+}
+
+.custom-clothing-overlay {
+  position: absolute;
+  bottom: 0;
+  left: 0;
+  right: 0;
+  background: rgba(0, 0, 0, 0.7);
+  color: white;
+  padding: 0.5rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.25rem;
+  font-size: 0.75rem;
+  opacity: 0;
+  transition: opacity 0.2s;
+}
+
+.onboarding-upload-tile:hover .custom-clothing-overlay {
+  opacity: 1;
+}
+</style>

@@ -446,14 +446,25 @@ export const getDefaultPreviews = async function (gender, ids = null) {
   }
 }
 
-export const designOnboarding = async function (yourselfImageId, defaultClothingId) {
+export const designOnboarding = async function (yourselfImageId, defaultClothingId, clothingImageId = null) {
   try {
+    // Build request body with optional parameters
+    const requestBody = {
+      yourself_image_id: yourselfImageId,
+    }
+
+    // Include EITHER default_clothing_id OR clothing_image_id
+    if (clothingImageId) {
+      requestBody.clothing_image_id = clothingImageId
+    } else if (defaultClothingId) {
+      requestBody.default_clothing_id = defaultClothingId
+    } else {
+      throw new Error('Either defaultClothingId or clothingImageId must be provided')
+    }
+
     const response = await fetchWithAuth(`${API_BASE_URL}/design_onboarding`, {
       method: 'POST',
-      body: JSON.stringify({
-        yourself_image_id: yourselfImageId,
-        default_clothing_id: defaultClothingId,
-      }),
+      body: JSON.stringify(requestBody),
     })
 
     if (!response.ok) {
