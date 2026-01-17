@@ -1879,8 +1879,9 @@
 .onboarding-modal {
   background: white;
   border-radius: 24px;
-  padding: 24px 20px;
-  width: 80%;
+  padding: 24px;
+  width: 90%;
+  max-width: 520px;
   max-height: 95vh;
   overflow-y: auto;
   text-align: center;
@@ -1955,7 +1956,7 @@
   font-weight: 600;
   cursor: pointer;
   transition: background-color 0.2s ease;
-  margin-top: 20px;
+  margin-top: clamp(12px, calc(12px + (20 - 12) * ((100vw - 1368px) / 332)), 20px);
 }
 
 .btn-onboarding-action:hover:not(:disabled) {
@@ -1996,7 +1997,7 @@
   height: 6px;
   background: #e0e0e0;
   border-radius: 3px;
-  margin: 0 auto 32px;
+  margin: 0 auto clamp(20px, calc(20px + (32 - 20) * ((100vw - 1368px) / 332)), 32px);
   overflow: hidden;
 }
 
@@ -2010,21 +2011,21 @@
 /* Question title (italic) */
 .onboarding-question {
   font-family: var(--font-family-base);
-  font-size: clamp(24px, calc(24px + (28 - 24) * ((100vw - 1368px) / 332)), 28px);
+  font-size: clamp(22px, calc(22px + (28 - 22) * ((100vw - 1368px) / 332)), 28px);
   font-weight: 700;
   font-style: italic;
   color: #212529;
-  margin: 0 0 12px 0;
+  margin: 0 0 clamp(8px, calc(8px + (12 - 8) * ((100vw - 1368px) / 332)), 12px) 0;
   text-align: center;
 }
 
 /* Back button */
 .onboarding-back-btn {
   position: absolute;
-  top: 24px;
-  left: 24px;
-  width: 40px;
-  height: 40px;
+  top: 20px;
+  left: 20px;
+  width: 36px;
+  height: 36px;
   border: none;
   background: transparent;
   cursor: pointer;
@@ -2047,9 +2048,9 @@
 /* Privacy text */
 .onboarding-privacy {
   font-family: var(--font-family-base);
-  font-size: clamp(13px, calc(13px + (16 - 13) * ((100vw - 1368px) / 332)), 16px);
+  font-size: clamp(12px, calc(12px + (16 - 12) * ((100vw - 1368px) / 332)), 16px);
   color: #5d5d5d;
-  margin: 0 0 24px 0;
+  margin: 0 0 clamp(16px, calc(16px + (24 - 16) * ((100vw - 1368px) / 332)), 24px) 0;
 }
 
 /* Options container */
@@ -2116,7 +2117,7 @@
   row-gap: clamp(24px, calc(24px + (32 - 24) * ((100vw - 1368px) / 332)), 32px);
   width: 100%;
   max-width: clamp(360px, calc(360px + (480 - 360) * ((100vw - 1368px) / 332)), 480px);
-  margin: 12px auto 0;
+  margin: clamp(8px, calc(8px + (12 - 8) * ((100vw - 1368px) / 332)), 12px) auto 0;
 }
 
 .onboarding-gallery-item {
@@ -3766,8 +3767,8 @@
   }
 
   .onboarding-gallery {
-    /* Gallery width: 300px at 768px → 400px at 1024px */
-    max-width: clamp(300px, calc(300px + (400 - 300) * ((100vw - 768px) / 256)), 400px);
+    /* Gallery width: Fixed 480px for tablet (long devices) */
+    max-width: 480px;
     /* Column gap: 10px at 768px → 14px at 1024px */
     column-gap: clamp(10px, calc(10px + (14 - 10) * ((100vw - 768px) / 256)), 14px);
     /* Row gap: 20px at 768px → 28px at 1024px */
