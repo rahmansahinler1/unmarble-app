@@ -77,7 +77,10 @@ export default {
     },
     target() {
       if (this.show) {
-        this.$nextTick(() => this.updatePosition())
+        this.$nextTick(() => {
+          this.findTarget()
+          this.updatePosition()
+        })
       }
     },
   },
@@ -146,9 +149,11 @@ export default {
       this.dismiss()
     },
     handleHandClick(event) {
-      // Clicking the hand itself also dismisses
+      // Clicking the hand triggers a click on the target element
       event.stopPropagation()
-      this.dismiss()
+      if (this.targetElement) {
+        this.targetElement.click()
+      }
     },
     handleClickOutside(event) {
       if (!this.visible) return
