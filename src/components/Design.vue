@@ -276,6 +276,17 @@
       @close="closeLimitModal"
       @upgrade="handleUpgrade"
     />
+
+    <!-- Pointing Hand Helper -->
+    <PointingHand
+      v-if="showPointingHand"
+      target=".col-auto:nth-child(1) .selection-card"
+      position="top"
+      :show="showPointingHand"
+      @dismiss="handlePointingHandDismiss"
+      @target-click="handlePointingHandDismiss"
+      @click-outside="handlePointingHandDismiss"
+    />
   </div>
 </template>
 
@@ -285,6 +296,7 @@ import { mapStores } from 'pinia'
 import { getImage, getDesign, designImage, getCheckoutUrl } from '@/api/api'
 import SelectionModal from '@/components/SelectionModal.vue'
 import LimitModal from '@/components/LimitModal.vue'
+import PointingHand from '@/components/PointingHand.vue'
 import { posthog } from '@/utils/posthog'
 
 const CONTENT_SAFETY_MESSAGE = `⚠️ Content Safety Violation
@@ -303,6 +315,7 @@ export default {
   components: {
     SelectionModal,
     LimitModal,
+    PointingHand,
   },
   data() {
     return {
@@ -335,6 +348,7 @@ export default {
       designError: null,
       showLimitModal: false,
       limitModalType: 'design',
+      showPointingHand: false,
     }
   },
   computed: {
@@ -582,9 +596,20 @@ export default {
       await Promise.all(promises)
       this.userStore.clearGallerySelections()
     },
+    handlePointingHandDismiss() {
+      this.showPointingHand = false
+      localStorage.setItem('unmarble_showDesignHelper', 'false')
+    },
   },
   mounted() {
     this.checkForGallerySelections()
+
+    // Check if we should show pointing hand helper (after onboarding)
+    if (localStorage.getItem('unmarble_showDesignHelper') === 'true') {
+      this.$nextTick(() => {
+        this.showPointingHand = true
+      })
+    }
   },
   beforeUnmount() {
     Object.values(this.errorTimeouts).forEach((timeout) => {

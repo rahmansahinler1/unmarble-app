@@ -47,7 +47,7 @@ export default {
       default: true,
     },
   },
-  emits: ['dismiss', 'target-click'],
+  emits: ['dismiss', 'target-click', 'click-outside'],
   data() {
     return {
       visible: false,
@@ -138,9 +138,20 @@ export default {
       this.$emit('target-click')
       this.dismiss()
     },
-    handleHandClick() {
+    handleHandClick(event) {
       // Clicking the hand itself also dismisses
+      event.stopPropagation()
       this.dismiss()
+    },
+    handleClickOutside(event) {
+      if (!this.visible) return
+      // Check if click is on hand element
+      const handElement = document.querySelector('.pointing-hand')
+      if (handElement?.contains(event.target)) return
+      // Check if click is on target element
+      if (this.targetElement?.contains(event.target)) return
+      // Click was outside both - emit event
+      this.$emit('click-outside')
     },
     dismiss() {
       this.visible = false
@@ -150,10 +161,12 @@ export default {
   mounted() {
     window.addEventListener('resize', this.updatePosition)
     window.addEventListener('scroll', this.updatePosition)
+    document.addEventListener('click', this.handleClickOutside)
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.updatePosition)
     window.removeEventListener('scroll', this.updatePosition)
+    document.removeEventListener('click', this.handleClickOutside)
     if (this.targetElement) {
       this.targetElement.removeEventListener('click', this.handleTargetClick)
     }

@@ -495,8 +495,12 @@ export default {
     handleMaybeLater() {
       posthog.capture('onboarding_upgrade_skipped', { source: 'maybe_later' })
 
+      // Set localStorage triggers for pointing hand helpers
+      localStorage.setItem('unmarble_showDesignHelper', 'true')
+      localStorage.setItem('unmarble_showGalleryHelper', 'true')
+
       this.$emit('completed')
-      this.$router.push('/gallery')
+      this.$router.push('/design')
     },
     triggerFileInput() {
       if (!this.isGenerating) {
@@ -644,8 +648,12 @@ export default {
       clearTimeout(this.skipTimer)
       this.showSkipOption = false
 
+      // Set localStorage triggers for pointing hand helpers
+      localStorage.setItem('unmarble_showDesignHelper', 'true')
+      localStorage.setItem('unmarble_showGalleryHelper', 'true')
+
       this.$emit('completed')
-      this.$router.push('/gallery')
+      this.$router.push('/design')
     },
     resetUploadState() {
       if (this.imagePreviewUrl) {

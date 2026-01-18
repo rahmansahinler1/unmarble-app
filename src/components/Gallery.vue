@@ -209,12 +209,13 @@
 
     <!-- Pointing Hand Helper -->
     <PointingHand
-      v-if="showPointingHand"
+      v-if="showPointingHand && pointingHandTarget"
       :target="pointingHandTarget"
       :position="pointingHandPosition"
       :show="showPointingHand"
       @dismiss="handlePointingHandDismiss"
       @target-click="handlePointingHandTargetClick"
+      @click-outside="handlePointingHandClickOutside"
     />
   </div>
 </template>
@@ -242,10 +243,12 @@ export default {
     PointingHand,
   },
   mounted() {
-    // Test: show pointing hand after 1 second
-    setTimeout(() => {
-      this.showPointingHand = true
-    }, 1000)
+    // Check if we should start the pointing hand flow (set by onboarding)
+    if (localStorage.getItem('unmarble_showGalleryHelper') === 'true') {
+      this.$nextTick(() => {
+        this.startPointingFlow()
+      })
+    }
   },
   data() {
     return {
@@ -261,8 +264,7 @@ export default {
       localSelections: { yourself: null, clothing: null },
       // Pointing Hand Helper state
       showPointingHand: false,
-      pointingHandTarget: '.gallery-item-upload',
-      pointingHandPosition: 'right',
+      pointingHandStep: 0, // 0 = not showing, 1 = yourself, 2 = clothing
     }
   },
   computed: {
@@ -319,6 +321,17 @@ export default {
     },
     hasAnySelection() {
       return this.localSelections.yourself || this.localSelections.clothing
+    },
+    pointingHandTarget() {
+      if (this.pointingHandStep === 1) {
+        return '.gallery-item[data-category="yourself"]'
+      } else if (this.pointingHandStep === 2) {
+        return '.gallery-item[data-category="clothing"]'
+      }
+      return null
+    },
+    pointingHandPosition() {
+      return 'right'
     },
   },
   methods: {
@@ -735,12 +748,38 @@ export default {
       this.$router.push('/design')
     },
     // Pointing Hand Helper methods
+    startPointingFlow() {
+      // Check if user has both yourself and clothing images
+      const hasYourself = this.userStore?.previewImages?.yourself?.length > 0
+      const hasClothing = this.userStore?.previewImages?.clothing?.length > 0
+
+      if (hasYourself && hasClothing) {
+        this.pointingHandStep = 1
+        this.showPointingHand = true
+      }
+    },
     handlePointingHandDismiss() {
       this.showPointingHand = false
+      this.pointingHandStep = 0
+      localStorage.setItem('unmarble_showGalleryHelper', 'false')
     },
     handlePointingHandTargetClick() {
+      if (this.pointingHandStep === 1) {
+        // User clicked yourself image, advance to clothing
+        this.pointingHandStep = 2
+      } else if (this.pointingHandStep === 2) {
+        // User clicked clothing, flow complete
+        // Auto-navigate happens via existing handleImageClick logic
+        this.showPointingHand = false
+        this.pointingHandStep = 0
+        localStorage.setItem('unmarble_showGalleryHelper', 'false')
+      }
+    },
+    handlePointingHandClickOutside() {
+      // User clicked elsewhere, dismiss and stop flow (respect user choice)
       this.showPointingHand = false
-      // Could advance to next step here in the future
+      localStorage.setItem('unmarble_showGalleryHelper', 'false')
+      this.pointingHandStep = 0
     },
   },
   beforeUnmount() {
