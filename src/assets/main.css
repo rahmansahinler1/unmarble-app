@@ -4070,3 +4070,81 @@
     right: 0.5rem;
   }
 }
+
+/* ================================
+   Pointing Hand Helper Component
+================================ */
+
+.pointing-hand {
+  position: absolute;
+  z-index: 9998;
+  pointer-events: auto;
+  cursor: pointer;
+  transition: opacity 0.3s ease;
+}
+
+.pointing-hand__image {
+  width: 80px;
+  height: auto;
+  display: block;
+  filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+}
+
+/* Pulse/Scale Animation */
+.pointing-hand--active .pointing-hand__image {
+  animation: pointing-hand-pulse 1.2s ease-in-out infinite;
+}
+
+@keyframes pointing-hand-pulse {
+  0%,
+  100% {
+    transform: scale(1);
+    filter: drop-shadow(0 4px 12px rgba(0, 0, 0, 0.15));
+  }
+  50% {
+    transform: scale(1.15);
+    filter: drop-shadow(0 6px 20px rgba(0, 183, 237, 0.4));
+  }
+}
+
+/* Position-specific rotations to point at target */
+.pointing-hand--top .pointing-hand__image {
+  transform-origin: center bottom;
+}
+
+.pointing-hand--bottom .pointing-hand__image {
+  transform: rotate(180deg);
+  transform-origin: center top;
+}
+
+.pointing-hand--left .pointing-hand__image {
+  transform: rotate(90deg);
+  transform-origin: right center;
+}
+
+.pointing-hand--right .pointing-hand__image {
+  transform: rotate(-90deg);
+  transform-origin: left center;
+}
+
+/* Bounce animation variant (optional) */
+@keyframes pointing-hand-bounce {
+  0%,
+  100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-10px);
+  }
+}
+
+.pointing-hand--bounce .pointing-hand__image {
+  animation: pointing-hand-bounce 0.8s ease-in-out infinite;
+}
+
+/* Mobile responsive */
+@media (max-width: 767px) {
+  .pointing-hand__image {
+    width: 60px;
+  }
+}

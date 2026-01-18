@@ -206,6 +206,16 @@
 
     <!-- Upload Modal -->
     <UploadModal :show="showUploadModal" @close="showUploadModal = false" />
+
+    <!-- Pointing Hand Helper -->
+    <PointingHand
+      v-if="showPointingHand"
+      :target="pointingHandTarget"
+      :position="pointingHandPosition"
+      :show="showPointingHand"
+      @dismiss="handlePointingHandDismiss"
+      @target-click="handlePointingHandTargetClick"
+    />
   </div>
 </template>
 
@@ -221,6 +231,7 @@ import {
   getDesign,
 } from '@/api/api'
 import UploadModal from '@/components/UploadModal.vue'
+import PointingHand from '@/components/PointingHand.vue'
 import { driver } from 'driver.js'
 import 'driver.js/dist/driver.css'
 
@@ -228,8 +239,14 @@ export default {
   name: 'Gallery',
   components: {
     UploadModal,
+    PointingHand,
   },
-  mounted() {},
+  mounted() {
+    // Test: show pointing hand after 1 second
+    setTimeout(() => {
+      this.showPointingHand = true
+    }, 1000)
+  },
   data() {
     return {
       selectedFilter: 'all',
@@ -242,6 +259,10 @@ export default {
       currentImageCategory: null,
       escapeKeyHandler: null,
       localSelections: { yourself: null, clothing: null },
+      // Pointing Hand Helper state
+      showPointingHand: false,
+      pointingHandTarget: '.gallery-item-upload',
+      pointingHandPosition: 'right',
     }
   },
   computed: {
@@ -712,6 +733,14 @@ export default {
       this.userStore.setGallerySelection('yourself', this.localSelections.yourself)
       this.userStore.setGallerySelection('clothing', this.localSelections.clothing)
       this.$router.push('/design')
+    },
+    // Pointing Hand Helper methods
+    handlePointingHandDismiss() {
+      this.showPointingHand = false
+    },
+    handlePointingHandTargetClick() {
+      this.showPointingHand = false
+      // Could advance to next step here in the future
     },
   },
   beforeUnmount() {
