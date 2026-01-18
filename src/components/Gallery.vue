@@ -211,7 +211,8 @@
     <PointingHand
       v-if="showPointingHand && pointingHandTarget"
       :target="pointingHandTarget"
-      :position="pointingHandPosition"
+      position="center"
+      :autoDismiss="false"
       :show="showPointingHand"
       @dismiss="handlePointingHandDismiss"
       @target-click="handlePointingHandTargetClick"
@@ -245,9 +246,10 @@ export default {
   mounted() {
     // Check if we should start the pointing hand flow (set by onboarding)
     if (localStorage.getItem('unmarble_showGalleryHelper') === 'true') {
-      this.$nextTick(() => {
+      // Delay to ensure navigation click event has finished propagating
+      setTimeout(() => {
         this.startPointingFlow()
-      })
+      }, 100)
     }
   },
   data() {
@@ -329,9 +331,6 @@ export default {
         return '.gallery-item[data-category="clothing"]'
       }
       return null
-    },
-    pointingHandPosition() {
-      return 'right'
     },
   },
   methods: {

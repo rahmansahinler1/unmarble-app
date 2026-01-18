@@ -29,7 +29,7 @@ export default {
     position: {
       type: String,
       default: 'top',
-      validator: (v) => ['top', 'bottom', 'left', 'right'].includes(v),
+      validator: (v) => ['top', 'bottom', 'left', 'right', 'center'].includes(v),
     },
     // Offset from target element (px)
     offset: {
@@ -82,12 +82,15 @@ export default {
     },
   },
   methods: {
-    initHand() {
+    initHand(retryCount = 0) {
       this.findTarget()
       if (this.targetElement) {
         this.updatePosition()
         this.visible = true
         this.attachTargetListener()
+      } else if (retryCount < 5) {
+        // Retry up to 5 times with increasing delay to ensure DOM is ready
+        setTimeout(() => this.initHand(retryCount + 1), 50 * (retryCount + 1))
       }
     },
     findTarget() {
@@ -125,6 +128,10 @@ export default {
           top = rect.top + rect.height / 2 - handHeight / 2 + window.scrollY
           left = rect.right + this.offset + window.scrollX
           break
+        case 'center':
+          top = rect.top + rect.height / 2 - handHeight / 2 + window.scrollY
+          left = rect.left + rect.width / 2 - handWidth / 2 + window.scrollX
+          break
       }
 
       this.handPosition = { top, left }
@@ -148,9 +155,15 @@ export default {
       // Check if click is on hand element
       const handElement = document.querySelector('.pointing-hand')
       if (handElement?.contains(event.target)) return
-      // Check if click is on target element
-      if (this.targetElement?.contains(event.target)) return
-      // Click was outside both - emit event
+      // Check if click is on target element - emit target-click event
+      if (this.targetElement?.contains(event.target)) {
+        this.$emit('target-click')
+        if (this.autoDismiss) {
+          this.dismiss()
+        }
+        return
+      }
+      // Click was outside both - emit click-outside event
       this.$emit('click-outside')
     },
     dismiss() {

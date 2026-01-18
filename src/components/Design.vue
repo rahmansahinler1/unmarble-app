@@ -281,7 +281,7 @@
     <PointingHand
       v-if="showPointingHand"
       target=".col-auto:nth-child(1) .selection-card"
-      position="top"
+      position="center"
       :show="showPointingHand"
       @dismiss="handlePointingHandDismiss"
       @target-click="handlePointingHandDismiss"
@@ -606,9 +606,10 @@ export default {
 
     // Check if we should show pointing hand helper (after onboarding)
     if (localStorage.getItem('unmarble_showDesignHelper') === 'true') {
-      this.$nextTick(() => {
+      // Use setTimeout to ensure DOM is fully rendered
+      setTimeout(() => {
         this.showPointingHand = true
-      })
+      }, 100)
     }
   },
   beforeUnmount() {
