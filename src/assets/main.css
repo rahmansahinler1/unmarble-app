@@ -4076,7 +4076,7 @@
 ================================ */
 
 .pointing-hand {
-  position: absolute;
+  position: fixed;
   z-index: 9998;
   pointer-events: auto;
   cursor: pointer;

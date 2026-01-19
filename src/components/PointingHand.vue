@@ -114,26 +114,27 @@ export default {
 
       let top, left
 
+      // Using position: fixed, so we use viewport coordinates directly from getBoundingClientRect()
       switch (this.position) {
         case 'top':
-          top = rect.top - handHeight - this.offset + window.scrollY
-          left = rect.left + rect.width / 2 - handWidth / 2 + window.scrollX
+          top = rect.top - handHeight - this.offset
+          left = rect.left + rect.width / 2 - handWidth / 2
           break
         case 'bottom':
-          top = rect.bottom + this.offset + window.scrollY
-          left = rect.left + rect.width / 2 - handWidth / 2 + window.scrollX
+          top = rect.bottom + this.offset
+          left = rect.left + rect.width / 2 - handWidth / 2
           break
         case 'left':
-          top = rect.top + rect.height / 2 - handHeight / 2 + window.scrollY
-          left = rect.left - handWidth - this.offset + window.scrollX
+          top = rect.top + rect.height / 2 - handHeight / 2
+          left = rect.left - handWidth - this.offset
           break
         case 'right':
-          top = rect.top + rect.height / 2 - handHeight / 2 + window.scrollY
-          left = rect.right + this.offset + window.scrollX
+          top = rect.top + rect.height / 2 - handHeight / 2
+          left = rect.right + this.offset
           break
         case 'center':
-          top = rect.top + rect.height / 2 - handHeight / 2 + window.scrollY
-          left = rect.left + rect.width / 2 - handWidth / 2 + window.scrollX
+          top = rect.top + rect.height / 2 - handHeight / 2
+          left = rect.left + rect.width / 2 - handWidth / 2
           break
       }
 
@@ -178,13 +179,20 @@ export default {
   },
   mounted() {
     window.addEventListener('resize', this.updatePosition)
-    window.addEventListener('scroll', this.updatePosition)
     document.addEventListener('click', this.handleClickOutside)
+    // Listen to .app-content scroll (the actual scrolling container)
+    const appContent = document.querySelector('.app-content')
+    if (appContent) {
+      appContent.addEventListener('scroll', this.updatePosition)
+    }
   },
   beforeUnmount() {
     window.removeEventListener('resize', this.updatePosition)
-    window.removeEventListener('scroll', this.updatePosition)
     document.removeEventListener('click', this.handleClickOutside)
+    const appContent = document.querySelector('.app-content')
+    if (appContent) {
+      appContent.removeEventListener('scroll', this.updatePosition)
+    }
     if (this.targetElement) {
       this.targetElement.removeEventListener('click', this.handleTargetClick)
     }
