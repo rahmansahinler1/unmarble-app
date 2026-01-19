@@ -2522,15 +2522,15 @@
 
   .gallery-filters .btn {
     flex-shrink: 0;
-    font-size: 8px;
+    font-size: clamp(8px, 2vw, 9px);
     font-weight: 600;
-    padding: 4px 7px;
-    border-radius: 12px;
+    padding: 3px clamp(8px, 2vw, 9px);
+    border-radius: 9px;
   }
 
   .gallery-filters .btn .badge {
-    font-size: 7px;
-    padding: 1px 4px;
+    font-size: 9px;
+    padding: 1px 3px;
   }
 
   /* --------------------------------
@@ -2620,8 +2620,8 @@
      Category Badge - Smaller
   -------------------------------- */
   .gallery-category-badge {
-    font-size: 7px;
-    padding: 2px 7px;
+    font-size: 11px;
+    padding: 2px 9px;
     top: 4px;
     left: 4px;
     border-radius: 4px;
@@ -2664,7 +2664,7 @@
   }
 
   .gallery-action-btn i {
-    font-size: 10px;
+    font-size: 14px;
   }
 
   /* --------------------------------
