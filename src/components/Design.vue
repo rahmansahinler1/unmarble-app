@@ -465,8 +465,6 @@ export default {
     async designImage() {
       if (!this.selections.yourself || !this.selections.clothing) return
 
-      posthog.capture('design_button_clicked', { button_location: 'main' })
-
       if (this.userStore.userLimits.storageLeft <= 0) {
         this.limitModalType = 'storage'
         this.showLimitModal = true
@@ -570,7 +568,6 @@ export default {
       this.showLimitModal = false
     },
     handleUpgrade() {
-      posthog.capture('upgrade_button_clicked', { source: 'modal' })
       this.showLimitModal = false
       const checkoutUrl = getCheckoutUrl(this.userStore?.userCred?.email || '')
       if (checkoutUrl) {

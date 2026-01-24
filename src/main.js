@@ -4,7 +4,6 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import useUserStore from '@/stores/user'
-import { initPostHog, identifyUser } from '@/utils/posthog'
 
 // Initialize PostHog early
 initPostHog()
@@ -34,9 +33,6 @@ if (!token) {
   if (!userId) {
     window.location.href = import.meta.env.VITE_WEBSITE_URL
   } else {
-    // Identify user in PostHog
-    identifyUser(userId)
-
     const app = createApp(App)
     app.use(createPinia())
     app.use(router)

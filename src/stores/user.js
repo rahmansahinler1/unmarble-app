@@ -1,5 +1,6 @@
 import { defineStore } from 'pinia'
 import { getUser, getPreviews } from '@/api/api'
+import { initPostHog, identifyUser } from '@/utils/posthog'
 
 export default defineStore('user', {
   state: () => ({
@@ -62,6 +63,21 @@ export default defineStore('user', {
           this.userCred.user_status = user_fetch.data.user_info['user_status'] || 'active'
           this.userLimits.storageLeft = user_fetch.data.user_info['storage_left']
           this.userLimits.designsLeft = user_fetch.data.user_info['designs_left']
+
+          // Identify user in PostHog
+          identifyUser(userId, {
+            name: this.userCred.name,
+            surname: this.userCred.surname,
+            email: this.userCred.email,
+            type: this.userCred.type,
+            renewal_date: this.userCred.nextRenewalDate,
+            subscription_status: this.userCred.subscriptionStatus,
+            subscription_ends_at: this.userCred.subscriptionEndsAt,
+            days_until_expiry: this.userCred.daysUntilExpiry,
+            days_since_expiry: this.userCred.daysSinceExpiry,
+            storage_left: this.userLimits.storageLeft,
+            designs_left: this.userLimits.designsLeft,
+          })
         }
 
         const preview_fetch = await getPreviews()

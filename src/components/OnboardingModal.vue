@@ -2,7 +2,11 @@
   <div v-if="isOpen" class="onboarding-modal-overlay">
     <div
       class="onboarding-modal"
-      :class="{ 'gallery-step': currentStep === 2, 'upload-step': currentStep === 3, 'upgrade-step': currentStep === 4 }"
+      :class="{
+        'gallery-step': currentStep === 2,
+        'upload-step': currentStep === 3,
+        'upgrade-step': currentStep === 4,
+      }"
     >
       <!-- Progress Bar (shows on steps 0-3, hidden on step 4) -->
       <div v-if="currentStep < 4" class="onboarding-progress">
@@ -102,7 +106,11 @@
             >
               <!-- Show preview if custom clothing file exists (regardless of selection state) -->
               <template v-if="customClothingPreviewUrl">
-                <img :src="customClothingPreviewUrl" alt="Your clothing" class="custom-clothing-preview" />
+                <img
+                  :src="customClothingPreviewUrl"
+                  alt="Your clothing"
+                  class="custom-clothing-preview"
+                />
               </template>
 
               <!-- Show upload prompt if not selected -->
@@ -372,7 +380,7 @@ export default {
         // Unselect default clothing
         this.selectedClothingId = null
         this.userStore.setOnboardingClothingId(null)
-        return  // Don't trigger file picker
+        return // Don't trigger file picker
       }
 
       // If preview exists and is already selected, trigger re-selection
@@ -442,7 +450,6 @@ export default {
     },
     async handleAction() {
       if (this.currentStep === 1) {
-        posthog.capture('onboarding_step_completed', { step: 1 })
         this.currentStep++
         this.isLoadingPreviews = true
         await this.fetchDefaultPreviews()
@@ -450,14 +457,12 @@ export default {
       }
 
       if (this.currentStep === 2) {
-        posthog.capture('onboarding_step_completed', { step: 2 })
         this.currentStep++
         return
       }
 
       if (this.currentStep === 3) {
         if (this.generationSuccess) {
-          posthog.capture('onboarding_step_completed', { step: 3 })
           this.currentStep = 4
           return
         }
@@ -483,8 +488,6 @@ export default {
       }
     },
     handleUpgrade() {
-      posthog.capture('upgrade_button_clicked', { source: 'onboarding' })
-
       this.$emit('completed')
 
       const url = getCheckoutUrl(this.userStore.userCred.email)
@@ -493,8 +496,6 @@ export default {
       }
     },
     handleMaybeLater() {
-      posthog.capture('onboarding_upgrade_skipped', { source: 'maybe_later' })
-
       // Set localStorage triggers for pointing hand helpers
       localStorage.setItem('unmarble_showDesignHelper', 'true')
       localStorage.setItem('unmarble_showGalleryHelper', 'true')
@@ -611,7 +612,7 @@ export default {
         const designResult = await designOnboarding(
           this.uploadedImageId,
           this.isCustomClothingSelected ? null : this.selectedClothingId,
-          uploadedClothingId
+          uploadedClothingId,
         )
 
         if (designResult.success) {
@@ -621,12 +622,6 @@ export default {
           this.userStore.addPreviewImage('design', designResult.data)
           this.userStore.updateStorageLeft(designResult.data.storage_left)
           this.userStore.updateDesignsLeft(designResult.data.designs_left)
-
-          posthog.capture('onboarding_design_completed', {
-            gender: this.selectedGender,
-            clothing_id: this.selectedClothingId,
-            custom_clothing: this.isCustomClothingSelected,
-          })
         } else {
           throw new Error(designResult.error || 'Generation failed')
         }
@@ -642,8 +637,6 @@ export default {
       }
     },
     handleSkip() {
-      posthog.capture('onboarding_design_skipped', { reason: 'timeout_20s' })
-
       this.isGenerating = false
       clearTimeout(this.skipTimer)
       this.showSkipOption = false
