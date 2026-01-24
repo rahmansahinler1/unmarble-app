@@ -1,6 +1,6 @@
 import { defineStore } from 'pinia'
 import { getUser, getPreviews } from '@/api/api'
-import { initPostHog, identifyUser } from '@/utils/posthog'
+import { identifyUser } from '@/utils/posthog'
 
 export default defineStore('user', {
   state: () => ({

@@ -4,6 +4,7 @@ import { createPinia } from 'pinia'
 import App from './App.vue'
 import router from './router'
 import useUserStore from '@/stores/user'
+import { initPostHog } from '@/utils/posthog'
 
 // Initialize PostHog early
 initPostHog()
