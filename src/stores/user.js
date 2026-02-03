@@ -116,7 +116,14 @@ export default defineStore('user', {
         base64: `data:image/jpeg;base64,${imageData.preview_base64}`,
         faved: imageData.faved || false,
         created_at: imageData.created_at,
+        isNew: true,
       })
+    },
+    clearNewFlag(category, imageId) {
+      const image = this.previewImages[category].find((img) => img.id === imageId)
+      if (image) {
+        image.isNew = false
+      }
     },
     removePreviewImage(category, imageId) {
       this.previewImages[category] = this.previewImages[category].filter(

@@ -81,7 +81,10 @@
               <!-- Gallery items -->
               <div
                 class="gallery-item"
-                :class="{ 'gallery-item-selected': isImageSelected(image.id) }"
+                :class="{
+                  'gallery-item-selected': isImageSelected(image.id),
+                  'gallery-item-new': image.isNew,
+                }"
                 :data-category="image.category"
                 v-for="image in getPreviews"
                 :key="image.id"
@@ -251,6 +254,21 @@ export default {
         this.startPointingFlow()
       }, 100)
     }
+
+    // Watch for new items and clear their flags after animation
+    this.$watch(
+      () => this.getPreviews,
+      (newPreviews) => {
+        newPreviews.forEach((image) => {
+          if (image.isNew) {
+            setTimeout(() => {
+              this.userStore.clearNewFlag(image.category, image.id)
+            }, 1500)
+          }
+        })
+      },
+      { immediate: true, deep: true },
+    )
   },
   data() {
     return {
