@@ -119,6 +119,7 @@
           :class="{
             clickable: designedImage,
             'ready-to-design': canDesign && !designedImage && !isDesigning && !designError,
+            'design-success': showSuccessCelebration,
           }"
           @click="handleResultCardClick"
         >
@@ -349,6 +350,7 @@ export default {
       showLimitModal: false,
       limitModalType: 'design',
       showPointingHand: false,
+      showSuccessCelebration: false,
     }
   },
   computed: {
@@ -500,6 +502,12 @@ export default {
 
           this.userStore.updateDesignsLeft(result.data.designs_left)
           this.userStore.updateStorageLeft(result.data.storage_left)
+
+          // Trigger celebration effect
+          this.showSuccessCelebration = true
+          setTimeout(() => {
+            this.showSuccessCelebration = false
+          }, 1000)
         } else {
           // Check for content safety violations
           const errorMsg = result.error || 'Design failed. Please try again.'
