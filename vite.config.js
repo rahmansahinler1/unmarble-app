@@ -20,7 +20,7 @@ export default defineConfig({
       ],
       manifest: {
         name: 'Unmarble - Try Clothes',
-        short_name: 'Unmarble',
+        short_name: 'Unmarble - Try Clothes',
         description: 'Virtual try-on for clothes - See how outfits look on you',
         theme_color: '#ffffff',
         background_color: '#ffffff',
