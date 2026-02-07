@@ -2,6 +2,12 @@
   <!-- Onboarding Modal (first-time users) -->
   <OnboardingModal :isOpen="showOnboarding" @completed="handleOnboardingCompleted" />
 
+  <!-- PWA Install Popup (returning users, once per session) -->
+  <InstallPopup
+    v-if="showInstallPopup"
+    @close="handleInstallPopupClose"
+  />
+
   <!-- Subscription Block Overlay (expired 7+ days or refunded) -->
   <SubscriptionBlockOverlay
     v-if="isBlocked && !showOnboarding"
@@ -30,7 +36,9 @@ import SubscriptionBlockOverlay from '@/components/SubscriptionBlockOverlay.vue'
 import SubscriptionWarningModal from '@/components/SubscriptionWarningModal.vue'
 import PastDueBanner from '@/components/PastDueBanner.vue'
 import OnboardingModal from '@/components/OnboardingModal.vue'
+import InstallPopup from '@/components/InstallPopup.vue'
 import useUserStore from '@/stores/user'
+import { getIsStandalone, onInstallAvailable } from '@/utils/pwa'
 
 export default {
   name: 'app',
@@ -39,6 +47,7 @@ export default {
     SubscriptionWarningModal,
     PastDueBanner,
     OnboardingModal,
+    InstallPopup,
   },
   data() {
     return {
@@ -46,6 +55,9 @@ export default {
       expiredWarningDismissed: false,
       pastDueBannerDismissed: false,
       onboardingModalOpen: false,
+      installPopupDismissed: false,
+      pwaCanInstall: false,
+      pwaUnsubscribe: null,
     }
   },
   computed: {
@@ -76,6 +88,17 @@ export default {
     showOnboarding() {
       return this.userStore.userCred.user_status === 'first_time' || this.onboardingModalOpen
     },
+    showInstallPopup() {
+      if (getIsStandalone()) return false
+      if (this.userStore.userCred.user_status === 'first_time') return false
+      if (this.showOnboarding) return false
+      if (this.isBlocked) return false
+      if (this.installPopupDismissed) return false
+      if (sessionStorage.getItem('unmarble_installPopupDismissed')) return false
+      const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+      return this.pwaCanInstall || isIos || isSafari
+    },
   },
   mounted() {
     if (this.userStore.userCred.user_status === 'first_time') {
@@ -83,16 +106,24 @@ export default {
     }
     window.addEventListener('storage', this.handleStorageChange)
     this.startCookieValidation()
+    this.pwaUnsubscribe = onInstallAvailable((canInstall) => {
+      this.pwaCanInstall = canInstall
+    })
   },
   beforeUnmount() {
     window.removeEventListener('storage', this.handleStorageChange)
     if (this.cookieCheckInterval) {
       clearInterval(this.cookieCheckInterval)
     }
+    if (this.pwaUnsubscribe) this.pwaUnsubscribe()
   },
   methods: {
     handleOnboardingCompleted() {
       this.onboardingModalOpen = false
+    },
+    handleInstallPopupClose() {
+      this.installPopupDismissed = true
+      sessionStorage.setItem('unmarble_installPopupDismissed', 'true')
     },
     handleStorageChange(event) {
       if (event.key === 'logout-event') {

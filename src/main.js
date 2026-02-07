@@ -5,6 +5,10 @@ import App from './App.vue'
 import router from './router'
 import useUserStore from '@/stores/user'
 import { initPostHog } from '@/utils/posthog'
+import { initPwaInstall } from '@/utils/pwa'
+
+// Initialize PWA install capture (must be early to catch beforeinstallprompt)
+initPwaInstall()
 
 // Initialize PostHog early
 initPostHog()

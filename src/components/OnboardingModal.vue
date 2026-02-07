@@ -3,27 +3,27 @@
     <div
       class="onboarding-modal"
       :class="{
-        'gallery-step': currentStep === 2,
-        'upload-step': currentStep === 3,
-        'upgrade-step': currentStep === 4,
+        'gallery-step': currentStep === STEP_CLOTHING,
+        'upload-step': currentStep === STEP_UPLOAD,
+        'upgrade-step': currentStep === STEP_UPGRADE,
       }"
     >
-      <!-- Progress Bar (shows on steps 0-3, hidden on step 4) -->
-      <div v-if="currentStep < 4" class="onboarding-progress">
+      <!-- Progress Bar (hidden on upgrade step) -->
+      <div v-if="currentStep < STEP_UPGRADE" class="onboarding-progress">
         <div class="onboarding-progress-bar" :style="{ width: progressWidth }"></div>
       </div>
 
       <!-- Logo (only on welcome step) -->
-      <div v-if="currentStep === 0" class="onboarding-logo">
+      <div v-if="currentStep === STEP_WELCOME" class="onboarding-logo">
         <img src="/assets/img/logo-small.svg" alt="Unmarble" />
       </div>
 
-      <!-- Back Button (shows on step 1-3, but NOT during generation, on success, or step 4) -->
+      <!-- Back Button (shows on intermediate steps, but NOT during generation, on success, or upgrade) -->
       <button
         v-if="
           currentStep > 0 &&
-          currentStep < 4 &&
-          !(currentStep === 3 && (generationSuccess || isGenerating))
+          currentStep < STEP_UPGRADE &&
+          !(currentStep === STEP_UPLOAD && (generationSuccess || isGenerating))
         "
         class="onboarding-back-btn"
         @click="goBack"
@@ -33,16 +33,45 @@
 
       <!-- Step Content -->
       <div class="onboarding-content">
-        <!-- Step 1: Welcome -->
-        <template v-if="currentStep === 0">
+        <!-- Step: Welcome -->
+        <template v-if="currentStep === STEP_WELCOME">
           <div class="onboarding-illustration">
             <img src="/assets/img/welcome.svg" alt="Welcome" />
           </div>
           <p class="onboarding-tagline">Let's design your first outfit!</p>
         </template>
 
-        <!-- Step 2: Gender Selection -->
-        <template v-else-if="currentStep === 1">
+        <!-- Step: Download App (conditional, only when not in PWA) -->
+        <template v-else-if="currentStep === STEP_DOWNLOAD">
+          <div class="onboarding-download-icon">
+            <img src="/assets/img/logo-small.svg" alt="Unmarble" />
+          </div>
+          <h2 class="onboarding-question">Get the Unmarble App</h2>
+          <p class="onboarding-privacy">Install Unmarble for a faster, app-like experience</p>
+
+          <button
+            v-if="pwaCanInstall"
+            class="btn-onboarding-install"
+            @click="handlePwaInstall"
+          >
+            <i class="bi bi-download me-2"></i> Install
+          </button>
+
+          <div v-else-if="isIos" class="onboarding-ios-instructions">
+            <p>
+              Tap <i class="bi bi-box-arrow-up"></i> then <strong>"Add to Home Screen"</strong>
+            </p>
+          </div>
+
+          <div v-else-if="isSafari" class="onboarding-ios-instructions">
+            <p>
+              Go to <strong>File → Add to Dock</strong> to install
+            </p>
+          </div>
+        </template>
+
+        <!-- Step: Gender Selection -->
+        <template v-else-if="currentStep === STEP_GENDER">
           <h2 class="onboarding-question">How do you identify?</h2>
           <p class="onboarding-privacy">This information will always be private</p>
 
@@ -71,8 +100,8 @@
           </div>
         </template>
 
-        <!-- Step 3: Clothing Selection -->
-        <template v-else-if="currentStep === 2">
+        <!-- Step: Clothing Selection -->
+        <template v-else-if="currentStep === STEP_CLOTHING">
           <h2 class="onboarding-question">What do you want to try on?</h2>
           <p class="onboarding-privacy">Select one to see yourself in</p>
 
@@ -132,8 +161,8 @@
           </div>
         </template>
 
-        <!-- Step 4: Image Upload & Generation -->
-        <template v-else-if="currentStep === 3">
+        <!-- Step: Image Upload & Generation -->
+        <template v-else-if="currentStep === STEP_UPLOAD">
           <h2 class="onboarding-question">
             {{ generationSuccess ? 'Congratulations 🎉' : 'Upload your picture' }}
           </h2>
@@ -197,8 +226,8 @@
           </p>
         </template>
 
-        <!-- Step 5: Upgrade -->
-        <template v-else-if="currentStep === 4">
+        <!-- Step: Upgrade -->
+        <template v-else-if="currentStep === STEP_UPGRADE">
           <!-- Logo -->
           <div class="limit-modal-logo">
             <img src="/assets/img/logo-small.svg" alt="Unmarble" />
@@ -250,9 +279,9 @@
         </template>
       </div>
 
-      <!-- Action Button (hidden on step 4 which has its own buttons) -->
+      <!-- Action Button (hidden on upgrade step which has its own buttons) -->
       <button
-        v-if="currentStep < 4"
+        v-if="currentStep < STEP_UPGRADE"
         class="btn-onboarding-action"
         :disabled="isSubmitting || !canProceed"
         @click="handleAction"
@@ -267,7 +296,7 @@
       </button>
 
       <!-- Skip option (appears after 12s during generation OR on error) - below button -->
-      <div v-if="currentStep === 3 && (showSkipOption || generationError)" class="skip-option">
+      <div v-if="currentStep === STEP_UPLOAD && (showSkipOption || generationError)" class="skip-option">
         <a href="#" @click.prevent="handleSkip">Skip for now</a>
       </div>
     </div>
@@ -285,6 +314,7 @@ import {
 import useUserStore from '@/stores/user'
 import { processImageForUpload } from '@/utils/imageProcessor'
 import { posthog } from '@/utils/posthog'
+import { onInstallAvailable, triggerInstallPrompt, getIsStandalone } from '@/utils/pwa'
 
 export default {
   name: 'OnboardingModal',
@@ -298,8 +328,10 @@ export default {
   data() {
     return {
       currentStep: 0,
-      totalSteps: 5,
       isSubmitting: false,
+      // PWA install state
+      pwaCanInstall: false,
+      pwaUnsubscribe: null,
       selectedGender: null,
       selectedClothingId: null,
       isLoadingPreviews: false,
@@ -326,9 +358,29 @@ export default {
     hasImageSelection() {
       return this.selectedFile !== null
     },
+    // PWA step offset logic
+    isIos() {
+      return /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream
+    },
+    isSafari() {
+      return /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+    },
+    showDownloadStep() {
+      return !getIsStandalone() && (this.pwaCanInstall || this.isIos || this.isSafari)
+    },
+    stepOffset() {
+      return this.showDownloadStep ? 1 : 0
+    },
+    STEP_WELCOME() { return 0 },
+    STEP_DOWNLOAD() { return this.showDownloadStep ? 1 : -1 },
+    STEP_GENDER() { return 1 + this.stepOffset },
+    STEP_CLOTHING() { return 2 + this.stepOffset },
+    STEP_UPLOAD() { return 3 + this.stepOffset },
+    STEP_UPGRADE() { return 4 + this.stepOffset },
     buttonText() {
-      if (this.currentStep === 0) return 'Start'
-      if (this.currentStep === 3) {
+      if (this.currentStep === this.STEP_WELCOME) return 'Start'
+      if (this.currentStep === this.STEP_DOWNLOAD) return 'Continue'
+      if (this.currentStep === this.STEP_UPLOAD) {
         if (this.isGenerating) return 'Designing...'
         if (this.generationSuccess) return 'Continue'
         if (this.generationError) return 'Retry'
@@ -337,12 +389,12 @@ export default {
       return 'Continue'
     },
     canProceed() {
-      if (this.currentStep === 1) return this.selectedGender !== null
-      if (this.currentStep === 2) {
+      if (this.currentStep === this.STEP_GENDER) return this.selectedGender !== null
+      if (this.currentStep === this.STEP_CLOTHING) {
         // Allow proceeding if EITHER default clothing OR custom clothing selected
         return this.selectedClothingId !== null || this.isCustomClothingSelected
       }
-      if (this.currentStep === 3) {
+      if (this.currentStep === this.STEP_UPLOAD) {
         // Can proceed if: has file selected (for Design), generation succeeded (for Continue), or has error (for Retry)
         if (this.generationSuccess) return true
         if (this.generationError) return true
@@ -354,8 +406,8 @@ export default {
       return this.userStore.onboardingPreviews
     },
     progressWidth() {
-      // Progress bar shows on steps 0-3 (4 visible steps), fills to 100% at step 3
-      const visibleSteps = 4
+      // Progress bar shows on all steps except upgrade
+      const visibleSteps = this.showDownloadStep ? 5 : 4
       return `${((this.currentStep + 1) / visibleSteps) * 100}%`
     },
   },
@@ -441,29 +493,34 @@ export default {
     },
     goBack() {
       if (this.currentStep > 0) {
-        // Reset step 3 state if going back from it
-        if (this.currentStep === 3) {
+        // Reset upload state if going back from upload step
+        if (this.currentStep === this.STEP_UPLOAD) {
           this.resetUploadState()
         }
         this.currentStep--
       }
     },
     async handleAction() {
-      if (this.currentStep === 1) {
+      if (this.currentStep === this.STEP_DOWNLOAD) {
+        this.currentStep++
+        return
+      }
+
+      if (this.currentStep === this.STEP_GENDER) {
         this.currentStep++
         this.isLoadingPreviews = true
         await this.fetchDefaultPreviews()
         return
       }
 
-      if (this.currentStep === 2) {
+      if (this.currentStep === this.STEP_CLOTHING) {
         this.currentStep++
         return
       }
 
-      if (this.currentStep === 3) {
+      if (this.currentStep === this.STEP_UPLOAD) {
         if (this.generationSuccess) {
-          this.currentStep = 4
+          this.currentStep = this.STEP_UPGRADE
           return
         }
 
@@ -472,6 +529,16 @@ export default {
       }
 
       this.currentStep++
+    },
+    async handlePwaInstall() {
+      posthog?.capture('install_button_clicked', { location: 'onboarding' })
+      const outcome = await triggerInstallPrompt()
+      if (outcome === 'accepted') {
+        posthog?.capture('pwa_installed', { location: 'onboarding' })
+      }
+      // No need to increment currentStep here.
+      // When pwaCanInstall goes false, showDownloadStep becomes false reactively,
+      // stepOffset shifts to 0, and currentStep (1) now maps to STEP_GENDER (1).
     },
     async fetchDefaultPreviews() {
       try {
@@ -664,7 +731,13 @@ export default {
       clearTimeout(this.skipTimer)
     },
   },
+  created() {
+    this.pwaUnsubscribe = onInstallAvailable((canInstall) => {
+      this.pwaCanInstall = canInstall
+    })
+  },
   beforeUnmount() {
+    if (this.pwaUnsubscribe) this.pwaUnsubscribe()
     if (this.imagePreviewUrl) {
       URL.revokeObjectURL(this.imagePreviewUrl)
     }

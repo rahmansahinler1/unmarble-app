@@ -2059,6 +2059,177 @@
   height: auto;
 }
 
+/* Onboarding download step */
+.onboarding-download-icon {
+  margin-bottom: 24px;
+}
+
+.onboarding-download-icon img {
+  width: 80px;
+  height: 80px;
+}
+
+.btn-onboarding-install {
+  width: 80%;
+  max-width: 320px;
+  padding: 14px 24px;
+  border-radius: 50px;
+  background: #00b7ed;
+  color: white;
+  border: none;
+  font-family: var(--font-family-base);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  margin-top: 20px;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.btn-onboarding-install:hover {
+  background: #0095c7;
+}
+
+.onboarding-ios-instructions {
+  padding: 16px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-top: 20px;
+}
+
+.onboarding-ios-instructions p {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+/* ================================
+   Install Popup (returning users)
+================================ */
+.install-popup-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 9998;
+  animation: install-popup-fade-in 0.3s ease-out;
+}
+
+@keyframes install-popup-fade-in {
+  from { opacity: 0; }
+  to { opacity: 1; }
+}
+
+.install-popup {
+  background: white;
+  border-radius: 24px;
+  padding: 32px 24px;
+  width: 90%;
+  max-width: 400px;
+  text-align: center;
+  position: relative;
+}
+
+.install-popup-close {
+  position: absolute;
+  top: 12px;
+  right: 12px;
+  background: none;
+  border: none;
+  font-size: 18px;
+  color: #999;
+  cursor: pointer;
+  padding: 4px 8px;
+}
+
+.install-popup-close:hover {
+  color: #333;
+}
+
+.install-popup-icon {
+  margin-bottom: 16px;
+}
+
+.install-popup-icon img {
+  width: 56px;
+  height: 56px;
+}
+
+.install-popup-title {
+  font-family: var(--font-family-base);
+  font-size: 22px;
+  font-weight: 700;
+  color: #212529;
+  margin: 0 0 8px 0;
+}
+
+.install-popup-subtitle {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+  margin: 0 0 24px 0;
+  line-height: 1.5;
+}
+
+.install-popup-btn {
+  width: 100%;
+  max-width: 280px;
+  padding: 12px 24px;
+  border-radius: 50px;
+  background: #00b7ed;
+  color: white;
+  border: none;
+  font-family: var(--font-family-base);
+  font-size: 15px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: background-color 0.2s ease;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.install-popup-btn:hover {
+  background: #0095c7;
+}
+
+.install-popup-ios {
+  padding: 12px;
+  background: #f8f9fa;
+  border-radius: 12px;
+  margin-bottom: 12px;
+}
+
+.install-popup-ios p {
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  color: #666;
+  margin: 0;
+}
+
+.install-popup-dismiss {
+  background: none;
+  border: none;
+  color: #999;
+  font-family: var(--font-family-base);
+  font-size: 14px;
+  cursor: pointer;
+  margin-top: 16px;
+  padding: 8px;
+}
+
+.install-popup-dismiss:hover {
+  color: #666;
+}
+
 /* Onboarding tagline */
 .onboarding-tagline {
   font-family: var(--font-family-base);
