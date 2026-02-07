@@ -458,6 +458,8 @@ export default {
             category: imageCategory,
             base64: `data:image/jpeg;base64,${result.data.image_base64}`,
           }
+          this.designedImage = null
+          this.designedImageId = null
           this.loadingCards[modalCategory] = false
           this.pendingRequests[modalCategory] = null
         } else {
