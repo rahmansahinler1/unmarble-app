@@ -406,7 +406,7 @@ export default {
       if (hasYourself && !hasClothing) {
         return '.col-auto:nth-child(3) .selection-card'
       }
-      if (!hasYourself && hasClothing) {
+      if (!hasYourself) {
         return '.col-auto:nth-child(1) .selection-card'
       }
       return null
