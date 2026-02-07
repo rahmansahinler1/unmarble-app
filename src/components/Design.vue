@@ -278,7 +278,7 @@
       @upgrade="handleUpgrade"
     />
 
-    <!-- Pointing Hand Helper -->
+    <!-- Pointing Hand Helper (onboarding) -->
     <PointingHand
       v-if="showPointingHand"
       target=".col-auto:nth-child(1) .selection-card"
@@ -287,6 +287,15 @@
       @dismiss="handlePointingHandDismiss"
       @target-click="handlePointingHandDismiss"
       @click-outside="handlePointingHandDismiss"
+    />
+
+    <!-- Guidance Pointing Hand - always shows when one card filled, other empty -->
+    <PointingHand
+      v-if="guidancePointingHandTarget"
+      :target="guidancePointingHandTarget"
+      position="center"
+      :autoDismiss="false"
+      :show="!!guidancePointingHandTarget"
     />
   </div>
 </template>
@@ -382,6 +391,25 @@ export default {
       }
 
       return images.sort((a, b) => new Date(b.created_at) - new Date(a.created_at))
+    },
+    guidancePointingHandTarget() {
+      // Don't show during loading, designing, errors, modal open, or when onboarding helper is active
+      if (this.loadingCards.yourself || this.loadingCards.clothing) return null
+      if (this.errorCards.yourself || this.errorCards.clothing) return null
+      if (this.isDesigning) return null
+      if (this.showModal) return null
+      if (this.showPointingHand) return null
+
+      const hasYourself = this.selections.yourself !== null
+      const hasClothing = this.selections.clothing !== null
+
+      if (hasYourself && !hasClothing) {
+        return '.col-auto:nth-child(3) .selection-card'
+      }
+      if (!hasYourself && hasClothing) {
+        return '.col-auto:nth-child(1) .selection-card'
+      }
+      return null
     },
   },
   methods: {
@@ -606,15 +634,20 @@ export default {
       localStorage.setItem('unmarble_showDesignHelper', 'false')
     },
   },
-  mounted() {
-    this.checkForGallerySelections()
+  async mounted() {
+    await this.checkForGallerySelections()
 
     // Check if we should show pointing hand helper (after onboarding)
     if (localStorage.getItem('unmarble_showDesignHelper') === 'true') {
-      // Use setTimeout to ensure DOM is fully rendered
-      setTimeout(() => {
-        this.showPointingHand = true
-      }, 100)
+      if (this.selections.yourself || this.selections.clothing) {
+        // User arrived with selections from Gallery flow — skip onboarding helper
+        localStorage.setItem('unmarble_showDesignHelper', 'false')
+      } else {
+        // User navigated directly with no selections — show onboarding helper
+        setTimeout(() => {
+          this.showPointingHand = true
+        }, 100)
+      }
     }
   },
   beforeUnmount() {

@@ -566,9 +566,10 @@ export default {
       // Set localStorage triggers for pointing hand helpers
       localStorage.setItem('unmarble_showDesignHelper', 'true')
       localStorage.setItem('unmarble_showGalleryHelper', 'true')
+      this.userStore.galleryHelperPending = true
 
       this.$emit('completed')
-      this.$router.push('/design')
+      this.$router.push('/gallery')
     },
     triggerFileInput() {
       if (!this.isGenerating) {
@@ -711,9 +712,10 @@ export default {
       // Set localStorage triggers for pointing hand helpers
       localStorage.setItem('unmarble_showDesignHelper', 'true')
       localStorage.setItem('unmarble_showGalleryHelper', 'true')
+      this.userStore.galleryHelperPending = true
 
       this.$emit('completed')
-      this.$router.push('/design')
+      this.$router.push('/gallery')
     },
     resetUploadState() {
       if (this.imagePreviewUrl) {

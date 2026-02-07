@@ -246,6 +246,14 @@ export default {
     UploadModal,
     PointingHand,
   },
+  watch: {
+    'userStore.galleryHelperPending'(val) {
+      if (val) {
+        this.userStore.galleryHelperPending = false
+        setTimeout(() => this.startPointingFlow(), 500)
+      }
+    },
+  },
   mounted() {
     // Check if we should start the pointing hand flow (set by onboarding)
     if (localStorage.getItem('unmarble_showGalleryHelper') === 'true') {
@@ -782,11 +790,20 @@ export default {
     },
     handlePointingHandTargetClick() {
       if (this.pointingHandStep === 1) {
-        // User clicked yourself image, advance to clothing
+        // Programmatically select the first "yourself" image
+        const yourselfImages = this.userStore?.previewImages?.yourself || []
+        if (yourselfImages.length > 0) {
+          this.handleImageClick({ ...yourselfImages[0], category: 'yourself' })
+        }
+        // Advance to clothing step
         this.pointingHandStep = 2
       } else if (this.pointingHandStep === 2) {
-        // User clicked clothing, flow complete
-        // Auto-navigate happens via existing handleImageClick logic
+        // Programmatically select the first "clothing" image
+        const clothingImages = this.userStore?.previewImages?.clothing || []
+        if (clothingImages.length > 0) {
+          this.handleImageClick({ ...clothingImages[0], category: 'clothing' })
+        }
+        // handleImageClick with both slots filled triggers navigateToDesign() automatically
         this.showPointingHand = false
         this.pointingHandStep = 0
         localStorage.setItem('unmarble_showGalleryHelper', 'false')

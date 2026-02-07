@@ -27,6 +27,7 @@ export default defineStore('user', {
       selectedClothingId: null,
     },
     onboardingPreviews: [],
+    galleryHelperPending: false,
   }),
   getters: {
     imageCounts(state) {
