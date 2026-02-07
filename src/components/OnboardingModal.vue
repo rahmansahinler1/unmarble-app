@@ -349,6 +349,7 @@ export default {
       showSkipOption: false,
       skipTimer: null,
       uploadedImageId: null,
+      uploadedClothingId: null,
     }
   },
   computed: {
@@ -649,21 +650,22 @@ export default {
           }
         }
 
-        const processedFile = await processImageForUpload(this.selectedFile)
-        const uploadResult = await uploadImage('yourself', processedFile)
+        // Upload yourself image (skip if already uploaded on a previous attempt)
+        if (!this.uploadedImageId) {
+          const processedFile = await processImageForUpload(this.selectedFile)
+          const uploadResult = await uploadImage('yourself', processedFile)
 
-        if (!uploadResult.success) {
-          throw new Error(uploadResult.error || 'Failed to upload image')
+          if (!uploadResult.success) {
+            throw new Error(uploadResult.error || 'Failed to upload image')
+          }
+
+          this.uploadedImageId = uploadResult.data.image_id
+          this.userStore.addPreviewImage('yourself', uploadResult.data)
+          this.userStore.updateStorageLeft(uploadResult.data.storage_left)
         }
 
-        this.uploadedImageId = uploadResult.data.image_id
-
-        this.userStore.addPreviewImage('yourself', uploadResult.data)
-        this.userStore.updateStorageLeft(uploadResult.data.storage_left)
-
-        // If custom clothing selected, upload it
-        let uploadedClothingId = null
-        if (this.isCustomClothingSelected && this.customClothingFile) {
+        // Upload custom clothing if selected (skip if already uploaded)
+        if (this.isCustomClothingSelected && this.customClothingFile && !this.uploadedClothingId) {
           const processedClothing = await processImageForUpload(this.customClothingFile)
           const clothingUploadResult = await uploadImage('clothing', processedClothing)
 
@@ -671,7 +673,7 @@ export default {
             throw new Error(clothingUploadResult.error || 'Failed to upload clothing')
           }
 
-          uploadedClothingId = clothingUploadResult.data.image_id
+          this.uploadedClothingId = clothingUploadResult.data.image_id
           this.userStore.addPreviewImage('clothing', clothingUploadResult.data)
           this.userStore.updateStorageLeft(clothingUploadResult.data.storage_left)
         }
@@ -680,7 +682,7 @@ export default {
         const designResult = await designOnboarding(
           this.uploadedImageId,
           this.isCustomClothingSelected ? null : this.selectedClothingId,
-          uploadedClothingId,
+          this.uploadedClothingId,
         )
 
         if (designResult.success) {
@@ -695,7 +697,7 @@ export default {
         }
       } catch (error) {
         console.error('Upload/generation failed:', error)
-        this.generationError = error.message
+        this.generationError = 'Something went wrong. Please try again or change your picture.'
       } finally {
         this.isGenerating = false
         clearTimeout(this.skipTimer)
@@ -730,6 +732,7 @@ export default {
       this.generatedImageUrl = null
       this.showSkipOption = false
       this.uploadedImageId = null
+      this.uploadedClothingId = null
       clearTimeout(this.skipTimer)
     },
   },
