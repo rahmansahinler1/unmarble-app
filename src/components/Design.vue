@@ -297,6 +297,12 @@
       :autoDismiss="false"
       :show="!!guidancePointingHandTarget"
     />
+
+    <!-- PWA Install Popup (shown once on first design) -->
+    <InstallPopup
+      v-if="showInstallPopup"
+      @close="handleInstallPopupClose"
+    />
   </div>
 </template>
 
@@ -307,7 +313,9 @@ import { getImage, getDesign, designImage, getCheckoutUrl } from '@/api/api'
 import SelectionModal from '@/components/SelectionModal.vue'
 import LimitModal from '@/components/LimitModal.vue'
 import PointingHand from '@/components/PointingHand.vue'
+import InstallPopup from '@/components/InstallPopup.vue'
 import { posthog } from '@/utils/posthog'
+import { getIsStandalone, onInstallAvailable } from '@/utils/pwa'
 
 const CONTENT_SAFETY_MESSAGE = `⚠️ Content Safety Violation
 
@@ -326,6 +334,7 @@ export default {
     SelectionModal,
     LimitModal,
     PointingHand,
+    InstallPopup,
   },
   data() {
     return {
@@ -360,6 +369,9 @@ export default {
       limitModalType: 'design',
       showPointingHand: false,
       showSuccessCelebration: false,
+      installPopupShown: false,
+      pwaCanInstall: false,
+      pwaUnsubscribe: null,
     }
   },
   computed: {
@@ -410,6 +422,14 @@ export default {
         return '.col-auto:nth-child(1) .selection-card'
       }
       return null
+    },
+    showInstallPopup() {
+      if (!this.installPopupShown) return false
+      if (getIsStandalone()) return false
+      if (sessionStorage.getItem('unmarble_installPopupDismissed')) return false
+      const isIos = /iphone|ipad|ipod/i.test(navigator.userAgent) && !window.MSStream
+      const isSafari = /^((?!chrome|android).)*safari/i.test(navigator.userAgent)
+      return this.pwaCanInstall || isIos || isSafari
     },
   },
   methods: {
@@ -511,6 +531,11 @@ export default {
 
       this.isDesigning = true
       this.designError = null
+
+      // Show PWA install popup on first design (once per session)
+      if (!this.installPopupShown && !sessionStorage.getItem('unmarble_installPopupDismissed')) {
+        this.installPopupShown = true
+      }
 
       try {
         const result = await designImage(
@@ -635,8 +660,16 @@ export default {
       this.showPointingHand = false
       localStorage.setItem('unmarble_showDesignHelper', 'false')
     },
+    handleInstallPopupClose() {
+      this.installPopupShown = false
+      sessionStorage.setItem('unmarble_installPopupDismissed', 'true')
+    },
   },
   async mounted() {
+    this.pwaUnsubscribe = onInstallAvailable((canInstall) => {
+      this.pwaCanInstall = canInstall
+    })
+
     await this.checkForGallerySelections()
 
     // Check if we should show pointing hand helper (after onboarding)
@@ -657,6 +690,7 @@ export default {
       if (timeout) clearTimeout(timeout)
     })
     window.removeEventListener('keydown', this.handleDesignedModalEscape)
+    if (this.pwaUnsubscribe) this.pwaUnsubscribe()
   },
 }
 </script>

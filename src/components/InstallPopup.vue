@@ -9,26 +9,20 @@
         <img src="/assets/img/logo-small.svg" alt="Unmarble" />
       </div>
 
-      <h3 class="install-popup-title">Get the Unmarble App</h3>
-      <p class="install-popup-subtitle">
-        Install Unmarble for a faster, app-like experience on your device.
-      </p>
+      <h3 class="install-popup-title">Get the App</h3>
+      <p class="install-popup-subtitle">Install Unmarble for a better experience</p>
 
       <!-- Standard install (Chrome, Edge, etc.) -->
       <button v-if="canInstall" class="install-popup-btn" @click="handleInstall">
-        <i class="bi bi-download me-2"></i> Install App
+        <i class="bi bi-download me-2"></i> Install
       </button>
 
       <!-- Safari instructions (no beforeinstallprompt) -->
       <div v-else-if="isIos" class="install-popup-ios">
-        <p>
-          Tap <i class="bi bi-box-arrow-up"></i> then <strong>"Add to Home Screen"</strong>
-        </p>
+        <p>Tap <i class="bi bi-box-arrow-up"></i> then <strong>"Add to Home Screen"</strong></p>
       </div>
       <div v-else-if="isSafari" class="install-popup-ios">
-        <p>
-          Go to <strong>File → Add to Dock</strong> to install
-        </p>
+        <p>Go to <strong>File → Add to Dock</strong> to install</p>
       </div>
 
       <button class="install-popup-dismiss" @click="dismiss">Not now</button>
