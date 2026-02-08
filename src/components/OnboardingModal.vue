@@ -46,27 +46,19 @@
           <div class="onboarding-download-icon">
             <img src="/assets/img/logo-small.svg" alt="Unmarble" />
           </div>
-          <h2 class="onboarding-question">Get the Unmarble App</h2>
-          <p class="onboarding-privacy">Install Unmarble for a faster, app-like experience</p>
+          <h2 class="onboarding-question">Get the App</h2>
+          <p class="onboarding-privacy">Install for a better experience</p>
 
-          <button
-            v-if="pwaCanInstall"
-            class="btn-onboarding-install"
-            @click="handlePwaInstall"
-          >
+          <button v-if="pwaCanInstall" class="btn-onboarding-install" @click="handlePwaInstall">
             <i class="bi bi-download me-2"></i> Install
           </button>
 
           <div v-else-if="isIos" class="onboarding-ios-instructions">
-            <p>
-              Tap <i class="bi bi-box-arrow-up"></i> then <strong>"Add to Home Screen"</strong>
-            </p>
+            <p>Tap <i class="bi bi-box-arrow-up"></i> then <strong>"Add to Home Screen"</strong></p>
           </div>
 
           <div v-else-if="isSafari" class="onboarding-ios-instructions">
-            <p>
-              Go to <strong>File → Add to Dock</strong> to install
-            </p>
+            <p>Go to <strong>File → Add to Dock</strong> to install</p>
           </div>
         </template>
 
@@ -296,7 +288,10 @@
       </button>
 
       <!-- Skip option (appears after 12s during generation OR on error) - below button -->
-      <div v-if="currentStep === STEP_UPLOAD && (showSkipOption || generationError)" class="skip-option">
+      <div
+        v-if="currentStep === STEP_UPLOAD && (showSkipOption || generationError)"
+        class="skip-option"
+      >
         <a href="#" @click.prevent="handleSkip">Skip for now</a>
       </div>
     </div>
@@ -372,12 +367,24 @@ export default {
     stepOffset() {
       return this.showDownloadStep ? 1 : 0
     },
-    STEP_WELCOME() { return 0 },
-    STEP_DOWNLOAD() { return this.showDownloadStep ? 1 : -1 },
-    STEP_GENDER() { return 1 + this.stepOffset },
-    STEP_CLOTHING() { return 2 + this.stepOffset },
-    STEP_UPLOAD() { return 3 + this.stepOffset },
-    STEP_UPGRADE() { return 4 + this.stepOffset },
+    STEP_WELCOME() {
+      return 0
+    },
+    STEP_DOWNLOAD() {
+      return this.showDownloadStep ? 1 : -1
+    },
+    STEP_GENDER() {
+      return 1 + this.stepOffset
+    },
+    STEP_CLOTHING() {
+      return 2 + this.stepOffset
+    },
+    STEP_UPLOAD() {
+      return 3 + this.stepOffset
+    },
+    STEP_UPGRADE() {
+      return 4 + this.stepOffset
+    },
     buttonText() {
       if (this.currentStep === this.STEP_WELCOME) return 'Start'
       if (this.currentStep === this.STEP_DOWNLOAD) return 'Continue'
